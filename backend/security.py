@@ -4,7 +4,8 @@ import hashlib
 import os
 from cryptography.fernet import Fernet
 
-e = Fernet(os.getenv("KEY").encode())
+key = Fernet.generate_key()
+e = Fernet(key)
 
 
 def encpwd(pwd):
