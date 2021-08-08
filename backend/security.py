@@ -1,7 +1,6 @@
 import bcrypt
 import base64
 import hashlib
-import os
 from cryptography.fernet import Fernet
 
 key = Fernet.generate_key()
