@@ -1,0 +1,11 @@
+FROM node
+
+WORKDIR /app
+
+ENV PATH /app/node_modules/.bin:$PATH
+
+# Install app dependencies
+COPY ./frontend/package*.json ./
+COPY ./frontend /app
+RUN npm install
+CMD ["npm", "start" ]
