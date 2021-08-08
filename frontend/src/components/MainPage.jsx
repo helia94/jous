@@ -27,16 +27,16 @@ class MainPage extends React.Component {
                 <div
                     className="w3-container w3-jumbo"
                     style={{margin: "3rem", paddingLeft: "1rem"}}>
-                    <h1>Tweets</h1>
+                    <h1>Questions</h1>
                     <button className="w3-button w3-blue w3-large" onClick={() => {
                         document.getElementById("addTweet").style.display = "block"
-                    }}>Add tweet
+                    }}>Add a question
                     </button>
                 </div>
                 <AddTweet/>
                 <div className="w3-container">
                     {this.state.tweets.length === 0 ?
-                        <p className="w3-xlarge w3-opacity" style={{marginLeft: "2rem"}}>No tweets! Create
+                        <p className="w3-xlarge w3-opacity" style={{marginLeft: "2rem"}}>No questions yet! Create
                             one</p> : this.state.tweets.map((item, index) => {
                             return (
                                 <TweetItem

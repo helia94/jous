@@ -6,10 +6,10 @@ from flask_cors import CORS
 import re
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity, \
     jwt_refresh_token_required, create_refresh_token, get_raw_jwt
-import security
+from backend import security
 
 app = Flask(__name__, static_folder="build", static_url_path="/")
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///twitter.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///jous.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 app.config["JWT_SECRET_KEY"] = "myawesomesecretisnevergonnagiveyouup"

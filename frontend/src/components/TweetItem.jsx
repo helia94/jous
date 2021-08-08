@@ -1,39 +1,57 @@
 import React from "react";
 import Axios from "axios";
+import styled, { css } from 'styled-components'
 
 function deleteTweet(tid) {
-    Axios.delete("/api/deletetweet/" + tid, {headers: { Authorization: "Bearer " +localStorage.getItem("token") }}).then(res => {
+    Axios.delete("/api/deletetweet/" + tid, { headers: { Authorization: "Bearer " + localStorage.getItem("token") } }).then(res => {
         console.log(res.data)
         window.location.reload();
     })
 }
 
+const ButtonGroup = styled.div`
+  display: flex;
+`
+
 function TweetItem(props) {
 
     return (
-        <div
-            className="w3-card w3-border w3-border-gray w3-round-large"
-            style={{marginTop: "2rem"}}>
-            <header className="w3-container w3-opacity w3-light-gray" style={{padding: "1rem"}}>@{props.author}</header>
-            <div className="w3-container" style={{padding: "2rem"}}>
-                <h2 className="w3-xxlarge">
-                    <span className="w3-opacity">{props.title}</span>
-                    {props.isOwner &&
-                    <button className="w3-right w3-button w3-red w3-large w3-hover-pale-red w3-round-large" onClick={() => deleteTweet(props.id)}>Delete
-                    </button>}
-                </h2>
-                <div dangerouslySetInnerHTML={{__html: props.content}}/>
+        <div className="ui cards">
+            <div className="card">
+                <div className="content">
+                <div class="right floated meta">14h</div>
+                <div class="left floated meta">{props.author}</div>
+                    <div className="description">
+                        {props.content}
+                    </div>
+                </div>
+                <div className="extra content">
+                    <ButtonGroup>
+                        <div class="ui labeled button" tabindex="0" data-tooltip="like">
+                            <div class="ui button">
+                                <i class="heart icon"></i>
+                            </div>
+                            <a class="ui basic label">
+                                13
+                            </a>
+                        </div>
+                        <div class="ui buttons">
+                            <div className="ui basic grey button" data-tooltip="reask"><i class="retweet icon"></i></div>
+                            <div className="ui basic grey button" data-tooltip="post to group"><i class="share icon"></i></div>
+                        </div>
+                    </ButtonGroup>
+                    <ButtonGroup>
+                        <div class="ui buttons">
+                            <div className="ui basic grey button" data-tooltip="answer"><i class="reply icon"></i></div>
+                            <div className="ui basic grey button" data-tooltip="answer anonymously"><i class="user secret icon"></i></div>
+                        </div>
+                        {props.isOwner &&
+                            <button className="ui basic red button" onClick={() => deleteTweet(props.id)}><i class="trash alternate outline icon"></i>
+                            </button>}
+                    </ButtonGroup>
+                </div>
             </div>
-            <footer className="w3-container w3-center w3-large">
-                <button className="w3-button" style={{marginRight: "2rem"}}>
-                    Like
-                </button>
-                <button className="w3-button" style={{marginRight: "2rem"}}>
-                    Retweet
-                </button>
-                <button className="w3-button">Reply</button>
-            </footer>
-        </div>
+        </div >
     );
 }
 
