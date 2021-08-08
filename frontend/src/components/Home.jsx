@@ -3,62 +3,26 @@ import React from "react";
 function Home() {
     return (
         <React.Fragment>
-            <div
-                className="w3-container w3-center w3-blue"
-                style={{ padding: "2rem" }}>
-                <h1 className="w3-jumbo">Quickr - Quick Twitter</h1>
-                <button
-                    className="w3-button w3-pink"
-                    style={{ marginRight: "1rem" }}
-                    onClick={() => (window.location = "/login")}>
-                    Login
-                </button>
-                <button
-                    className="w3-button w3-pink"
-                    onClick={() => (window.location = "/register")}>
-                    Register
-                </button>
+            <div className="ui center aligned yellow inverted segment">
+                <h1 className="w3-jumbo">Jous</h1>
+                <div class="ui buttons">
+                    <div className="ui grey button"
+                        onClick={() => (window.location = "/login")}>
+                        Login
+                    </div>
+                    <div className="ui grey button"
+                        onClick={() => (window.location = "/register")}>
+                        Register
+                    </div>
+                </div>
             </div>
-
-            <div
-                className="w3-container w3-blue"
-                style={{ padding: "2rem", marginTop: "2rem" }}>
-                <h2>Lorem ipsum dolor sit amet</h2>
+            <div class="ui container">
+                <h2>About Jous</h2>
                 <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Integer consectetur libero nibh, non sodales urna malesuada
-                    nec. Sed tortor eros, blandit eget fringilla at, gravida a
-                    nibh. Etiam dui nulla, aliquam vitae purus a, auctor
-                    malesuada arcu. Vestibulum venenatis orci nisl, sed
-                    elementum leo tincidunt eget. Nullam convallis nisi in.
-                </p>
-            </div>
-
-            <div
-                className="w3-container w3-blue"
-                style={{ padding: "2rem", marginTop: "2rem" }}>
-                <h2>Lorem ipsum dolor sit amet</h2>
-                <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Integer consectetur libero nibh, non sodales urna malesuada
-                    nec. Sed tortor eros, blandit eget fringilla at, gravida a
-                    nibh. Etiam dui nulla, aliquam vitae purus a, auctor
-                    malesuada arcu. Vestibulum venenatis orci nisl, sed
-                    elementum leo tincidunt eget. Nullam convallis nisi in.
-                </p>
-            </div>
-
-            <div
-                className="w3-container w3-blue"
-                style={{ padding: "2rem", marginTop: "2rem" }}>
-                <h2>Lorem ipsum dolor sit amet</h2>
-                <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Integer consectetur libero nibh, non sodales urna malesuada
-                    nec. Sed tortor eros, blandit eget fringilla at, gravida a
-                    nibh. Etiam dui nulla, aliquam vitae purus a, auctor
-                    malesuada arcu. Vestibulum venenatis orci nisl, sed
-                    elementum leo tincidunt eget. Nullam convallis nisi in.
+                    Post your questions in Jous. And browes question from others.
+                    Dont ask <i>"what's the best budget fitness tracker?"</i> rather questions
+                    that can be asked again and again, with new audiance. Like
+                    <i>"What do you often deny yourself?"</i>
                 </p>
             </div>
         </React.Fragment>
