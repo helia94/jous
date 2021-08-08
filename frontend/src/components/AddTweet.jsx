@@ -49,7 +49,7 @@ class AddTweet extends React.Component {
                 <span className="w3-button w3-display-topright w3-hover-none w3-hover-text-white" onClick={() => {
                     document.getElementById("addTweet").style.display = "none"
                 }}>X</span>
-                    <h2>Add tweet</h2>
+                    <h2>Add question</h2>
                 </header>
                 <form className="w3-container" onSubmit={this.submitForm}>
                     {this.state.formErr.length > 0 && <Alert message={this.state.formErr}/>}
@@ -61,22 +61,12 @@ class AddTweet extends React.Component {
                         </p>
                         <p>
                             <Editor
-                                initialValue="<p>This is the initial content of the editor</p>"
+                                initialValue=""
                                 init={{
                                     height: 300,
                                     menubar: false,
                                     statusbar: false,
                                     toolbar_mode: "sliding",
-                                    plugins: [
-                                        'advlist autolink lists link image imagetools media emoticons preview anchor',
-                                        'searchreplace visualblocks code fullscreen',
-                                        'insertdatetime media table paste code help wordcount'
-                                    ],
-                                    toolbar:
-                                        'undo redo | formatselect | bold italic underline strikethrough | image anchor media | \
-                                        alignleft aligncenter alignright alignjustify | \
-                                        outdent indent | bulllist numlist | fullscreen preview | emoticons help',
-                                    contextmenu: "bold italic underline indent outdent help"
                                 }}
                                 onEditorChange={this.handleEditorChange}
                             />
