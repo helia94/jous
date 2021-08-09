@@ -16,11 +16,11 @@ function Navbar() {
     let b = {name: x ? "Logout" : "Register", link: x ? "/logout" : "/register"}
 
     return (
-        <div className="w3-bar w3-black">
+        <div className="ui menu yellow">
             <a className="w3-bar-item w3-button" href="/">
-                Quickr
+                Jous
             </a>
-            <div style={{float: "right"}}>
+            <div class="right menu">
                 <button className="w3-bar-item w3-btn" onClick={() => {
                     if (theme === "dark") {
                         localStorage.setItem("theme", "light");
