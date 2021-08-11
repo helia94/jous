@@ -24,6 +24,7 @@ class AddTweet extends React.Component {
             )
             return;
         }
+        console.log("will try to add your tweet")
         Axios.post("/api/addtweet", {
             title: document.getElementById("title").value,
             content: this.state.content
@@ -34,7 +35,9 @@ class AddTweet extends React.Component {
         }).then(res => {
             if (res.data.success) {
                 window.location.reload()
+                console.log("added tweet")
             } else {
+                console.log(res.data.error)
                 this.setState(
                         {formErr: res.data.error }
                     )
