@@ -1,21 +1,26 @@
-from api.core import Mixin
+from backend.api.core import Mixin
 from .base import db
 
 
 class User(Mixin, db.Model):
-    id = db.Column(db.Integer,
-                   unique=True,
-                   primary_key=True)
+    uid = db.Column(db.Integer,
+                    db.ForeignKey("userauthentication.id"),
+                    primary_key=True)
     username = db.Column(db.String(24))
-    email = db.Column(db.String(256))
-    pwd = db.Column(db.String(256))
+    groups = db.Column(db.ARRAY(db.Integer))
+    followings = db.Column(db.ARRAY(db.Integer))
+    followers = db.Column(db.ARRAY(db.Integer))
+    questions = db.Column(db.ARRAY(db.Integer))
+    answers = db.Column(db.ARRAY(db.Integer))
 
 
-    # Constructor
-    def __init__(self, username, email, pwd):
+    def __init__(self, username):
         self.username = username
-        self.email = email
-        self.pwd = pwd
+        self.groups = []
+        self.followings = []
+        self.followers = []
+        self.questions = []
+        self.answers = []
 
 
     def __repr__(self):
