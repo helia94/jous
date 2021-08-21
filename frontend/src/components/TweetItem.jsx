@@ -2,6 +2,7 @@ import React from "react";
 import Axios from "axios";
 import styled, { css } from 'styled-components'
 import moment from 'moment'
+import { Link } from "react-router-dom";
 
 
 function deleteTweet(tid) {
@@ -22,7 +23,7 @@ function TweetItem(props) {
             <div className="card">
                 <div className="content">
                 <div class="right floated meta">{moment(props.time).format('d MMM')}</div>
-                <div class="left floated meta">{props.author}</div>
+                <div class="left floated meta">{<Link to={"/user/"+props.author}>{props.author}</Link>}</div>
                     <div className="description">
                         {props.content}
                     </div>
