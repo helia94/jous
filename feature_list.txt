@@ -1,0 +1,17 @@
+extend data model
+adjust current endpoints
+
+add ananomys
+add users tweet page
+add answering
+
+add groups
+add group home
+add post to group
+
+deploy
+
+add follow
+force following 
+add reask 
+
