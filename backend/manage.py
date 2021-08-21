@@ -1,9 +1,12 @@
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
+
 from api import create_app
-from api.models import db
+from api.models import db, UserAuth
+from api.views.main import add_user_auth
 
 # sets up the app
+
 app, jwt = create_app()
 
 manager = Manager(app)

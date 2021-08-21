@@ -17,6 +17,7 @@ from api.core import logger
 dotenv.load_dotenv()
 
 
+
 def get_user_auths():
     users = UserAuth.query.all()
     return [{"id"      : i.id,
@@ -24,6 +25,20 @@ def get_user_auths():
              "email"   : i.email,
              "password": i.pwd}
             for i in users]
+
+
+def get_uid_hannah():
+    users = get_user_auths()
+    hannah_user_auth = list(filter(lambda x: x["username"] == "Hannah", users))
+    if len(hannah_user_auth)==0:
+        userAuth = UserAuth("Hannah", "Hannah@Hannah.com", "Hannah")
+        db.session.add(userAuth)
+        db.session.flush()
+        user = User(userAuth.id, "Hannah")
+        db.session.add(user)
+        db.session.commit()
+        return userAuth.id
+    return hannah_user_auth[0]["id"]
 
 
 def add_user_auth(username, email, pwd):
@@ -35,9 +50,9 @@ def add_user_auth(username, email, pwd):
         user = User(userAuth.id, username)
         db.session.add(user)
         db.session.commit()
-        return True
+        return True, userAuth.id
     except Exception as e:
-        logger.error(traceback.format_exc())
+        logger.error(e)
         return False
 
 
@@ -50,7 +65,7 @@ def remove_user(uid):
         db.session.commit()
         return True
     except Exception as e:
-        logger.error(traceback.format_exc())
+        logger.error(e)
         return False
 
 
@@ -61,7 +76,7 @@ def add_question_helper(uid, content):
         db.session.commit()
         return True
     except Exception as e:
-        logger.error(traceback.format_exc())
+        logger.error(e)
         return False
 
 
@@ -72,7 +87,7 @@ def del_question(tid):
         db.session.commit()
         return True
     except Exception as e:
-        logger.error(traceback.format_exc())
+        logger.error(e)
         return False
 
 
@@ -105,7 +120,7 @@ def login():
             logger.info("email or password not given")
             return jsonify({"error": "Invalid form"})
     except Exception as e:
-        logger.error(traceback.format_exc())
+        logger.error(e)
         return jsonify({"error": e})
 
 
@@ -125,10 +140,13 @@ def register():
         # Email validation check
         if not re.match(r"[\w._]{5,}@\w{3,}\.\w{2,4}", email):
             return jsonify({"error": "Invalid email"})
-        add_user_auth(username, security.enc(email), password)
-        return jsonify({"success": True})
+        success, _ = add_user_auth(username, security.enc(email), password)
+        if success:
+            return jsonify({"success": True})
+        else:
+            return jsonify({"success": False})
     except Exception as e:
-        logger.error(traceback.format_exc())
+        logger.error(e)
         return jsonify({"error": e})
 
 
@@ -155,7 +173,7 @@ def access_logout():
         invalid_token.save()
         return jsonify({"success": True})
     except Exception as e:
-        logger.error(traceback.format_exc())
+        logger.error(e)
         return {"error": e}
 
 
@@ -168,7 +186,7 @@ def refresh_logout():
         invalid_token.save()
         return jsonify({"success": True})
     except Exception as e:
-        logger.error(traceback.format_exc())
+        logger.error(e)
         return {"error": e}
 
 
@@ -190,16 +208,20 @@ def get_questions():
 def add_question():
     try:
         content = request.json["content"]
+        anon = request.json["anon"]
         if not content:
             return jsonify({"error": "Invalid form"})
         uid = get_jwt_identity()
-        success = add_question_helper(uid, content)
+        if anon =="True":
+            success = add_question_helper(get_uid_hannah(), content)
+        else:
+            success = add_question_helper(uid, content)
         if success:
             return jsonify({"success": "true"})
         else:
             return jsonify({"success": "false"})
     except Exception as e:
-        logger.error(traceback.format_exc())
+        logger.error(e)
         return jsonify({"error": e})
 
 
@@ -239,7 +261,7 @@ def change_password():
         db.session.commit()
         return jsonify({"success": True})
     except Exception as e:
-        logger.error(traceback.format_exc())
+        logger.error(e)
         return jsonify({"error": e})
 
 

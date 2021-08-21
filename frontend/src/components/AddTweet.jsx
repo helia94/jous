@@ -26,7 +26,8 @@ class AddTweet extends React.Component {
         }
         console.log("will try to add your tweet")
         Axios.post("/api/addquestion", {
-            content: this.state.content
+            content: this.state.content,
+            anon: this.state.anon
         }, {
             headers: {
                 Authorization: "Bearer " + localStorage.getItem("token")
@@ -53,7 +54,7 @@ class AddTweet extends React.Component {
                 }}>X</span>
                     <h2>Add question</h2>
                 </header>
-                <form className="w3-container" onSubmit={this.submitForm}>
+                <form className="w3-container"  onSubmit={this.submitForm}>
                     {this.state.formErr.length > 0 && <Alert message={this.state.formErr}/>}
                     <div className="w3-section">
                         <p>
@@ -76,7 +77,8 @@ class AddTweet extends React.Component {
                         </p>
 
                         <p>
-                            <button type="submit" className="w3-button w3-blue">Post</button>
+                            <button type="submit" className="w3-button w3-blue" value="post" onClick={() => (this.state.anon = 'False')}>Post</button>
+                            <button type="submit" className="w3-button w3-blue" value="post_anon" onClick={() => (this.state.anon = 'True')}>Post anonymously</button>
                         </p>
                     </div>
                 </form>
