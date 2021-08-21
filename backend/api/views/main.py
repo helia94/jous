@@ -203,6 +203,20 @@ def get_questions():
                     for i in Questions])
 
 
+@main.route("/api/userquestions", methods=["POST"])
+def get_user_questions():
+    username = request.json["username"]
+    Questions = Question.query.filter(Question.user.has(username=username)).all()
+    return jsonify([{"id"          : i.id,
+                     "content"     : i.content,
+                     "username"    : i.user.username,
+                     "time"        : i.time,
+                     "reask_number": i.reask_number,
+                     "like_number" : i.like_number
+                     }
+                    for i in Questions])
+
+
 @main.route("/api/addquestion", methods=["POST"], endpoint="addQuestion")
 @jwt_required()
 def add_question():

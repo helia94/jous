@@ -46,6 +46,7 @@ class MainPage extends React.Component {
                                             id={item.id}
                                             content={item.content}
                                             author={item.username}
+                                            time={item.time}
                                             isOwner={this.state.currentUser.username === item.username}
                                             key={index}
                                         />

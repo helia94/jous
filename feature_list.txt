@@ -1,9 +1,11 @@
-extend data model
-adjust current endpoints
+*extend data model
+*adjust current endpoints
 
-add ananomys
+*add anonymous
 add users tweet page
 add answering
+
+like
 
 add groups
 add group home

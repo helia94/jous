@@ -9,6 +9,7 @@ import {check} from "../login";
 import Logout from "./Logout";
 import UserSettings from "./UserSettings";
 import NotFound from "./NotFound"
+import UserPage from "./UserPage"
 import "./theme.css"
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
                     <Route path="/" exact>
                         {login ? <MainPage/> : <Home/>}
                     </Route>
+                    <Route path="/user/:username" component={UserPage}/>
                     <Route path="/login" exact component={Login}/>
                     <Route path="/register" exact component={Register}/>
                     <Route path="/logout" exact component={Logout}/>

@@ -1,6 +1,8 @@
 import React from "react";
 import Axios from "axios";
 import styled, { css } from 'styled-components'
+import moment from 'moment'
+
 
 function deleteTweet(tid) {
     Axios.delete("/api/deletequestion/" + tid, { headers: { Authorization: "Bearer " + localStorage.getItem("token") } }).then(res => {
@@ -19,7 +21,7 @@ function TweetItem(props) {
         <div className="ui cards">
             <div className="card">
                 <div className="content">
-                <div class="right floated meta">14h</div>
+                <div class="right floated meta">{moment(props.time).format('d MMM')}</div>
                 <div class="left floated meta">{props.author}</div>
                     <div className="description">
                         {props.content}
