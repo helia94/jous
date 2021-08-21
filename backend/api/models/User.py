@@ -1,10 +1,10 @@
-from backend.api.core import Mixin
+from api.core import Mixin
 from .base import db
 
-
 class User(Mixin, db.Model):
+    __tablename__ = 'user'
     uid = db.Column(db.Integer,
-                    db.ForeignKey("userauthentication.id"),
+                    db.ForeignKey("userauth.id"),
                     primary_key=True)
     username = db.Column(db.String(24))
     groups = db.Column(db.ARRAY(db.Integer))
@@ -14,7 +14,8 @@ class User(Mixin, db.Model):
     answers = db.Column(db.ARRAY(db.Integer))
 
 
-    def __init__(self, username):
+    def __init__(self, uid, username):
+        self.uid = uid
         self.username = username
         self.groups = []
         self.followings = []

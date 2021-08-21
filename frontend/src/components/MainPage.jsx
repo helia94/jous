@@ -7,7 +7,7 @@ class MainPage extends React.Component {
     state = { tweets: [], currentUser: { username: "" } }
 
     componentDidMount() {
-        Axios.get("/api/tweets").then(res => {
+        Axios.get("/api/questions").then(res => {
             this.setState({ tweets: res.data.reverse() })
         });
         setTimeout(() => {
@@ -44,10 +44,9 @@ class MainPage extends React.Component {
                                     <div class="event">
                                         <TweetItem
                                             id={item.id}
-                                            title={item.title}
                                             content={item.content}
-                                            author={item.user.username}
-                                            isOwner={this.state.currentUser.username === item.user.username}
+                                            author={item.username}
+                                            isOwner={this.state.currentUser.username === item.username}
                                             key={index}
                                         />
                                     </div>

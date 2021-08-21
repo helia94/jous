@@ -3,7 +3,7 @@ import Axios from "axios";
 import styled, { css } from 'styled-components'
 
 function deleteTweet(tid) {
-    Axios.delete("/api/deletetweet/" + tid, { headers: { Authorization: "Bearer " + localStorage.getItem("token") } }).then(res => {
+    Axios.delete("/api/deletequestion/" + tid, { headers: { Authorization: "Bearer " + localStorage.getItem("token") } }).then(res => {
         console.log(res.data)
         window.location.reload();
     })

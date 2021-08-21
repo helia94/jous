@@ -1,18 +1,24 @@
-from backend.api.core import Mixin
+from datetime import datetime
+
+from api.core import Mixin
 from .base import db
 
 
 class Group(Mixin, db.Model):
+    __tablename__ = 'group'
     id = db.Column(db.Integer,
                    primary_key=True)
     group_name = db.Column(db.String(24))
-    users = db.Column(db.ARRAY(db.Integer), db.ForeignKey("user.id"))
-    questions = db.Column(db.ARRAY(db.Integer), db.ForeignKey("question.id"))
+    users = db.Column(db.ARRAY(db.Integer))
+    time = db.Column(db.TIMESTAMP)
+    questions = db.Column(db.ARRAY(db.Integer))
 
 
     def __init__(self, group_name, users):
         self.group_name = group_name
         self.users = users
+        self.time = datetime.utcnow()
+        self.questions = []
 
 
     def __repr__(self):

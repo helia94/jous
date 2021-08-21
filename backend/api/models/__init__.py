@@ -3,9 +3,13 @@
 # to prevent circular dependencies
 from .Question import Question
 from .UserAuth import UserAuth
+from .User import User
+from .Group import Group
+from .GroupAnswer import GroupAnswer
+from .PublicAnswer import PublicAnswer
 from .InvalidToken import InvalidToken
 from .base import db
 
-__all__ = ["UserAuth", "Question", "InvalidToken", "db"]
+__all__ = ["UserAuth", "Question", "InvalidToken", "User", "Group", "GroupAnswer", "PublicAnswer", "db"]
 
 # You must import all of the new Models you create to this page

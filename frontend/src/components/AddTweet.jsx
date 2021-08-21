@@ -25,8 +25,7 @@ class AddTweet extends React.Component {
             return;
         }
         console.log("will try to add your tweet")
-        Axios.post("/api/addtweet", {
-            title: document.getElementById("title").value,
+        Axios.post("/api/addquestion", {
             content: this.state.content
         }, {
             headers: {
