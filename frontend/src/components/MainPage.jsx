@@ -4,7 +4,7 @@ import Axios from "axios";
 import AddTweet from "./AddTweet";
 
 class MainPage extends React.Component {
-    state = { tweets: [], currentUser: { username: "" } }
+    state = { tweets: [], currentUser: { username: "" }}
 
     componentDidMount() {
         Axios.get("/api/questions").then(res => {

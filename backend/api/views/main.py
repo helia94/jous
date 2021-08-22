@@ -1,5 +1,4 @@
 import re
-import traceback
 
 from flask import Blueprint, request, jsonify
 import dotenv
@@ -9,13 +8,12 @@ from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identi
 main = Blueprint("main", __name__)  # initialize blueprint
 
 import security
-from api.models import db, UserAuth, Question
+from api.models import db, UserAuth, Question, PublicAnswer
 from api.models.User import User
 from api.models.InvalidToken import InvalidToken
 from api.core import logger
 
 dotenv.load_dotenv()
-
 
 
 def get_user_auths():
@@ -30,7 +28,7 @@ def get_user_auths():
 def get_uid_hannah():
     users = get_user_auths()
     hannah_user_auth = list(filter(lambda x: x["username"] == "Hannah", users))
-    if len(hannah_user_auth)==0:
+    if len(hannah_user_auth) == 0:
         userAuth = UserAuth("Hannah", "Hannah@Hannah.com", "Hannah")
         db.session.add(userAuth)
         db.session.flush()
@@ -80,6 +78,17 @@ def add_question_helper(uid, content):
         return False
 
 
+def add_answer_helper(uid, question, content):
+    try:
+        answer = PublicAnswer(uid, question, content)
+        db.session.add(answer)
+        db.session.commit()
+        return True
+    except Exception as e:
+        logger.error(e)
+        return False
+
+
 def del_question(tid):
     try:
         question = Question.query.get(tid)
@@ -89,6 +98,28 @@ def del_question(tid):
     except Exception as e:
         logger.error(e)
         return False
+
+
+def del_answer(tid):
+    try:
+        answer = PublicAnswer.query.get(tid)
+        db.session.delete(answer)
+        db.session.commit()
+        return True
+    except Exception as e:
+        logger.error(e)
+        return False
+
+
+def get_answers(question):
+    answers = PublicAnswer.query.filter(PublicAnswer.question == question).all()
+    return [{"id"         : i.id,
+                     "content"    : i.content,
+                     "username"   : i.user.username,
+                     "time"       : i.time,
+                     "like_number": i.like_number
+                     }
+                    for i in answers]
 
 
 @main.route("/<a>")
@@ -206,7 +237,7 @@ def get_questions():
 @main.route("/api/userquestions", methods=["POST"])
 def get_user_questions():
     username = request.json["username"]
-    Questions = Question.query.filter(Question.user.has(username=username)).all()
+    questions = Question.query.filter(Question.user.has(username=username)).all()
     return jsonify([{"id"          : i.id,
                      "content"     : i.content,
                      "username"    : i.user.username,
@@ -214,7 +245,7 @@ def get_user_questions():
                      "reask_number": i.reask_number,
                      "like_number" : i.like_number
                      }
-                    for i in Questions])
+                    for i in questions])
 
 
 @main.route("/api/addquestion", methods=["POST"], endpoint="addQuestion")
@@ -226,7 +257,7 @@ def add_question():
         if not content:
             return jsonify({"error": "Invalid form"})
         uid = get_jwt_identity()
-        if anon =="True":
+        if anon == "True":
             success = add_question_helper(get_uid_hannah(), content)
         else:
             success = add_question_helper(uid, content)
@@ -239,6 +270,74 @@ def add_question():
         return jsonify({"error": e})
 
 
+@main.route("/api/addanswer", methods=["POST"], endpoint="addanswer")
+@jwt_required()
+def add_answer():
+    try:
+        content = request.json["content"]
+        anon = request.json["anon"]
+        question = request.json["question"]
+        if not content and question:
+            return jsonify({"error": "Invalid form"})
+        uid = get_jwt_identity()
+        if anon == "True":
+            success = add_answer_helper(get_uid_hannah(), question, content)
+        else:
+            success = add_answer_helper(uid, question, content)
+        if success:
+            return jsonify({"success": "true"})
+        else:
+            return jsonify({"success": "false"})
+    except Exception as e:
+        logger.error(e)
+        return jsonify({"error": e})
+
+
+@main.route("/api/useranswers", methods=["POST"])
+def get_user_answers():
+    username = request.json["username"]
+    try:
+        Questions = Question.query.filter(Question.user.has(username=username)).all()
+        return jsonify([{"id"          : i.id,
+                         "content"     : i.content,
+                         "username"    : i.user.username,
+                         "time"        : i.time,
+                         "reask_number": i.reask_number,
+                         "like_number" : i.like_number
+                         }
+                        for i in Questions])
+    except Exception as e:
+        logger.error(e)
+        return jsonify({"success": "false"})
+
+
+@main.route("/api/question/<tid>", methods=["GET"], endpoint="getQuestion")
+@jwt_required()
+def get_question(tid):
+    try:
+        q = Question.query.get(tid)
+        if q is not None:
+            return jsonify({
+                "question": {
+                    "id"           : q.id,
+                    "content"      : q.content,
+                    "username"     : q.user.username,
+                    "time"         : q.time,
+                    "reask_number" : q.reask_number,
+                    "like_number"  : q.like_number,
+                    "tags"         : q.tags,
+                    "likes"        : q.likes,
+                    "reasks"       : q.reasks,
+                },
+                "answers" : get_answers(q.id)
+            })
+        else:
+            return jsonify({"error": "invalid question id"})
+    except Exception as e:
+        logger.error(e)
+        return jsonify({"success": "false"})
+
+
 @main.route("/api/deletequestion/<tid>", methods=["DELETE"], endpoint="deleteQuestion")
 @jwt_required()
 def delete_question(tid):
@@ -247,6 +346,19 @@ def delete_question(tid):
         return jsonify({"success": "true"})
     except:
         return jsonify({"error": "Invalid form"})
+
+
+@main.route("/api/deleteanswer/<tid>", methods=["DELETE"], endpoint="deleteAnswer")
+@jwt_required()
+def delete_answer(tid):
+    try:
+        success = del_answer(tid)
+        if success:
+            return jsonify({"success": "true"})
+        else:
+            return jsonify({"success": "false"})
+    except Exception as e:
+        return jsonify({"error": e})
 
 
 @main.route("/api/getcurrentuser", endpoint="getcurrentuser")
