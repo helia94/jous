@@ -1,26 +1,21 @@
 import React from "react";
-import {Editor} from "@tinymce/tinymce-react/lib/cjs/main/ts";
 import Axios from "axios";
-import Alert from "./Alert";
 
 class AddTweet extends React.Component {
-    state = {content: "<p>I have to edit this!</p>", titleErr: "", contentErr: "", formErr: ""}
+    state = { content: "<p>I have to edit this!</p>", titleErr: "", contentErr: "", formErr: "", anon: "False" }
 
-    handleEditorChange = (content, editor) => {
-        this.setState({content})
+    handleInputChange = (e) => {
+        e.preventDefault();
+        this.setState({
+            content: e.target.value
+        });
     }
 
     submitForm = (e) => {
         e.preventDefault()
         if (this.state.content.length === 0) {
             this.setState(
-                {contentErr: "Add some data to the content!"}
-            )
-            return;
-        }
-        if (document.getElementById("title").value.length === 0) {
-            this.setState(
-                {titleErr: "Add a title!"}
+                { contentErr: "Add some data to the content!" }
             )
             return;
         }
@@ -39,51 +34,35 @@ class AddTweet extends React.Component {
             } else {
                 console.log(res.data.error)
                 this.setState(
-                        {formErr: res.data.error }
-                    )
+                    { formErr: res.data.error }
+                )
             }
         })
     }
 
     render() {
-        return (<div className="w3-modal w3-animate-opacity" id="addTweet">
-            <div className="w3-modal-content w3-card">
-                <header className="w3-container w3-blue">
-                <span className="w3-button w3-display-topright w3-hover-none w3-hover-text-white" onClick={() => {
-                    document.getElementById("addTweet").style.display = "none"
-                }}>X</span>
-                    <h2>Add question</h2>
-                </header>
-                <form className="w3-container"  onSubmit={this.submitForm}>
-                    {this.state.formErr.length > 0 && <Alert message={this.state.formErr}/>}
-                    <div className="w3-section">
-                        <p>
-                            <label htmlFor="title">Title</label>
-                            <input type="text" id="title" className="w3-input w3-border w3-margin-bottom"/>
-                            <small className="w3-text-gray">{this.state.titleErr}</small>
-                        </p>
-                        <p>
-                            <Editor
-                                initialValue=""
-                                init={{
-                                    height: 300,
-                                    menubar: false,
-                                    statusbar: false,
-                                    toolbar_mode: "sliding",
-                                }}
-                                onEditorChange={this.handleEditorChange}
-                            />
-                            <small className="w3-text-gray">{this.state.contentErr}</small>
-                        </p>
-
-                        <p>
-                            <button type="submit" className="w3-button w3-blue" value="post" onClick={() => (this.state.anon = 'False')}>Post</button>
-                            <button type="submit" className="w3-button w3-blue" value="post_anon" onClick={() => (this.state.anon = 'True')}>Post anonymously</button>
-                        </p>
+        return (
+            <div class="ui card" id="addTweet">
+                <form class="ui form" onSubmit={this.submitForm} id="submit-form">
+                    <div class="field" value={this.state.content} onChange={this.handleInputChange}>
+                    <span className="w3-button w3-display-topright w3-hover-none w3-hover-text-white" onClick={() => {
+                        document.getElementById("addTweet").style.display = "none"
+                    }}>X</span>
+                    <div class="ui grey medium header">
+                        Add a question
+                        </div>
+                        <textarea rows="2"></textarea>
                     </div>
+                    <p>
+                        <div class="ui buttons">
+                            <button type="submit" class="ui olive  submit icon button" value="post" onClick={() => (this.state.anon = 'False')}><i class="icon edit"></i></button>
+                            <button type="submit" class="ui olive  submit icon button" onClick={() => (this.state.anon = 'True')}><i class="user secret icon"></i></button>
+                        </div>
+                    </p>
                 </form>
             </div>
-        </div>)
+
+        )
     }
 }
 
