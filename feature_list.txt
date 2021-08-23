@@ -1,15 +1,15 @@
 *extend data model
 *adjust current endpoints
 
-*add anonymous
-add users tweet page
-add answering
-
+*anonymous
+*users tweet page
+*answering
+*question detail page
 like
 
-add groups
-add group home
-add post to group
+groups
+group home
+post to group
 
 deploy
 

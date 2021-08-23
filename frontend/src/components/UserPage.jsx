@@ -7,6 +7,7 @@ class UserPage extends React.Component {
 
     componentDidMount() {
         Axios.post("/api/userquestions", { username: this.props.match.params.username }).then(res => {
+            console.log(res.data.reverse())
             this.setState({ tweets: res.data.reverse() })
         });
         setTimeout(() => {

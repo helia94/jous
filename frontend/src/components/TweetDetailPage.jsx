@@ -4,11 +4,13 @@ import Axios from "axios";
 import moment from 'moment'
 
 class TweetDetailPage extends React.Component {
-    state = { question: {}, answers: [], currentUser: { username: "" } }
+    state = { question: {id:0, content:"",author:"",time:""}, answers: [], currentUser: { username: "" }, newAnswer: "", anon: "False" }
 
     componentDidMount() {
-        Axios.get("/api/question/" + this.props.match.params.question).then(res => {
-            this.setState({ question: res.data.reverse().question, answers: res.data.reverse().answers });
+        console.log(this.props.match.params.question)
+        Axios.get("/api/question/" + this.props.match.params.question, { headers: { Authorization: "Bearer " + localStorage.getItem("token") } }).then(res => {
+            console.log(res.data)
+            this.setState({ question: res.data.question, answers: res.data.answers });
         });
         setTimeout(() => {
             Axios.get("/api/getcurrentuser", {
@@ -19,6 +21,36 @@ class TweetDetailPage extends React.Component {
                 this.setState({ currentUser: res.data })
             })
         }, 500)
+    }
+
+     handleFormSubmit = (e) => {
+        e.preventDefault();
+        Axios.post("/api/addanswer", {
+            content: this.state.newAnswer,
+            anon: this.state.anon,
+            question: this.props.match.params.question
+        }, {
+            headers: {
+                Authorization: "Bearer " + localStorage.getItem("token")
+            }
+        }).then(res => {
+            if (res.data.success) {
+                window.location.reload()
+                console.log("added answer")
+            } else {
+                console.log(res.data.error)
+                this.setState(
+                        {formErr: res.data.error }
+                    )
+            }
+        })
+    }
+
+    handleInputChange = (e) => {
+        e.preventDefault();
+        this.setState({
+            newAnswer: e.target.value
+        });
     }
 
     render() {
@@ -45,21 +77,18 @@ class TweetDetailPage extends React.Component {
                                     <div class="text">
                                         {item.content}
                                     </div>
-                                    <div class="actions">
-                                        <a class="reply">Reply</a>
-                                    </div>
                                 </div>
                             </div>
                         );
                     })}
                 </div>
-                <form class="ui reply form">
-                    <div class="field">
+                <form class="ui reply form" onSubmit={this.handleFormSubmit} id="submit-form">
+                    <div class="field" value={this.state.newAnswer} onChange={this.handleInputChange}>
                         <textarea></textarea>
                     </div>
-                    <div class="ui blue labeled submit icon button">
-                        <i class="icon edit"></i> Add Reply
-                    </div>
+                    <button  class="ui olive labeled submit icon button" type='submit' form="submit-form">
+                        <i class="icon edit"></i> Add answer
+                    </button >
                 </form>
             </React.Fragment>
         );

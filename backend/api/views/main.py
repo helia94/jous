@@ -117,7 +117,6 @@ def get_answers(question):
                      "content"    : i.content,
                      "username"   : i.user.username,
                      "time"       : i.time,
-                     "like_number": i.like_number
                      }
                     for i in answers]
 
@@ -311,7 +310,7 @@ def get_user_answers():
         return jsonify({"success": "false"})
 
 
-@main.route("/api/question/<tid>", methods=["GET"], endpoint="getQuestion")
+@main.route("/api/question/<tid>", methods=["GET"], endpoint="question")
 @jwt_required()
 def get_question(tid):
     try:

@@ -44,8 +44,20 @@ function TweetItem(props) {
                 </ButtonGroup>
                 <ButtonGroup>
                     <div class="ui buttons">
-                        <div className="ui basic grey button" data-tooltip="answer"><i class="reply icon"></i></div>
-                        <div className="ui basic grey button" data-tooltip="answer anonymously"><i class="user secret icon"></i></div>
+                        <div className="ui basic grey button" 
+                        data-tooltip="answer" 
+                        onClick={() => {
+                            document.getElementById("addAnswer").style.display = "block"
+                        }}
+                        ><i class="reply icon"></i>
+                        </div>
+                        <div className="ui basic grey button" 
+                        data-tooltip="answer anonymously"
+                            onClick={() => {
+                            document.getElementById("addAnswer").style.display = "block"
+                        }}>
+                            <i class="user secret icon"></i>
+                            </div>
                     </div>
                     {props.isOwner &&
                         <button className="ui basic red button" onClick={() => deleteTweet(props.id)}><i class="trash alternate outline icon"></i>
