@@ -13,10 +13,16 @@ function deleteTweet(e, tid) {
     })
 }
 
-function routeChange (id) { 
-    let path = "/question/"+id; 
-    window.location.href=path;
-  }
+function routeToQuestion(id) {
+    let path = "/question/" + id;
+    window.location.href = path;
+}
+
+function routeToAuthor(e, author) {
+    e.stopPropagation();
+    let path = "/user/" + author;
+    window.location.href = path;
+}
 
 const ButtonGroup = styled.div`
   display: flex;
@@ -25,10 +31,10 @@ const ButtonGroup = styled.div`
 function TweetItem(props) {
 
     return (
-        <a className="ui card" id={props.id} onClick={()=>routeChange(props.id)}>
+        <a className="ui card" id={props.id} onClick={() => routeToQuestion(props.id)}>
             <div className="content">
                 <div class="right floated meta">{moment(props.time).format('d MMM')}</div>
-                <div class="left floated meta">{<Link to={"/user/" + props.author}>{props.author}</Link>}</div>
+                <div class="left floated meta" onClick={(e) => routeToAuthor(e, props.author)}>{props.author}</div>
                 <div className="description">
                     <p>{props.content}</p>
                 </div>
@@ -50,20 +56,20 @@ function TweetItem(props) {
                 </ButtonGroup>
                 <ButtonGroup>
                     <div class="ui buttons mini">
-                        <div className="ui basic grey button" 
-                        data-tooltip="answer" 
-                        onClick={() => {
-                            document.getElementById("addAnswer").style.display = "block"
-                        }}
+                        <div className="ui basic grey button"
+                            data-tooltip="answer"
+                            onClick={() => {
+                                document.getElementById("addAnswer").style.display = "block"
+                            }}
                         ><i class="reply icon"></i>
                         </div>
-                        <div className="ui basic grey button" 
-                        data-tooltip="answer anonymously"
+                        <div className="ui basic grey button"
+                            data-tooltip="answer anonymously"
                             onClick={() => {
-                            document.getElementById("addAnswer").style.display = "block"
-                        }}>
+                                document.getElementById("addAnswer").style.display = "block"
+                            }}>
                             <i class="user secret icon"></i>
-                            </div>
+                        </div>
                     </div>
                     {props.isOwner &&
                         <button className="mini ui basic red button" onClick={e => deleteTweet(e, props.id)}><i class="trash alternate outline icon"></i>
