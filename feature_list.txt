@@ -10,8 +10,11 @@ like
 groups
 group home
 post to group
+prettify (bring login and register to semantic ui)
 
 deploy
+
+proper feed api
 
 add follow
 force following 
