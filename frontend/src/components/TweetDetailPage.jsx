@@ -56,6 +56,7 @@ class TweetDetailPage extends React.Component {
     render() {
         return (
             <React.Fragment>
+                <div class="ui basic segment" style={{width:400}}>
                 <TweetItem
                     id={this.state.question.id}
                     content={this.state.question.content}
@@ -90,6 +91,7 @@ class TweetDetailPage extends React.Component {
                         <i class="icon edit"></i> Add answer
                     </button >
                 </form>
+                </div>
             </React.Fragment>
         );
     }

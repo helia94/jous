@@ -4,7 +4,7 @@ import Axios from "axios";
 import AddTweet from "./AddTweet";
 
 class MainPage extends React.Component {
-    state = { tweets: [], currentUser: { username: "" }}
+    state = { tweets: [], currentUser: { username: "" } }
 
     componentDidMount() {
         Axios.get("/api/questions").then(res => {
@@ -24,35 +24,36 @@ class MainPage extends React.Component {
     render() {
         return (
             <React.Fragment>
-                <div
-                    className="w3-container w3-jumbo"
-                    style={{ margin: "3rem", paddingLeft: "1rem" }}>
-                    <h1>Questions</h1>
-                    <div className="ui olive button"
-                        onClick={() => {
-                            document.getElementById("addTweet").style.display = "block"
-                        }}>
-                        Add a question
+                <div class="ui basic segment" style={{width:400}}>
+                    <div class="ui right dividing rail">
+                            <div className="ui olive button"
+                                onClick={() => {
+                                    document.getElementById("addTweet").style.display = "block"
+                                }}>
+                                Add a question
+                            </div>
                     </div>
-                </div>
-                <AddTweet />
-                <div class="ui feed">
-                    {this.state.tweets.length === 0 ?
-                        <p className="ui card" >No questions yet! Create
-                            one</p> : this.state.tweets.map((item, index) => {
-                                return (
-                                    <div class="event">
-                                        <TweetItem
-                                            id={item.id}
-                                            content={item.content}
-                                            author={item.username}
-                                            time={item.time}
-                                            isOwner={this.state.currentUser.username === item.username}
-                                            key={index}
-                                        />
-                                    </div>
-                                );
-                            })}
+                    <h1>Home</h1>
+                    <AddTweet />
+                    <div class="ui hidden divider"></div>
+                    <div class="ui feed">
+                        {this.state.tweets.length === 0 ?
+                            <p className="ui card" >No questions yet! Create
+                                one</p> : this.state.tweets.map((item, index) => {
+                                    return (
+                                        <div class="event">
+                                            <TweetItem
+                                                id={item.id}
+                                                content={item.content}
+                                                author={item.username}
+                                                time={item.time}
+                                                isOwner={this.state.currentUser.username === item.username}
+                                                key={index}
+                                            />
+                                        </div>
+                                    );
+                                })}
+                    </div>
                 </div>
             </React.Fragment>
         );
