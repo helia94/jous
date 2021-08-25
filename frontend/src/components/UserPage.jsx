@@ -1,14 +1,15 @@
 import React from "react";
-import TweetItem from "./TweetItem";
 import Axios from "axios";
+import TweetItem from "./TweetItem";
+import AnswerItem from "./AnswerItem";
 
 class UserPage extends React.Component {
-    state = { tweets: [], currentUser: { username: "" }, active: "q" }
+    state = { currentUser: {}, active: "q", isOwener: false, questions: [], answers: [], groups: [] }
 
     componentDidMount() {
         Axios.post("/api/userquestions", { username: this.props.match.params.username }).then(res => {
             console.log(res.data.reverse())
-            this.setState({ tweets: res.data.reverse() })
+            this.setState({ questions: res.data.reverse() })
         });
         setTimeout(() => {
             Axios.get("/api/getcurrentuser", {
@@ -16,17 +17,31 @@ class UserPage extends React.Component {
                     Authorization: `Bearer ${localStorage.getItem("token")}`
                 }
             }).then(res => {
-                this.setState({ currentUser: res.data })
+                this.setState({ currentUser: res.data, 
+                isOwener: res.data.username === this.props.match.params.username})
+                console.log(this.state.isOwener)
             })
         }, 500)
     }
 
     toAnswers = (e) => {
         this.setState({ active: "a" })
+        Axios.post("/api/useranswers", { username: this.props.match.params.username }).then(res => {
+            console.log(res.data)
+            this.setState({ answers: res.data })
+        });
     }
 
-    toQuestion = (e) => {
+    toQuestions = (e) => {
         this.setState({ active: "q" })
+    }
+
+    toGroups = (e) => {
+        this.setState({ active: "g" })
+        Axios.post("/api/usergroups", { username: this.props.match.params.username }).then(res => {
+            console.log(res.data)
+            this.setState({ groups: res.data})
+        });
     }
 
     render() {
@@ -37,14 +52,18 @@ class UserPage extends React.Component {
                         <div class="ui yellow large header">{this.props.match.params.username}</div>
                     </div>
                     <div class="ui tabular menu">
-                        <a class={(this.state.active == "q" ? "active" : "") + " item"}
-                            onClick={this.toQuestion}>Questions</a>
-                        <a class={(this.state.active == "a" ? "active" : "") + " item"}
+                        <a class={(this.state.active === "q" ? "active" : "") + " item"}
+                            onClick={this.toQuestions}>Questions</a>
+                        <a class={(this.state.active === "a" ? "active" : "") + " item"}
                             onClick={this.toAnswers}>Answers</a>
+                        {this.state.isOwener ?
+                            <a class={(this.state.active === "g" ? "active" : "") + " item"}
+                                onClick={this.toGroups}>Groups</a>
+                            : null}
                     </div>
                     <div class="ui feed">
                         {this.state.active == "q" ?
-                            this.state.tweets.map((item, index) => {
+                            this.state.questions.map((item, index) => {
                                 return (
                                     <div class="event">
                                         <TweetItem
@@ -58,7 +77,28 @@ class UserPage extends React.Component {
                                     </div>
                                 );
                             })
-                            : <div class="event"></div>}
+                            : this.state.active === "a"?
+                            this.state.answers.map((item, index) => {
+                                return (
+                                    <div class="event">
+                                        <AnswerItem
+                                            id={item.id}
+                                            content={item.content}
+                                            author={item.username}
+                                            time={item.time}
+                                            isOwner={this.state.currentUser.username === item.username}
+                                            key={index}
+                                        />
+                                    </div>
+                                );
+                            }):
+                            this.state.groups.map((item, index) => {
+                                return (
+                                    <div class="event">
+                                        <p>item.name</p>
+                                    </div>
+                                );
+                            })}
                     </div>
                 </div>
             </React.Fragment>
