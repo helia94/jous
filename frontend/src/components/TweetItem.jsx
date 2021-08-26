@@ -1,83 +1,127 @@
-import React from "react";
+import React, { useState } from "react";
 import Axios from "axios";
 import styled, { css } from 'styled-components'
 import moment from 'moment'
-import { Link } from "react-router-dom";
 
 
-function deleteTweet(e, tid) {
-    e.stopPropagation();
-    Axios.delete("/api/deletequestion/" + tid, { headers: { Authorization: "Bearer " + localStorage.getItem("token") } }).then(res => {
-        console.log(res.data)
-        window.location.reload();
-    })
-}
+class TweetItem extends React.Component {
+    state = { showGroupNameForm: false, groupName: "" }
 
-function routeToQuestion(id) {
-    let path = "/question/" + id;
-    window.location.href = path;
-}
+    deleteTweet = (e) => {
+        Axios.delete("/api/deletequestion/" + this.props.id, { headers: { Authorization: "Bearer " + localStorage.getItem("token") } }).then(res => {
+            window.location.reload();
+        })
+    }
 
-function routeToAuthor(e, author) {
-    e.stopPropagation();
-    let path = "/user/" + author;
-    window.location.href = path;
-}
+    routeToQuestion= (e) => {
+        let path = "/question/" + this.props.id;
+        window.location.href = path;
+    }
 
-const ButtonGroup = styled.div`
-  display: flex;
-`
+    routeToAuthor= (e) => {
+        e.stopPropagation();
+        let path = "/user/" + this.props.author;
+        window.location.href = path;
+    }
 
-function TweetItem(props) {
+    
+    handleInputChange = (e) => {
+        e.preventDefault();
+        this.setState({
+            groupName: e.target.value
+        });
+    }
 
-    return (
-        <a className="ui card" id={props.id} onClick={() => routeToQuestion(props.id)}>
-            <div className="content">
-                <div class="right floated meta">{moment(props.time).format('d MMM')}</div>
-                <div class="left floated meta" onClick={(e) => routeToAuthor(e, props.author)}>{props.author}</div>
-                <div className="description">
-                    <p>{props.content}</p>
+    handleSubmit = (e) =>  {
+        e.preventDefault();
+        Axios.post("/api/addquestiontogroup",
+            {
+                name: this.state.groupName,
+                question: this.props.id
+            },
+            {
+                headers: {
+                    Authorization: "Bearer " + localStorage.getItem("token")
+                }
+            }).then(res => {
+                console.log(res.data.success)
+            })
+        this.setState({
+            showGroupNameForm: false
+        });
+    }
+
+    postToGroupClick = (e) =>  {
+        this.setState({
+            showGroupNameForm: true
+        });
+    }
+
+    render() {
+        return (
+            <a className="ui card" id={this.props.id} >
+                <div className="content" onClick={this.routeToQuestion}>
+                    <div class="right floated meta">{moment(this.props.time).format('d MMM')}</div>
+                    <div class="left floated meta" onClick={this.routeToAuthor}>{this.props.author}</div>
+                    <div className="description">
+                        <p>{this.props.content}</p>
+                    </div>
                 </div>
-            </div>
-            <div className="extra content">
-                <ButtonGroup>
-                    <div class="mini ui labeled button" tabindex="0" data-tooltip="like">
-                        <div class="mini ui button">
-                            <i class="heart icon"></i>
+                <div className="extra content">
+                    <div class="ui buttons">
+                        <div class="mini ui labeled button" tabindex="0" data-tooltip="like">
+                            <div class="mini ui button">
+                                <i class="heart icon"></i>
+                            </div>
+                            <a class="ui basic label">
+                                13
+                            </a>
                         </div>
-                        <a class="ui basic label">
-                            13
-                        </a>
-                    </div>
-                    <div class="ui buttons mini">
-                        <div className="ui basic grey button" data-tooltip="reask"><i class="retweet icon"></i></div>
-                        <div className="ui basic grey button" data-tooltip="post to group"><i class="share icon"></i></div>
-                    </div>
-                </ButtonGroup>
-                <ButtonGroup>
-                    <div class="ui buttons mini">
-                        <div className="ui basic grey button"
-                            data-tooltip="answer"
-                            onClick={() => {
-                                document.getElementById("addAnswer").style.display = "block"
-                            }}
-                        ><i class="reply icon"></i>
-                        </div>
-                        <div className="ui basic grey button"
-                            data-tooltip="answer anonymously"
-                            onClick={() => {
-                                document.getElementById("addAnswer").style.display = "block"
-                            }}>
-                            <i class="user secret icon"></i>
+                        <div class="ui buttons mini">
+                            <div className="ui basic grey button" data-tooltip="reask"><i class="retweet icon"></i></div>
+                            {this.state.showGroupNameForm ? null :
+                                <div className="ui basic grey button"
+                                    data-tooltip="post to group"
+                                    onClick={this.postToGroupClick}>
+                                    <i class="share icon"></i>
+                                </div>}
                         </div>
                     </div>
-                    {props.isOwner &&
-                        <button className="mini ui basic red button" onClick={e => deleteTweet(e, props.id)}><i class="trash alternate outline icon"></i>
-                        </button>}
-                </ButtonGroup>
-            </div>
-        </a >
-    );
+                    <div class="ui buttons">
+                        <div class="ui buttons mini">
+                            <div className="ui basic grey button"
+                                data-tooltip="answer"
+                                onClick={() => {
+                                    document.getElementById("addAnswer").style.display = "block"
+                                }}
+                            ><i class="reply icon"></i>
+                            </div>
+                            <div className="ui basic grey button"
+                                data-tooltip="answer anonymously"
+                                onClick={() => {
+                                    document.getElementById("addAnswer").style.display = "block"
+                                }}>
+                                <i class="user secret icon"></i>
+                            </div>
+                        </div>
+                        {this.props.isOwner &&
+                            <button className="mini ui basic red button" onClick={this.deleteTweet}><i class="trash alternate outline icon"></i>
+                            </button>}
+                    </div>
+                </div>
+                {this.state.showGroupNameForm ?
+                    <form class="ui small form" onSubmit={this.handleSubmit}>
+                        <div class="field" value={this.state.groupName} onChange={this.handleInputChange}>
+                            <label>Group name</label>
+                            <input type="text" name="name" placeholder="OlympusJous"></input>
+                        </div>
+                        <button type="submit" class="ui button" type="submit">add</button>
+                    </form>
+                    : null
+                }
+            </a >
+        );
+    }
 }
 
-export default TweetItem;
+export default TweetItem
