@@ -301,14 +301,18 @@ def add_group():
             return jsonify({"error": "Invalid username, check and try again."})
         if get_uid_hannah() in uids:
             return jsonify({"error": "Hannah does not wanna join."})
+        if Group.query.filter(Group.group_name==name):
+            return jsonify({"error": "Group name has to be unique."})
         if uid not in uids:
             uids.append(uid)
         group = Group(name, uids)
         success = commit_db(group)
         db.session.flush()
         for u in uids:
-            User.query.get(u).groups += [group.id]
+            logger.info(f"user {u} groups:{User.query.get(u).groups}")
+            User.query.get(u).groups = User.query.get(u).groups+[group.id]
         db.session.commit()
+        logger.info(f"user {u} groups after adding:{User.query.get(u).groups}")
         if success:
             return jsonify({"success": "true"})
         else:
@@ -343,6 +347,25 @@ def add_user_to_group():
             return jsonify({"success": "true"})
         else:
             return jsonify({"success": "false"})
+    except Exception as e:
+        logger.error(e)
+        return jsonify({"error": e})
+
+
+@main.route("/api/addquestiontogroup", methods=["POST"], endpoint="addquestiongroup")
+@jwt_required()
+def add_question_to_group():
+    try:
+        name = request.json["name"]
+        question = request.json["question"]
+        if not name and question:
+            return jsonify({"error": "Invalid form"})
+        group = Group.query.filter(Group.group_name == name).first()
+        if not group:
+            return jsonify({"error": "Invalid group name"})
+        group.questions = list(set(group.questions + [question]))
+        db.session.commit()
+        return jsonify({"success": "false"})
     except Exception as e:
         logger.error(e)
         return jsonify({"error": e})
@@ -395,6 +418,7 @@ def get_user_groups():
     uid = get_uid(username)
     try:
         user = User.query.get(uid)
+        logger.info("user.groups:"+str(user.groups))
         groups = Group.query.filter(Group.id.in_(user.groups)).all()
         return jsonify([{"id"        : i.id,
                          "group_name": i.group_name,
