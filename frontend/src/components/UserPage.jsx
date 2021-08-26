@@ -8,7 +8,6 @@ class UserPage extends React.Component {
 
     componentDidMount() {
         Axios.post("/api/userquestions", { username: this.props.match.params.username }).then(res => {
-            console.log(res.data.reverse())
             this.setState({ questions: res.data.reverse() })
         });
         setTimeout(() => {
@@ -17,19 +16,21 @@ class UserPage extends React.Component {
                     Authorization: `Bearer ${localStorage.getItem("token")}`
                 }
             }).then(res => {
-                this.setState({ currentUser: res.data, 
-                isOwener: res.data.username === this.props.match.params.username})
-                console.log(this.state.isOwener)
+                this.setState({
+                    currentUser: res.data,
+                    isOwener: res.data.username === this.props.match.params.username
+                })
             })
         }, 500)
     }
 
     toAnswers = (e) => {
         this.setState({ active: "a" })
-        Axios.post("/api/useranswers", { username: this.props.match.params.username }).then(res => {
-            console.log(res.data)
-            this.setState({ answers: res.data })
-        });
+        if (this.state.answers.length===0) {
+            Axios.post("/api/useranswers", { username: this.props.match.params.username }).then(res => {
+                this.setState({ answers: res.data })
+            });
+        }
     }
 
     toQuestions = (e) => {
@@ -38,10 +39,11 @@ class UserPage extends React.Component {
 
     toGroups = (e) => {
         this.setState({ active: "g" })
-        Axios.post("/api/usergroups", { username: this.props.match.params.username }).then(res => {
-            console.log(res.data)
-            this.setState({ groups: res.data})
-        });
+        if (this.state.groups.length===0) {
+            Axios.post("/api/usergroups", { username: this.props.match.params.username }).then(res => {
+                this.setState({ groups: res.data })
+            });
+        }
     }
 
     render() {
@@ -62,7 +64,7 @@ class UserPage extends React.Component {
                             : null}
                     </div>
                     <div class="ui feed">
-                        {this.state.active == "q" ?
+                        {this.state.active === "q" ?
                             this.state.questions.map((item, index) => {
                                 return (
                                     <div class="event">
@@ -77,28 +79,28 @@ class UserPage extends React.Component {
                                     </div>
                                 );
                             })
-                            : this.state.active === "a"?
-                            this.state.answers.map((item, index) => {
-                                return (
-                                    <div class="event">
-                                        <AnswerItem
-                                            id={item.id}
-                                            content={item.content}
-                                            author={item.username}
-                                            time={item.time}
-                                            isOwner={this.state.currentUser.username === item.username}
-                                            key={index}
-                                        />
-                                    </div>
-                                );
-                            }):
-                            this.state.groups.map((item, index) => {
-                                return (
-                                    <div class="event">
-                                        <p>item.name</p>
-                                    </div>
-                                );
-                            })}
+                            : this.state.active === "a" ?
+                                this.state.answers.map((item, index) => {
+                                    return (
+                                        <div class="event">
+                                            <AnswerItem
+                                                id={item.id}
+                                                content={item.content}
+                                                author={item.username}
+                                                time={item.time}
+                                                isOwner={this.state.currentUser.username === item.username}
+                                                key={index}
+                                            />
+                                        </div>
+                                    );
+                                }) :
+                                this.state.groups.map((item, index) => {
+                                    return (
+                                        <div class="event">
+                                            <p>{item.group_name}</p>
+                                        </div>
+                                    );
+                                })}
                     </div>
                 </div>
             </React.Fragment>
