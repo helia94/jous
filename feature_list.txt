@@ -7,9 +7,9 @@
 *question detail page
 like
 
-groups
+*groups
 group home
-post to group
+*post to group
 prettify (bring login and register to semantic ui)
 
 deploy
