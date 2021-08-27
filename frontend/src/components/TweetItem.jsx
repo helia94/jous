@@ -90,17 +90,10 @@ class TweetItem extends React.Component {
                     <div class="ui buttons">
                         <div class="ui buttons mini">
                             <div className="ui basic grey button"
-                                data-tooltip="answer"
-                                onClick={() => {
-                                    document.getElementById("addAnswer").style.display = "block"
-                                }}
-                            ><i class="reply icon"></i>
+                                data-tooltip="answer"><i class="reply icon"></i>
                             </div>
                             <div className="ui basic grey button"
-                                data-tooltip="answer anonymously"
-                                onClick={() => {
-                                    document.getElementById("addAnswer").style.display = "block"
-                                }}>
+                                data-tooltip="answer anonymously">
                                 <i class="user secret icon"></i>
                             </div>
                         </div>

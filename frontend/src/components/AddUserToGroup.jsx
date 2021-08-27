@@ -13,13 +13,13 @@ class AddUserToGroup extends React.Component {
 
     submitForm = (e) => {
         e.preventDefault()
-        if (this.state.users.length === 0) {
+        if (this.state.user.length === 0) {
             return;
         }
 
-        Axios.post("/api/addusertogroup", {
+        Axios.post("/api/adduserstogroup", {
             name: this.props.name,
-            user: this.state.user
+            users: this.state.user
         }, {
             headers: {
                 Authorization: "Bearer " + localStorage.getItem("token")
@@ -41,7 +41,7 @@ class AddUserToGroup extends React.Component {
         return (
             <div class="ui basic segment" id="addUser">
                 <form class="ui small form"  onSubmit={this.submitForm}>
-                    <h4 class="ui small grey header">Add user to the group</h4>
+                    <h4 class="ui small grey header">Add a member to the group</h4>
                     <div class="field" value={this.state.users} onChange={this.handleInputChangeUser}>
                         <label>Username</label>
                         <input type="text" name="usernames" placeholder="paris"></input>

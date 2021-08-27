@@ -94,13 +94,16 @@ class UserPage extends React.Component {
                                         </div>
                                     );
                                 }) :
-                                this.state.groups.map((item, index) => {
+                                <div class="ui segments">
+                                {this.state.groups.map((item, index) => {
                                     return (
-                                        <div class="event">
-                                            <p>{item.group_name}</p>
+                                        <div class="ui basic segment">
+                                            <a href={`/group/${item.group_name}`} >{item.group_name}</a>
                                         </div>
                                     );
                                 })}
+                                </div>}
+                                
                     </div>
                 </div>
             </React.Fragment>

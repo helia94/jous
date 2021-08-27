@@ -1,14 +1,13 @@
 import React from "react";
-import TweetItem from "./TweetItem";
+import GroupQuestion from "./GroupQuestion";
 import Axios from "axios";
-import AddTweet from "./AddTweet";
 import AddUserToGroup from "./AddUserToGroup";
 
 class GroupHome extends React.Component {
-    state = { questions: [], currentUser: { username: "" } }
+    state = { questions: [], currentUser: { username: "" }, users:[] }
 
     componentDidMount() {
-        Axios.get("/api/groupquestions/"+this.props.match.params.groupname, {
+        Axios.get("/api/groupquestions/" + this.props.match.params.groupname, {
             headers: {
                 Authorization: "Bearer " + localStorage.getItem("token")
             }
@@ -31,16 +30,18 @@ class GroupHome extends React.Component {
             <React.Fragment>
                 <div class="ui basic segment" style={{ width: 400 }}>
                     <div class="ui right dividing rail">
-                        <div className="ui olive button"
-                            onClick={() => {
-                                document.getElementById("addTweet").style.display = "block"
-                            }}>
-                            Add a question
+                        <h4 class="ui small grey header">Members</h4>
+                        <div class="ui list">
+                            {this.state.users.map((item, index) => {
+                                return (
+                                    <div class="item">item</div>
+                                );
+                            })}
                         </div>
-                        <AddUserToGroup />
+                        <AddUserToGroup
+                        name= {this.props.match.params.groupname}/>
                     </div>
-                    <h1>Home</h1>
-                    <AddTweet />
+                    <h1>Home of {this.props.match.params.groupname}</h1>
                     <div class="ui hidden divider"></div>
                     <div class="ui feed">
                         {this.state.questions.length === 0 ?
@@ -48,12 +49,10 @@ class GroupHome extends React.Component {
                                 one</p> : this.state.questions.map((item, index) => {
                                     return (
                                         <div class="event">
-                                            <TweetItem
-                                                id={item.id}
-                                                content={item.content}
-                                                author={item.username}
-                                                time={item.time}
-                                                isOwner={this.state.currentUser.username === item.username}
+                                            <GroupQuestion
+                                                question={item.question}
+                                                answers={item.answers}
+                                                group={this.props.match.params.groupname}
                                                 key={index}
                                             />
                                         </div>
