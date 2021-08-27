@@ -8,7 +8,7 @@ class Group(Mixin, db.Model):
     __tablename__ = 'group'
     id = db.Column(db.Integer,
                    primary_key=True)
-    group_name = db.Column(db.String(24))
+    group_name = db.Column(db.String(24), unique=True)
     users = db.Column(db.ARRAY(db.Integer))
     time = db.Column(db.TIMESTAMP)
     questions = db.Column(db.ARRAY(db.Integer))

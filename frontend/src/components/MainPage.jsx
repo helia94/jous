@@ -2,6 +2,7 @@ import React from "react";
 import TweetItem from "./TweetItem";
 import Axios from "axios";
 import AddTweet from "./AddTweet";
+import AddGroup from "./AddGroup";
 
 class MainPage extends React.Component {
     state = { tweets: [], currentUser: { username: "" } }
@@ -24,14 +25,15 @@ class MainPage extends React.Component {
     render() {
         return (
             <React.Fragment>
-                <div class="ui basic segment" style={{width:400}}>
+                <div class="ui basic segment" style={{ width: 400 }}>
                     <div class="ui right dividing rail">
-                            <div className="ui olive button"
-                                onClick={() => {
-                                    document.getElementById("addTweet").style.display = "block"
-                                }}>
-                                Add a question
-                            </div>
+                        <div className="ui olive button"
+                            onClick={() => {
+                                document.getElementById("addTweet").style.display = "block"
+                            }}>
+                            Add a question
+                        </div>
+                        <AddGroup />
                     </div>
                     <h1>Home</h1>
                     <AddTweet />

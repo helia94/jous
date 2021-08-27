@@ -8,7 +8,7 @@ from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identi
 main = Blueprint("main", __name__)  # initialize blueprint
 
 import security
-from api.models import db, UserAuth, Question, PublicAnswer
+from api.models import db, UserAuth, Question, PublicAnswer, Group, GroupAnswer
 from api.models.User import User
 from api.models.InvalidToken import InvalidToken
 from api.core import logger
@@ -42,7 +42,6 @@ def get_uid_hannah():
 def add_user_auth(username, email, pwd):
     try:
         userAuth = UserAuth(username, email, pwd)
-
         db.session.add(userAuth)
         db.session.flush()
         user = User(userAuth.id, username)
@@ -55,32 +54,26 @@ def add_user_auth(username, email, pwd):
 
 
 def remove_user(uid):
+    userAuth = UserAuth.query.get(uid)
+    user = User.query.get(uid)
+    delete(userAuth)
+    delete(user)
+
+
+def get_username(uid):
+    user = User.query.get(uid)
+    return user.username
+
+
+def get_uid(username):
+    user = User.query.filter(User.username == username).first()
+    if not user:
+        return None
+    return user.uid
+
+
+def commit_db(answer):
     try:
-        userAuth = UserAuth.query.get(uid)
-        user = User.query.get(uid)
-        db.session.delete(userAuth)
-        db.session.delete(user)
-        db.session.commit()
-        return True
-    except Exception as e:
-        logger.error(e)
-        return False
-
-
-def add_question_helper(uid, content):
-    try:
-        question = Question(uid, content, [])
-        db.session.add(question)
-        db.session.commit()
-        return True
-    except Exception as e:
-        logger.error(e)
-        return False
-
-
-def add_answer_helper(uid, question, content):
-    try:
-        answer = PublicAnswer(uid, question, content)
         db.session.add(answer)
         db.session.commit()
         return True
@@ -89,21 +82,9 @@ def add_answer_helper(uid, question, content):
         return False
 
 
-def del_question(tid):
+def delete(object):
     try:
-        question = Question.query.get(tid)
-        db.session.delete(question)
-        db.session.commit()
-        return True
-    except Exception as e:
-        logger.error(e)
-        return False
-
-
-def del_answer(tid):
-    try:
-        answer = PublicAnswer.query.get(tid)
-        db.session.delete(answer)
+        db.session.delete(object)
         db.session.commit()
         return True
     except Exception as e:
@@ -112,13 +93,32 @@ def del_answer(tid):
 
 
 def get_answers(question):
-    answers = PublicAnswer.query.filter(PublicAnswer.question == question).all()
-    return [{"id"         : i.id,
-                     "content"    : i.content,
-                     "username"   : i.user.username,
-                     "time"       : i.time,
-                     }
-                    for i in answers]
+    answers = PublicAnswer.query.filter(PublicAnswer.question == question).order_by(PublicAnswer.id.desc()).limit(20).all()
+    answers = list(reversed(answers))
+    return [{"id"      : i.id,
+             "content" : i.content,
+             "username": i.user.username,
+             "time"    : i.time,
+             }
+            for i in answers]
+
+
+def get_public_answers(question, group):
+    answers = GroupAnswer.query\
+        .filter(GroupAnswer.group == group)\
+        .filter(GroupAnswer.question == question)\
+        .order_by(GroupAnswer.id.desc()).limit(20).all()
+    answers = list(reversed(answers))
+    return format_answers(answers)
+
+
+def format_answers(answers):
+    return [{"id"      : i.id,
+             "content" : i.content,
+             "username": i.user.username,
+             "time"    : i.time,
+             }
+            for i in answers]
 
 
 @main.route("/<a>")
@@ -167,6 +167,8 @@ def register():
         users = get_user_auths()
         if len(list(filter(lambda x: security.dec(x["email"]) == email, users))) == 1:
             return jsonify({"error": "Email is used."})
+        if len(list(filter(lambda x: x["username"] == username, users))) == 1:
+            return jsonify({"error": "Username is used."})
         # Email validation check
         if not re.match(r"[\w._]{5,}@\w{3,}\.\w{2,4}", email):
             return jsonify({"error": "Invalid email"})
@@ -222,21 +224,46 @@ def refresh_logout():
 
 @main.route("/api/questions")
 def get_questions():
-    Questions = Question.query.all()
-    return jsonify([{"id"          : i.id,
-                     "content"     : i.content,
-                     "username"    : i.user.username,
-                     "time"        : i.time,
-                     "reask_number": i.reask_number,
-                     "like_number" : i.like_number
-                     }
-                    for i in Questions])
+    questions = Question.query.all()
+    return jsoniy_questions(questions)
 
 
 @main.route("/api/userquestions", methods=["POST"])
 def get_user_questions():
     username = request.json["username"]
-    questions = Question.query.filter(Question.user.has(username=username)).all()
+    questions = Question.query.filter(Question.user.has(username=username)).order_by(Question.id.desc()).limit(50).all()
+    questions = list(reversed(questions))
+    return jsoniy_questions(questions)
+
+@main.route("/api/groupquestions/<groupname>", methods=["GET"])
+@jwt_required()
+def get_group_questions(groupname):
+    group = get_group_id(groupname)
+    if not group:
+        return jsonify({"error": "Invalid group name"})
+    uid = get_jwt_identity()
+    if uid not in group.users:
+        return jsonify({"error": "Must be a group member"})
+    group_questions = group.questions
+    questions = Question.query.filter(Question.id.in_(group_questions)).order_by(Question.id.desc()).limit(5).all()
+    questions = list(reversed(questions))
+    return jsonify([{"question": {"id"          : i.id,
+                      "content"     : i.content,
+                      "username"    : i.user.username,
+                      "time"        : i.time,
+                      "reask_number": i.reask_number,
+                      "like_number" : i.like_number
+                      },
+                     "answers":get_public_answers(i.id, group.id)}
+                    for i in questions])
+
+
+def get_group_id(groupname):
+    group = Group.query.filter(Group.group_name == groupname).first()
+    return group
+
+
+def jsoniy_questions(questions):
     return jsonify([{"id"          : i.id,
                      "content"     : i.content,
                      "username"    : i.user.username,
@@ -257,9 +284,13 @@ def add_question():
             return jsonify({"error": "Invalid form"})
         uid = get_jwt_identity()
         if anon == "True":
-            success = add_question_helper(get_uid_hannah(), content)
+            uid1 = get_uid_hannah()
+            question = Question(uid1, content, [])
         else:
-            success = add_question_helper(uid, content)
+            question = Question(uid, content, [])
+        success = commit_db(question)
+        User.query.get(uid).questions += [question.id]
+        db.session.commit()
         if success:
             return jsonify({"success": "true"})
         else:
@@ -276,13 +307,134 @@ def add_answer():
         content = request.json["content"]
         anon = request.json["anon"]
         question = request.json["question"]
+        groupname = request.json.get("group")
         if not content and question:
             return jsonify({"error": "Invalid form"})
         uid = get_jwt_identity()
-        if anon == "True":
-            success = add_answer_helper(get_uid_hannah(), question, content)
+        if not groupname:
+            if anon == "True":
+                uid1 = get_uid_hannah()
+                answer = PublicAnswer(uid1, question, content)
+            else:
+                answer = PublicAnswer(uid, question, content)
         else:
-            success = add_answer_helper(uid, question, content)
+            group = get_group_id(groupname)
+            if group:
+                answer = GroupAnswer(uid, group.id, question, content)
+            else:
+                return jsonify({"error": "group name is wrong"})
+        success = commit_db(answer)
+        User.query.get(uid).answers += [answer.id]
+        db.session.commit()
+        if success:
+            return jsonify({"success": "true"})
+        else:
+            return jsonify({"success": "false"})
+    except Exception as e:
+        logger.error(e)
+        return jsonify({"error": e})
+
+
+@main.route("/api/addgroup", methods=["POST"], endpoint="addgroup")
+@jwt_required()
+def add_group():
+    try:
+        name = request.json["name"]
+        users = request.json["users"].split(',')
+        if not name and users:
+            return jsonify({"error": "Invalid form"})
+        uid = get_jwt_identity()
+        uids = [get_uid(user) for user in users]
+        if None in uids:
+            return jsonify({"error": "Invalid username, check and try again."})
+        if get_uid_hannah() in uids:
+            return jsonify({"error": "Hannah does not wanna join."})
+        if Group.query.filter(Group.group_name==name).first():
+            return jsonify({"error": "Group name has to be unique."})
+        if uid not in uids:
+            uids.append(uid)
+        group = Group(name, uids)
+        success = commit_db(group)
+        db.session.flush()
+        for u in uids:
+            logger.info(f"user {u} groups:{User.query.get(u).groups}")
+            User.query.get(u).groups = User.query.get(u).groups+[group.id]
+        db.session.commit()
+        logger.info(f"user {u} groups after adding:{User.query.get(u).groups}")
+        if success:
+            return jsonify({"success": "true"})
+        else:
+            return jsonify({"success": "false"})
+    except Exception as e:
+        logger.error(e)
+        return jsonify({"error": e})
+
+
+@main.route("/api/adduserstogroup", methods=["POST"], endpoint="adduserstogroup")
+@jwt_required()
+def add_user_to_group():
+    try:
+        name = request.json["name"]
+        users = request.json["users"]
+        if not name and users:
+            return jsonify({"error": "Invalid form"})
+        uids = [get_uid(user) for user in users]
+        if None in uids:
+            return jsonify({"error": "Invalid username, check and try again."})
+        if get_uid_hannah() in uids:
+            return jsonify({"error": "Hannah does not wanna join."})
+        group = Group.query.filter(Group.group_name == name).first()
+        if not group:
+            return jsonify({"error": "Invalid group name"})
+        group.users = list(set(group.users + uids))
+        success = commit_db()
+        for u in uids:
+            User.query.get(u).groups += [group.id]
+        db.session.commit()
+        if success:
+            return jsonify({"success": "true"})
+        else:
+            return jsonify({"success": "false"})
+    except Exception as e:
+        logger.error(e)
+        return jsonify({"error": e})
+
+
+@main.route("/api/addquestiontogroup", methods=["POST"], endpoint="addquestiongroup")
+@jwt_required()
+def add_question_to_group():
+    try:
+        name = request.json["name"]
+        question = request.json["question"]
+        if not name and question:
+            return jsonify({"error": "Invalid form"})
+        group = Group.query.filter(Group.group_name == name).first()
+        if not group:
+            return jsonify({"error": "Invalid group name"})
+        group.questions = list(set(group.questions + [question]))
+        db.session.commit()
+        return jsonify({"success": "false"})
+    except Exception as e:
+        logger.error(e)
+        return jsonify({"error": e})
+
+
+@main.route("/api/removeuserfromgroup", methods=["POST"], endpoint="removeuserfromgroup")
+@jwt_required()
+def remove_user_from_group():
+    try:
+        name = request.json["name"]
+        user = request.json["user"]
+        if not name and user:
+            return jsonify({"error": "Invalid form"})
+        uid = get_uid(user)
+        if not uid:
+            return jsonify({"error": "Invalid username, check and try again."})
+        group = Group.query.filter(Group.group_name == name).first()
+        if not group:
+            return jsonify({"error": "Invalid group name"})
+        group.users = group.users.remove(uid)
+        success = commit_db()
         if success:
             return jsonify({"success": "true"})
         else:
@@ -296,15 +448,30 @@ def add_answer():
 def get_user_answers():
     username = request.json["username"]
     try:
-        Questions = Question.query.filter(Question.user.has(username=username)).all()
-        return jsonify([{"id"          : i.id,
-                         "content"     : i.content,
-                         "username"    : i.user.username,
-                         "time"        : i.time,
-                         "reask_number": i.reask_number,
-                         "like_number" : i.like_number
+        answers = PublicAnswer.query.filter(PublicAnswer.user.has(username=username)).order_by(PublicAnswer.id.desc()).limit(50).all()
+        answers = list(reversed(answers))
+        return jsonify([{"id"         : i.id,
+                         "content"    : i.content,
+                         "username"   : i.user.username,
+                         "time"       : i.time,
                          }
-                        for i in Questions])
+                        for i in answers])
+    except Exception as e:
+        logger.error(e)
+        return jsonify({"success": "false"})
+
+
+@main.route("/api/usergroups", methods=["POST"])
+def get_user_groups():
+    username = request.json["username"]
+    uid = get_uid(username)
+    try:
+        user = User.query.get(uid)
+        groups = Group.query.filter(Group.id.in_(user.groups)).all()
+        return jsonify([{"id"        : i.id,
+                         "group_name": i.group_name,
+                         }
+                        for i in groups])
     except Exception as e:
         logger.error(e)
         return jsonify({"success": "false"})
@@ -318,15 +485,15 @@ def get_question(tid):
         if q is not None:
             return jsonify({
                 "question": {
-                    "id"           : q.id,
-                    "content"      : q.content,
-                    "username"     : q.user.username,
-                    "time"         : q.time,
-                    "reask_number" : q.reask_number,
-                    "like_number"  : q.like_number,
-                    "tags"         : q.tags,
-                    "likes"        : q.likes,
-                    "reasks"       : q.reasks,
+                    "id"          : q.id,
+                    "content"     : q.content,
+                    "username"    : q.user.username,
+                    "time"        : q.time,
+                    "reask_number": q.reask_number,
+                    "like_number" : q.like_number,
+                    "tags"        : q.tags,
+                    "likes"       : q.likes,
+                    "reasks"      : q.reasks,
                 },
                 "answers" : get_answers(q.id)
             })
@@ -341,7 +508,8 @@ def get_question(tid):
 @jwt_required()
 def delete_question(tid):
     try:
-        del_question(tid)
+        question = Question.query.get(tid)
+        delete(question)
         return jsonify({"success": "true"})
     except:
         return jsonify({"error": "Invalid form"})
@@ -351,7 +519,22 @@ def delete_question(tid):
 @jwt_required()
 def delete_answer(tid):
     try:
-        success = del_answer(tid)
+        answer = PublicAnswer.query.get(tid)
+        success = delete(answer)
+        if success:
+            return jsonify({"success": "true"})
+        else:
+            return jsonify({"success": "false"})
+    except Exception as e:
+        return jsonify({"error": e})
+
+
+@main.route("/api/deletegroup/<tid>", methods=["DELETE"], endpoint="deletegroup")
+@jwt_required()
+def delete_group(tid):
+    try:
+        group = Group.query.get(tid)
+        success = delete(group)
         if success:
             return jsonify({"success": "true"})
         else:
@@ -395,10 +578,8 @@ def change_password():
 def delete_account():
     try:
         user = User.query.get(get_jwt_identity())
-        questions = Question.query.all()
-        for question in questions:
-            if question.user.username == user.username:
-                del_question(question.id)
+        questions = Question.query.filter(Question.user==user.uid).all()
+        delete(questions)
         remove_user(user.id)
         return jsonify({"success": True})
     except Exception as e:

@@ -10,6 +10,7 @@ import Logout from "./Logout";
 import UserSettings from "./UserSettings";
 import NotFound from "./NotFound"
 import UserPage from "./UserPage"
+import GroupHome from "./GroupHome"
 import TweetDetailPage from "./TweetDetailPage"
 import "./theme.css"
 
@@ -27,6 +28,7 @@ function App() {
                         {login ? <MainPage/> : <Home/>}
                     </Route>
                     <Route path="/user/:username" component={UserPage}/>
+                    <Route path="/group/:groupname" component={GroupHome}/>
                     <Route path="/question/:question" component={TweetDetailPage}/>
                     <Route path="/login" exact component={Login}/>
                     <Route path="/register" exact component={Register}/>
