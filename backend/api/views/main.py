@@ -93,7 +93,26 @@ def delete(object):
 
 
 def get_answers(question):
-    answers = PublicAnswer.query.filter(PublicAnswer.question == question).limit(20).all()
+    answers = PublicAnswer.query.filter(PublicAnswer.question == question).order_by(PublicAnswer.id.desc()).limit(20).all()
+    answers = list(reversed(answers))
+    return [{"id"      : i.id,
+             "content" : i.content,
+             "username": i.user.username,
+             "time"    : i.time,
+             }
+            for i in answers]
+
+
+def get_public_answers(question, group):
+    answers = GroupAnswer.query\
+        .filter(GroupAnswer.group == group)\
+        .filter(GroupAnswer.question == question)\
+        .order_by(GroupAnswer.id.desc()).limit(20).all()
+    answers = list(reversed(answers))
+    return format_answers(answers)
+
+
+def format_answers(answers):
     return [{"id"      : i.id,
              "content" : i.content,
              "username": i.user.username,
@@ -212,21 +231,36 @@ def get_questions():
 @main.route("/api/userquestions", methods=["POST"])
 def get_user_questions():
     username = request.json["username"]
-    questions = Question.query.filter(Question.user.has(username=username)).limit(50).all()
+    questions = Question.query.filter(Question.user.has(username=username)).order_by(Question.id.desc()).limit(50).all()
+    questions = list(reversed(questions))
     return jsoniy_questions(questions)
 
 @main.route("/api/groupquestions/<groupname>", methods=["GET"])
 @jwt_required()
 def get_group_questions(groupname):
-    group = Group.query.filter(Group.group_name==groupname).first()
+    group = get_group_id(groupname)
     if not group:
         return jsonify({"error": "Invalid group name"})
     uid = get_jwt_identity()
     if uid not in group.users:
         return jsonify({"error": "Must be a group member"})
     group_questions = group.questions
-    questions = Question.query.filter(Question.id.in_(group_questions)).limit(50).all()
-    return jsoniy_questions(questions)
+    questions = Question.query.filter(Question.id.in_(group_questions)).order_by(Question.id.desc()).limit(5).all()
+    questions = list(reversed(questions))
+    return jsonify([{"question": {"id"          : i.id,
+                      "content"     : i.content,
+                      "username"    : i.user.username,
+                      "time"        : i.time,
+                      "reask_number": i.reask_number,
+                      "like_number" : i.like_number
+                      },
+                     "answers":get_public_answers(i.id, group.id)}
+                    for i in questions])
+
+
+def get_group_id(groupname):
+    group = Group.query.filter(Group.group_name == groupname).first()
+    return group
 
 
 def jsoniy_questions(questions):
@@ -273,18 +307,22 @@ def add_answer():
         content = request.json["content"]
         anon = request.json["anon"]
         question = request.json["question"]
-        group = request.json.get("group")
+        groupname = request.json.get("group")
         if not content and question:
             return jsonify({"error": "Invalid form"})
         uid = get_jwt_identity()
-        if not group:
+        if not groupname:
             if anon == "True":
                 uid1 = get_uid_hannah()
                 answer = PublicAnswer(uid1, question, content)
             else:
                 answer = PublicAnswer(uid, question, content)
         else:
-            answer = GroupAnswer(uid, group, question, content)
+            group = get_group_id(groupname)
+            if group:
+                answer = GroupAnswer(uid, group.id, question, content)
+            else:
+                return jsonify({"error": "group name is wrong"})
         success = commit_db(answer)
         User.query.get(uid).answers += [answer.id]
         db.session.commit()
@@ -410,7 +448,8 @@ def remove_user_from_group():
 def get_user_answers():
     username = request.json["username"]
     try:
-        answers = PublicAnswer.query.filter(PublicAnswer.user.has(username=username)).limit(50).all()
+        answers = PublicAnswer.query.filter(PublicAnswer.user.has(username=username)).order_by(PublicAnswer.id.desc()).limit(50).all()
+        answers = list(reversed(answers))
         return jsonify([{"id"         : i.id,
                          "content"    : i.content,
                          "username"   : i.user.username,

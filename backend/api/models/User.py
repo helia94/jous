@@ -6,7 +6,7 @@ class User(Mixin, db.Model):
     uid = db.Column(db.Integer,
                     db.ForeignKey("userauth.id"),
                     primary_key=True)
-    username = db.Column(db.String(24))
+    username = db.Column(db.String(24), unique=True)
     groups = db.Column(db.ARRAY(db.Integer))
     followings = db.Column(db.ARRAY(db.Integer))
     followers = db.Column(db.ARRAY(db.Integer))

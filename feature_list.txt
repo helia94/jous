@@ -5,16 +5,19 @@
 *users tweet page
 *answering
 *question detail page
-like
 
 *groups
-group home
+*group home
 *post to group
-prettify (bring login and register to semantic ui)
 
 deploy
 
 proper feed api
+reply button works
+
+prettify (bring login and register to semantic ui)
+like
+
 
 add follow
 force following 
