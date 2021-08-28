@@ -3,9 +3,10 @@ import TweetItem from "./TweetItem";
 import Axios from "axios";
 import AddTweet from "./AddTweet";
 import AddGroup from "./AddGroup";
+import {check} from "../login";
 
 class MainPage extends React.Component {
-    state = { tweets: [], currentUser: { username: "" } }
+    state = { tweets: [], currentUser: { username: "" }, login: false }
 
     componentDidMount() {
         Axios.get("/api/questions").then(res => {
@@ -19,14 +20,18 @@ class MainPage extends React.Component {
             }).then(res => {
                 this.setState({ currentUser: res.data })
             })
-        }, 500)
+        }, 500);
+
+        check().then(r => this.setState({ login: r }));
     }
 
     render() {
         return (
             <React.Fragment>
                 <div class="ui basic segment" style={{ width: 400 }}>
+                {this.state.login ?
                     <div class="ui right dividing rail">
+
                         <div className="ui olive button"
                             onClick={() => {
                                 document.getElementById("addTweet").style.display = "block"
@@ -35,13 +40,16 @@ class MainPage extends React.Component {
                         </div>
                         <AddGroup />
                     </div>
+                    :null}
                     <h1>Home</h1>
-                    <AddTweet />
+                    {this.state.login ?<AddTweet />:null}
                     <div class="ui hidden divider"></div>
                     <div class="ui feed">
                         {this.state.tweets.length === 0 ?
-                            <p className="ui card" >No questions yet! Create
-                                one</p> : this.state.tweets.map((item, index) => {
+                            <p className="ui card" >
+                                {'No questions yet!'+(this.state.login ?' Create one':'')}
+                                </p> 
+                            : this.state.tweets.map((item, index) => {
                                     return (
                                         <div class="event">
                                             <TweetItem

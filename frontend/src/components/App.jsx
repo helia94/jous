@@ -27,6 +27,7 @@ function App() {
                     <Route path="/" exact>
                         {login ? <MainPage/> : <Home/>}
                     </Route>
+                    <Route path="/home" component={MainPage}/>
                     <Route path="/user/:username" component={UserPage}/>
                     <Route path="/group/:groupname" component={GroupHome}/>
                     <Route path="/question/:question" component={TweetDetailPage}/>
