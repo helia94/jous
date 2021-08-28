@@ -1,6 +1,7 @@
-from api.core import Mixin
-from .base import db
 from datetime import datetime
+
+from backend.api.core import Mixin
+from .base import db
 
 class UserAuth(Mixin, db.Model):
     __tablename__ = 'userauth'

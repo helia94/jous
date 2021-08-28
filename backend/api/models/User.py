@@ -1,4 +1,4 @@
-from api.core import Mixin
+from backend.api.core import Mixin
 from .base import db
 
 class User(Mixin, db.Model):

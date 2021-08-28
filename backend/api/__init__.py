@@ -6,8 +6,8 @@ from flask_cors import CORS
 from flask_migrate import Migrate
 from sqlalchemy_utils import create_database, database_exists
 from flask_jwt_extended import JWTManager
-from api.config import config
-from api.core import all_exception_handler
+from backend.api.config import config
+from backend.api.core import all_exception_handler
 
 
 class RequestFormatter(logging.Formatter):
@@ -72,13 +72,13 @@ def create_app(test_config=None):
             create_database(db_url)
 
     # register sqlalchemy to this app
-    from api.models import db
+    from backend.api.models import db
 
     db.init_app(app)  # initialize Flask SQLALchemy with this flask app
     Migrate(app, db)
 
     # import and register blueprints
-    from api.views import main
+    from backend.api.views import main
 
     # why blueprints http://flask.pocoo.org/docs/1.0/blueprints/
     app.register_blueprint(main.api)

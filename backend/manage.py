@@ -1,9 +1,9 @@
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
 
-from api import create_app
-from api.models import db, UserAuth
-from api.views.main import add_user_auth
+from backend.api import create_app
+from backend.api.models import db, UserAuth
+from backend.api.views.main import add_user_auth
 
 # sets up the app
 

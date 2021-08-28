@@ -7,11 +7,11 @@ from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identi
 
 api = Blueprint("main", __name__)  # initialize blueprint
 
-import security
-from api.models import db, UserAuth, Question, PublicAnswer, Group, GroupAnswer
-from api.models.User import User
-from api.models.InvalidToken import InvalidToken
-from api.core import logger
+from backend import security
+from backend.api.models import db, UserAuth, Question, PublicAnswer, Group, GroupAnswer
+from backend.api.models.User import User
+from backend.api.models.InvalidToken import InvalidToken
+from backend.api.core import logger
 
 dotenv.load_dotenv()
 
