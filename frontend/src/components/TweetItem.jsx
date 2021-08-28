@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
 import Axios from "axios";
-import styled, { css } from 'styled-components'
 import moment from 'moment'
 
 
@@ -108,7 +107,7 @@ class TweetItem extends React.Component {
                             <label>Group name</label>
                             <input type="text" name="name" placeholder="OlympusJous"></input>
                         </div>
-                        <button type="submit" class="ui button" type="submit">add</button>
+                        <button type="submit" class="ui button">add</button>
                     </form>
                     : null
                 }

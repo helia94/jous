@@ -59,7 +59,7 @@ class AddGroup extends React.Component {
                         <label>Usernames</label>
                         <input type="text" name="usernames" placeholder="athena,aphrodite,hera"></input>
                     </div>
-                    <button  type="submit" class="ui button" type="submit">add</button>
+                    <button  type="submit" class="ui button">add</button>
                 </form>
             </div>
         )

@@ -71,7 +71,7 @@ class TweetDetailPage extends React.Component {
                             return (
                                 <div class="comment">
                                     <div class="content">
-                                        <a class="author">{item.username}</a>
+                                        <a class="author" href={"/user/" + item.username}>{item.username}</a>
                                         <div class="metadata">
                                             <span class="date">{moment(item.time).format('d MMM')}</span>
                                         </div>
