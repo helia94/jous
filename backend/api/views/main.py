@@ -131,7 +131,7 @@ def react_index():
     return app.send_static_file("index.html")
 
 
-@api.route("/api/login", methods=["POST"])
+@api.route("/login", methods=["POST"])
 def login():
     try:
         emailorusername = request.json["email"]
@@ -154,7 +154,7 @@ def login():
         return jsonify({"error": e})
 
 
-@api.route("/api/register", methods=["POST"])
+@api.route("/register", methods=["POST"])
 def register():
     try:
         email = request.json["email"]
@@ -183,13 +183,13 @@ def register():
         return jsonify({"error": e})
 
 
-@api.route("/api/checkiftokenexpire", methods=["POST"], endpoint="checkiftokenexpire")
+@api.route("/checkiftokenexpire", methods=["POST"], endpoint="checkiftokenexpire")
 @jwt_required()
 def check_if_token_expire():
     return jsonify({"success": True})
 
 
-@api.route("/api/refreshtoken", methods=["POST"], endpoint="refreshtoken")
+@api.route("/refreshtoken", methods=["POST"], endpoint="refreshtoken")
 @jwt_required(refresh=True)
 def refresh():
     identity = get_jwt_identity()
@@ -197,7 +197,7 @@ def refresh():
     return jsonify({"token": token})
 
 
-@api.route("/api/logout/access", methods=["POST"], endpoint="logout_access")
+@api.route("/logout/access", methods=["POST"], endpoint="logout_access")
 @jwt_required()
 def access_logout():
     jti = get_jwt()["jti"]
@@ -210,7 +210,7 @@ def access_logout():
         return {"error": e}
 
 
-@api.route("/api/logout/refresh", methods=["POST"], endpoint="access_refresh")
+@api.route("/logout/refresh", methods=["POST"], endpoint="access_refresh")
 @jwt_required()
 def refresh_logout():
     jti = get_jwt()["jti"]
@@ -223,20 +223,20 @@ def refresh_logout():
         return {"error": e}
 
 
-@api.route("/api/questions")
+@api.route("/questions")
 def get_questions():
     questions = Question.query.all()
     return jsoniy_questions(questions)
 
 
-@api.route("/api/userquestions", methods=["POST"])
+@api.route("/userquestions", methods=["POST"])
 def get_user_questions():
     username = request.json["username"]
     questions = Question.query.filter(Question.user.has(username=username)).order_by(Question.id.desc()).limit(50).all()
     questions = list(reversed(questions))
     return jsoniy_questions(questions)
 
-@api.route("/api/groupquestions/<groupname>", methods=["GET"])
+@api.route("/groupquestions/<groupname>", methods=["GET"])
 @jwt_required()
 def get_group_questions(groupname):
     group = get_group_id(groupname)
@@ -275,7 +275,7 @@ def jsoniy_questions(questions):
                     for i in questions])
 
 
-@api.route("/api/addquestion", methods=["POST"], endpoint="addQuestion")
+@api.route("/addquestion", methods=["POST"], endpoint="addQuestion")
 @jwt_required()
 def add_question():
     try:
@@ -301,7 +301,7 @@ def add_question():
         return jsonify({"error": e})
 
 
-@api.route("/api/addanswer", methods=["POST"], endpoint="addanswer")
+@api.route("/addanswer", methods=["POST"], endpoint="addanswer")
 @jwt_required()
 def add_answer():
     try:
@@ -336,7 +336,7 @@ def add_answer():
         return jsonify({"error": e})
 
 
-@api.route("/api/addgroup", methods=["POST"], endpoint="addgroup")
+@api.route("/addgroup", methods=["POST"], endpoint="addgroup")
 @jwt_required()
 def add_group():
     try:
@@ -371,7 +371,7 @@ def add_group():
         return jsonify({"error": e})
 
 
-@api.route("/api/adduserstogroup", methods=["POST"], endpoint="adduserstogroup")
+@api.route("/adduserstogroup", methods=["POST"], endpoint="adduserstogroup")
 @jwt_required()
 def add_user_to_group():
     try:
@@ -401,7 +401,7 @@ def add_user_to_group():
         return jsonify({"error": e})
 
 
-@api.route("/api/addquestiontogroup", methods=["POST"], endpoint="addquestiongroup")
+@api.route("/addquestiontogroup", methods=["POST"], endpoint="addquestiongroup")
 @jwt_required()
 def add_question_to_group():
     try:
@@ -420,7 +420,7 @@ def add_question_to_group():
         return jsonify({"error": e})
 
 
-@api.route("/api/removeuserfromgroup", methods=["POST"], endpoint="removeuserfromgroup")
+@api.route("/removeuserfromgroup", methods=["POST"], endpoint="removeuserfromgroup")
 @jwt_required()
 def remove_user_from_group():
     try:
@@ -445,7 +445,7 @@ def remove_user_from_group():
         return jsonify({"error": e})
 
 
-@api.route("/api/useranswers", methods=["POST"])
+@api.route("/useranswers", methods=["POST"])
 def get_user_answers():
     username = request.json["username"]
     try:
@@ -462,7 +462,7 @@ def get_user_answers():
         return jsonify({"success": "false"})
 
 
-@api.route("/api/usergroups", methods=["POST"])
+@api.route("/usergroups", methods=["POST"])
 def get_user_groups():
     username = request.json["username"]
     uid = get_uid(username)
@@ -478,7 +478,7 @@ def get_user_groups():
         return jsonify({"success": "false"})
 
 
-@api.route("/api/question/<tid>", methods=["GET"], endpoint="question")
+@api.route("/question/<tid>", methods=["GET"], endpoint="question")
 @jwt_required()
 def get_question(tid):
     try:
@@ -505,7 +505,7 @@ def get_question(tid):
         return jsonify({"success": "false"})
 
 
-@api.route("/api/deletequestion/<tid>", methods=["DELETE"], endpoint="deleteQuestion")
+@api.route("/deletequestion/<tid>", methods=["DELETE"], endpoint="deleteQuestion")
 @jwt_required()
 def delete_question(tid):
     try:
@@ -516,7 +516,7 @@ def delete_question(tid):
         return jsonify({"error": "Invalid form"})
 
 
-@api.route("/api/deleteanswer/<tid>", methods=["DELETE"], endpoint="deleteAnswer")
+@api.route("/deleteanswer/<tid>", methods=["DELETE"], endpoint="deleteAnswer")
 @jwt_required()
 def delete_answer(tid):
     try:
@@ -530,7 +530,7 @@ def delete_answer(tid):
         return jsonify({"error": e})
 
 
-@api.route("/api/deletegroup/<tid>", methods=["DELETE"], endpoint="deletegroup")
+@api.route("/deletegroup/<tid>", methods=["DELETE"], endpoint="deletegroup")
 @jwt_required()
 def delete_group(tid):
     try:
@@ -544,7 +544,7 @@ def delete_group(tid):
         return jsonify({"error": e})
 
 
-@api.route("/api/getcurrentuser", endpoint="getcurrentuser")
+@api.route("/getcurrentuser", endpoint="getcurrentuser")
 @jwt_required()
 def get_current_user():
     uid = get_jwt_identity()
@@ -556,7 +556,7 @@ def get_current_user():
                     "password": user_auth.pwd})
 
 
-@api.route("/api/changepassword", methods=["POST"], endpoint="changepassword")
+@api.route("/changepassword", methods=["POST"], endpoint="changepassword")
 @jwt_required()
 def change_password():
     try:
@@ -574,7 +574,7 @@ def change_password():
         return jsonify({"error": e})
 
 
-@api.route("/api/deleteaccount", methods=["DELETE"], endpoint="deleteaccount")
+@api.route("/deleteaccount", methods=["DELETE"], endpoint="deleteaccount")
 @jwt_required()
 def delete_account():
     try:
