@@ -134,10 +134,10 @@ def react_index():
 @main.route("/api/login", methods=["POST"])
 def login():
     try:
-        email = request.json["email"]
+        emailorusername = request.json["email"]
         password = request.json["pwd"]
-        if email and password:
-            user = list(filter(lambda x: security.dec(x["email"]) == email and security.checkpwd(password, x["password"]), get_user_auths()))
+        if emailorusername and password:
+            user = list(filter(lambda x: (x["email"] == emailorusername or x["username"] == emailorusername) and security.checkpwd(password, x["password"]), get_user_auths()))
             # Check if user exists
             if len(user) == 1:
                 token = create_access_token(identity=user[0]["id"])
@@ -161,18 +161,19 @@ def register():
         email = email.lower()
         password = security.encpwd(request.json["pwd"])
         username = request.json["username"]
-        if not (email and password and username):
+        if not (password and username):
             return jsonify({"error": "Invalid form"})
         # Check to see if user already exists
         users = get_user_auths()
-        if len(list(filter(lambda x: security.dec(x["email"]) == email, users))) == 1:
+        if len(list(filter(lambda x: x["email"] == email, users))) == 1:
             return jsonify({"error": "Email is used."})
         if len(list(filter(lambda x: x["username"] == username, users))) == 1:
             return jsonify({"error": "Username is used."})
         # Email validation check
-        if not re.match(r"[\w._]{5,}@\w{3,}\.\w{2,4}", email):
-            return jsonify({"error": "Invalid email"})
-        success, _ = add_user_auth(username, security.enc(email), password)
+        if email:
+            if not re.match(r"[\w._]{5,}@\w{3,}\.\w{2,4}", email):
+                return jsonify({"error": "Invalid email"})
+        success, _ = add_user_auth(username, email, password)
         if success:
             return jsonify({"success": True})
         else:
