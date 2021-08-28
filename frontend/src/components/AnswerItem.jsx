@@ -1,8 +1,6 @@
 import React from "react";
 import Axios from "axios";
-import styled, { css } from 'styled-components'
 import moment from 'moment'
-import { Link } from "react-router-dom";
 
 
 function deleteAnswer(e, tid) {
@@ -18,10 +16,6 @@ function routeToAuthor(e, author) {
     let path = "/user/" + author;
     window.location.href = path;
 }
-
-const ButtonGroup = styled.div`
-  display: flex;
-`
 
 function AnswerItem(props) {
 

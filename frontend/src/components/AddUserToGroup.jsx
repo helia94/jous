@@ -46,7 +46,7 @@ class AddUserToGroup extends React.Component {
                         <label>Username</label>
                         <input type="text" name="usernames" placeholder="paris"></input>
                     </div>
-                    <button  type="submit" class="ui button" type="submit">add</button>
+                    <button  type="submit" class="ui button">add</button>
                 </form>
             </div>
         )

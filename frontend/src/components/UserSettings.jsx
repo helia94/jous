@@ -91,7 +91,7 @@ class UserSettings extends React.Component {
                             </p>
                         </form>
                     </div>}
-                    {this.state.currentSetting == "del" && <div style={{margin: "1rem"}}>
+                    {this.state.currentSetting === "del" && <div style={{margin: "1rem"}}>
                         <h1 className="w3-xxlarge w3-text-red">Delete account</h1>
                         <hr className="w3-border-top w3-border-black"/>
                         <button className="w3-button w3-blue"

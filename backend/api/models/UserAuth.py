@@ -8,7 +8,7 @@ class UserAuth(Mixin, db.Model):
                    unique=True,
                    primary_key=True)
     username = db.Column(db.String(24), unique=True)
-    email = db.Column(db.String(256), unique=True)
+    email = db.Column(db.String(256))
     pwd = db.Column(db.String(256))
     time = db.Column(db.TIMESTAMP)
 

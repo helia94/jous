@@ -1,6 +1,12 @@
 import React from "react";
 
 function Home() {
+
+    const routeToHome = (e) => {
+        let path = "/home"
+        window.location.href = path;
+    }
+    
     return (
         <React.Fragment>
             <div className="ui center aligned yellow inverted segment">
@@ -24,6 +30,10 @@ function Home() {
                     that can be asked again and again, with new audiance. Like
                     <i>"What do you often deny yourself?"</i>
                 </p>
+                <div className="ui yellow button"
+                            onClick={routeToHome}>
+                            Go to questions
+                        </div>
             </div>
         </React.Fragment>
     );

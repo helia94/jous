@@ -1,5 +1,4 @@
 import React, {Component} from "react";
-import axios from "axios";
 import Alert from "./Alert";
 import {login, check} from "../login";
 
@@ -40,7 +39,7 @@ class Login extends Component {
                         <p>
                             <label htmlFor="email">Email</label>
                             <input
-                                type="email"
+                                type="text"
                                 className="w3-input w3-border"
                                 id="email"
                             />
