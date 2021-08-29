@@ -81,7 +81,7 @@ def create_app(test_config=None):
     from backend.api.views import main
 
     # why blueprints http://flask.pocoo.org/docs/1.0/blueprints/
-    app.register_blueprint(main.api)
+    app.register_blueprint(main.api, url_prefix="/api")
 
     # register error Handler
     app.register_error_handler(Exception, all_exception_handler)

@@ -180,7 +180,7 @@ def register():
             return jsonify({"success": False})
     except Exception as e:
         logger.error(e)
-        return jsonify({"error": e})
+        return jsonify({"error": str(e)})
 
 
 @api.route("/checkiftokenexpire", methods=["POST"], endpoint="checkiftokenexpire")
