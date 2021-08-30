@@ -6,11 +6,14 @@ client = Blueprint("client", __name__, static_folder=path.join("frontend", "buil
 
 @client.route("/", defaults={"file_name": ""})
 @client.route("/<string:file_name>")
-def serve(file_name):
+@client.route("/<string:file_name>/<string:id>")
+def serve(file_name, id):
+    print(id)
     if file_name != "" and path.exists(path.join(client.static_folder, file_name)):
         return send_from_directory(client.static_folder, file_name)
     else:
         return send_from_directory(client.static_folder, "index.html")
+
 
 
 @client.route("/static/<path:path_to_file>/<string:file_name>")
