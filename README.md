@@ -1,5 +1,4 @@
 # Twitter-like web app with postgres-flask-react deployed with Heroku 
-see live at jous.app
 ---
 
 ## run locally 
