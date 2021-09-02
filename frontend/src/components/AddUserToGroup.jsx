@@ -27,7 +27,10 @@ class AddUserToGroup extends React.Component {
         }).then(res => {
             if (res.data.success) {
                 window.location.reload()
-                console.log("added user to group")
+                console.log("added user to group")                    
+                this.setState(
+                    { err: res.data.error }
+                )
             } else {
                 console.log(res.data.error)
                 this.setState(

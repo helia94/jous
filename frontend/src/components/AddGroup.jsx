@@ -1,8 +1,9 @@
 import React from "react";
 import Axios from "axios";
+import Alert from "./Alert";
 
 class AddGroup extends React.Component {
-    state = { users: [], name: "" }
+    state = { users: [], name: "", err:"" }
 
     handleInputChangeName = (e) => {
         e.preventDefault();
@@ -40,7 +41,7 @@ class AddGroup extends React.Component {
             } else {
                 console.log(res.data.error)
                 this.setState(
-                    { formErr: res.data.error }
+                    { err: res.data.error }
                 )
             }
         })
@@ -49,7 +50,12 @@ class AddGroup extends React.Component {
     render() {
         return (
             <div class="ui basic segment" id="addGroup">
-                <form class="ui small form"  onSubmit={this.submitForm}>
+                {this.state.err.length > 0 && (
+                    <Alert
+                        message={`(${this.state.err})`}
+                    />
+                )}
+                <form class="ui small form" onSubmit={this.submitForm}>
                     <h4 class="ui small grey header">Make a group</h4>
                     <div class="field" value={this.state.name} onChange={this.handleInputChangeName}>
                         <label>Name</label>
@@ -59,7 +65,7 @@ class AddGroup extends React.Component {
                         <label>Usernames</label>
                         <input type="text" name="usernames" placeholder="athena,aphrodite,hera"></input>
                     </div>
-                    <button  type="submit" class="ui button">add</button>
+                    <button type="submit" class="ui button">add</button>
                 </form>
             </div>
         )

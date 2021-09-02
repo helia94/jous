@@ -1,10 +1,11 @@
 import React from "react";
 import Axios from "axios";
 import moment from 'moment'
+import Alert from "./Alert";
 
 
 class TweetItem extends React.Component {
-    state = { showGroupNameForm: false, groupName: "" }
+    state = { showGroupNameForm: false, groupName: "", err:"" }
 
     deleteTweet = (e) => {
         Axios.delete("/api/deletequestion/" + this.props.id, { headers: { Authorization: "Bearer " + localStorage.getItem("token") } }).then(res => {
@@ -43,7 +44,17 @@ class TweetItem extends React.Component {
                     Authorization: "Bearer " + localStorage.getItem("token")
                 }
             }).then(res => {
-                console.log(res.data.success)
+                if (res.data.success) {
+                    console.log("added to group")
+                    this.setState(
+                        { err: ""}
+                    )
+                } else {
+                    console.log(res.data.error)
+                    this.setState(
+                        { err: res.data.error }
+                    )
+                }
             })
         this.setState({
             showGroupNameForm: false
@@ -101,6 +112,11 @@ class TweetItem extends React.Component {
                             </button>}
                     </div>
                 </div>
+                {this.state.err.length > 0 && (
+                                    <Alert
+                                        message={`(${this.state.err})`}
+                                    />
+                                )}
                 {this.state.showGroupNameForm ?
                     <form class="ui small form" onSubmit={this.handleSubmit}>
                         <div class="field" value={this.state.groupName} onChange={this.handleInputChange}>

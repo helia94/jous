@@ -1,8 +1,9 @@
 import React from "react";
 import Axios from "axios";
+import Alert from "./Alert";
 
 class AddTweet extends React.Component {
-    state = { content: "", titleErr: "", contentErr: "", formErr: "", anon: "False" }
+    state = { content: "", contentErr: "", formErr: "", anon: "False" }
 
     handleInputChange = (e) => {
         e.preventDefault();
@@ -43,20 +44,30 @@ class AddTweet extends React.Component {
     render() {
         return (
             <div class="ui card" id="addTweet">
+                {this.state.contentErr.length > 0 && (
+                    <Alert
+                        message={`Chech the question and try again! (${this.state.contentErr})`}
+                    />
+                )}
+                {this.state.formErr.length > 0 && (
+                    <Alert
+                        message={`Could not add the question! (${this.formErr.err})`}
+                    />
+                )}
                 <form class="ui form" onSubmit={this.submitForm} id="submit-form">
                     <div class="field" value={this.state.content} onChange={this.handleInputChange}>
-                    <span className="w3-button w3-display-topright w3-hover-none w3-hover-text-white" onClick={() => {
-                        document.getElementById("addTweet").style.display = "none"
-                    }}>X</span>
-                    <div class="ui grey medium header">
-                        Add a question
+                        <span className="w3-button w3-display-topright w3-hover-none w3-hover-text-white" onClick={() => {
+                            document.getElementById("addTweet").style.display = "none"
+                        }}>X</span>
+                        <div class="ui grey medium header">
+                            Add a question
                         </div>
                         <textarea rows="2"></textarea>
                     </div>
                     <p>
                         <div class="ui buttons">
-                            <button type="submit" class="ui olive  submit icon button" value="post" onClick={() => (this.setState({anon : 'False'}))}><i class="icon edit"></i></button>
-                            <button type="submit" class="ui olive  submit icon button" onClick={() => (this.setState({anon : 'True'}))}><i class="user secret icon"></i></button>
+                            <button type="submit" class="ui olive  submit icon button" value="post" onClick={() => (this.setState({ anon: 'False' }))}><i class="icon edit"></i></button>
+                            <button type="submit" class="ui olive  submit icon button" onClick={() => (this.setState({ anon: 'True' }))}><i class="user secret icon"></i></button>
                         </div>
                     </p>
                 </form>
