@@ -246,7 +246,7 @@ def get_user_questions(offset):
 @api.route("/groupquestions/<groupname>/<offset>", methods=["GET"])
 @jwt_required()
 def get_group_questions(groupname, offset):
-    pageSize = 5
+    pageSize = 20
     group = get_group_id(groupname)
     if not group:
         return jsonify({"error": "Invalid group name"})
