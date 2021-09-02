@@ -26,18 +26,20 @@ class MainPage extends React.Component {
         check().then(r => this.setState({ login: r }));
     }
 
-    fetchMoreData = (e) => {
-        console.log("fetch more data called")
+    fetchMoreData = () => {
+        console.log("page", this.state.page)
         Axios.get("/api/questions/" + this.state.page).then(res => {
             this.setState({
-                tweets: this.state.items.concat(res.data.reverse()),
+                tweets: this.state.tweets.concat(res.data.reverse()),
                 page: this.state.page + 1
             });
+            if (res.data.length === 0) {
+                this.setState({ hasMore: false })
+            }
         });
-        console.log("page: " + this.state.page)
     }
 
-    refresh = (e) => {
+    refresh = () => {
         window.location.reload()
     }
 
@@ -60,51 +62,36 @@ class MainPage extends React.Component {
                     <h1>Home</h1>
                     {this.state.login ? <AddTweet /> : null}
                     <div class="ui hidden divider"></div>
-                    <div class="ui feed">
-                        {this.state.tweets.length === 0 ?
-                            <p className="ui card" >
-                                {'No questions yet!' + (this.state.login ? ' Create one' : '')}
-                            </p>
-                            :
-                            <div
-                                id="scrollableDiv"
-                                style={{
-                                    height: 600,
-                                    overflow: 'auto',
-                                    display: 'flex',
-                                    flexDirection: 'column-reverse',
-                                }}
-                            >
-                                <InfiniteScroll
-                                    dataLength={this.state.tweets.length}
-                                    next={this.fetchMoreData}
-                                    hasMore={this.state.hasMore}
-                                    loader={<h4>Loading...</h4>}
-                                    endMessage={
-                                        <p style={{ textAlign: 'center' }}>
-                                            <b>The end.</b>
-                                        </p>
-                                    }
-                                >
-                                    {this.state.tweets.map((item, index) => {
-                                        return (
-                                            <div class="event">
-                                                <TweetItem
-                                                    id={item.id}
-                                                    content={item.content}
-                                                    author={item.username}
-                                                    time={item.time}
-                                                    isOwner={this.state.currentUser.username === item.username}
-                                                    key={index}
-                                                />
-                                            </div>
-                                        );
-                                    })}
-                                </InfiniteScroll>
-                            </div>
-                        }
-
-                    </div>
+                    {
+                        <InfiniteScroll
+                            dataLength={this.state.tweets.length}
+                            next={this.fetchMoreData}
+                            hasMore={this.state.hasMore}
+                            loader={<h4>Loading...</h4>}
+                            endMessage={
+                                <p style={{ textAlign: 'center' }}>
+                                    <b>The end.</b>
+                                </p>
+                            }
+                            useWindow={false}
+                            height={600}
+                        >
+                            {this.state.tweets.map((item, index) => {
+                                return (
+                                    <div class="event">
+                                        <TweetItem
+                                            id={item.id}
+                                            content={item.content}
+                                            author={item.username}
+                                            time={item.time}
+                                            isOwner={this.state.currentUser.username === item.username}
+                                            key={index}
+                                        />
+                                    </div>
+                                );
+                            })}
+                        </InfiniteScroll>
+                    }
                 </div>
             </React.Fragment>
         );
