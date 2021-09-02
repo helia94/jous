@@ -2,7 +2,7 @@ import React from "react";
 import Axios from "axios";
 
 class AddTweet extends React.Component {
-    state = { content: "<p>I have to edit this!</p>", titleErr: "", contentErr: "", formErr: "", anon: "False" }
+    state = { content: "", titleErr: "", contentErr: "", formErr: "", anon: "False" }
 
     handleInputChange = (e) => {
         e.preventDefault();

@@ -104,9 +104,9 @@ def get_answers(question):
 
 
 def get_public_answers(question, group):
-    answers = GroupAnswer.query\
-        .filter(GroupAnswer.group == group)\
-        .filter(GroupAnswer.question == question)\
+    answers = GroupAnswer.query \
+        .filter(GroupAnswer.group == group) \
+        .filter(GroupAnswer.question == question) \
         .order_by(GroupAnswer.id.desc()).limit(20).all()
     answers = list(reversed(answers))
     return format_answers(answers)
@@ -222,23 +222,31 @@ def refresh_logout():
         logger.error(e)
         return {"error": e}
 
+@api.route("/questions/<offset>")
+@api.route("/questions", defaults={"offset": "0"})
+def get_questions(offset):
+    pageSize = 20
+    questions = Question.query.order_by(Question.id.desc())\
+        .limit(pageSize).offset(pageSize * int(offset)).all()
+    questions = list(reversed(questions))
+    return jsoniy_questions((questions))
 
-@api.route("/questions")
-def get_questions():
-    questions = Question.query.all()
-    return jsoniy_questions(questions)
-
-
-@api.route("/userquestions", methods=["POST"])
-def get_user_questions():
+@api.route("/userquestions/<offset>", methods=["POST"])
+@api.route("/userquestions", methods=["POST"], defaults={"offset": "0"})
+def get_user_questions(offset):
+    pageSize = 10
     username = request.json["username"]
-    questions = Question.query.filter(Question.user.has(username=username)).order_by(Question.id.desc()).limit(50).all()
+    questions = Question.query.filter(Question.user.has(username=username))\
+        .order_by(Question.id.desc())\
+        .limit(pageSize).offset(pageSize * offset).all()
     questions = list(reversed(questions))
     return jsoniy_questions(questions)
 
-@api.route("/groupquestions/<groupname>", methods=["GET"])
+@api.route("/groupquestions/<groupname>", methods=["GET"], defaults={"offset": "0"})
+@api.route("/groupquestions/<groupname>/<offset>", methods=["GET"])
 @jwt_required()
-def get_group_questions(groupname):
+def get_group_questions(groupname, offset):
+    pageSize = 20
     group = get_group_id(groupname)
     if not group:
         return jsonify({"error": "Invalid group name"})
@@ -246,16 +254,18 @@ def get_group_questions(groupname):
     if uid not in group.users:
         return jsonify({"error": "Must be a group member"})
     group_questions = group.questions
-    questions = Question.query.filter(Question.id.in_(group_questions)).order_by(Question.id.desc()).limit(5).all()
+    questions = Question.query.filter(Question.id.in_(group_questions))\
+        .order_by(Question.id.desc())\
+        .limit(pageSize).offset(pageSize * offset).all()
     questions = list(reversed(questions))
     return jsonify([{"question": {"id"          : i.id,
-                      "content"     : i.content,
-                      "username"    : i.user.username,
-                      "time"        : i.time,
-                      "reask_number": i.reask_number,
-                      "like_number" : i.like_number
-                      },
-                     "answers":get_public_answers(i.id, group.id)}
+                                  "content"     : i.content,
+                                  "username"    : i.user.username,
+                                  "time"        : i.time,
+                                  "reask_number": i.reask_number,
+                                  "like_number" : i.like_number
+                                  },
+                     "answers" : get_public_answers(i.id, group.id)}
                     for i in questions])
 
 
@@ -350,7 +360,7 @@ def add_group():
             return jsonify({"error": "Invalid username, check and try again."})
         if get_uid_hannah() in uids:
             return jsonify({"error": "Hannah does not wanna join."})
-        if Group.query.filter(Group.group_name==name).first():
+        if Group.query.filter(Group.group_name == name).first():
             return jsonify({"error": "Group name has to be unique."})
         if uid not in uids:
             uids.append(uid)
@@ -359,7 +369,7 @@ def add_group():
         db.session.flush()
         for u in uids:
             logger.info(f"user {u} groups:{User.query.get(u).groups}")
-            User.query.get(u).groups = User.query.get(u).groups+[group.id]
+            User.query.get(u).groups = User.query.get(u).groups + [group.id]
         db.session.commit()
         logger.info(f"user {u} groups after adding:{User.query.get(u).groups}")
         if success:
@@ -451,10 +461,10 @@ def get_user_answers():
     try:
         answers = PublicAnswer.query.filter(PublicAnswer.user.has(username=username)).order_by(PublicAnswer.id.desc()).limit(50).all()
         answers = list(reversed(answers))
-        return jsonify([{"id"         : i.id,
-                         "content"    : i.content,
-                         "username"   : i.user.username,
-                         "time"       : i.time,
+        return jsonify([{"id"      : i.id,
+                         "content" : i.content,
+                         "username": i.user.username,
+                         "time"    : i.time,
                          }
                         for i in answers])
     except Exception as e:
@@ -579,7 +589,7 @@ def change_password():
 def delete_account():
     try:
         user = User.query.get(get_jwt_identity())
-        questions = Question.query.filter(Question.user==user.uid).all()
+        questions = Question.query.filter(Question.user == user.uid).all()
         delete(questions)
         remove_user(user.id)
         return jsonify({"success": True})

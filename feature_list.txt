@@ -11,18 +11,17 @@
 *post to group
 
 *choose better security
-handle app secret
-dockerize frontend
-deploy
+*handle app secret
+*deploy
 
 proper feed api
 reply button works
-
+fix time display
 prettify (bring login and register to semantic ui)
 like
 
-
+better readme
 add follow
 force following 
 add reask 
-
+add pole
