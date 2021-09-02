@@ -11,7 +11,8 @@ class MainPage extends React.Component {
 
     componentDidMount() {
         Axios.get("/api/questions/0").then(res => {
-            this.setState({ tweets: res.data.reverse() })
+            this.setState({ tweets: res.data.reverse(),
+                page: this.state.page + 1 })
         });
         setTimeout(() => {
             Axios.get("/api/getcurrentuser", {
