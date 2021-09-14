@@ -4,7 +4,7 @@ import moment from 'moment'
 
 
 class TweetItem extends React.Component {
-    state = { showGroupNameForm: false, groupName: "" }
+    state = { showGroupNameForm: false, groupName: "", like: 0 }
 
     deleteTweet = (e) => {
         Axios.delete("/api/deletequestion/" + this.props.id, { headers: { Authorization: "Bearer " + localStorage.getItem("token") } }).then(res => {
@@ -12,18 +12,26 @@ class TweetItem extends React.Component {
         })
     }
 
-    routeToQuestion= (e) => {
+    likeTweet = (e) => {
+        Axios.post("/api/likequestion/" + this.props.id, { headers: { Authorization: "Bearer " + localStorage.getItem("token") } }).then(res => {
+            if (res.data.success) {
+                this.setState({ like: this.state.like += 1 })
+            }
+        })
+    }
+
+    routeToQuestion = (e) => {
         let path = "/question/" + this.props.id;
         window.location.href = path;
     }
 
-    routeToAuthor= (e) => {
+    routeToAuthor = (e) => {
         e.stopPropagation();
         let path = "/user/" + this.props.author;
         window.location.href = path;
     }
 
-    
+
     handleInputChange = (e) => {
         e.preventDefault();
         this.setState({
@@ -31,7 +39,7 @@ class TweetItem extends React.Component {
         });
     }
 
-    handleSubmit = (e) =>  {
+    handleSubmit = (e) => {
         e.preventDefault();
         Axios.post("/api/addquestiontogroup",
             {
@@ -50,7 +58,7 @@ class TweetItem extends React.Component {
         });
     }
 
-    postToGroupClick = (e) =>  {
+    postToGroupClick = (e) => {
         this.setState({
             showGroupNameForm: true
         });
@@ -69,11 +77,11 @@ class TweetItem extends React.Component {
                 <div className="extra content">
                     <div class="ui buttons">
                         <div class="mini ui labeled button" tabindex="0" data-tooltip="like">
-                            <div class="mini ui button">
+                            <div class="mini ui button" onClick={this.likeTweet}>
                                 <i class="heart icon"></i>
                             </div>
                             <a class="ui basic label">
-                                13
+                                {this.props.likes + this.state.like}
                             </a>
                         </div>
                         <div class="ui buttons mini">

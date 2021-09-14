@@ -5,14 +5,19 @@ import AddTweet from "./AddTweet";
 import AddGroup from "./AddGroup";
 import { check } from "../login";
 import InfiniteScroll from 'react-infinite-scroll-component';
+import moment from 'moment'
 
 class MainPage extends React.Component {
     state = { tweets: [], currentUser: { username: "" }, login: false, hasMore: true, page: 0 }
 
     componentDidMount() {
         Axios.get("/api/questions/0").then(res => {
-            this.setState({ tweets: res.data.reverse(),
-                page: this.state.page + 1 })
+            this.setState({
+                tweets: res.data.reverse(),
+                page: this.state.page + 1
+            })
+            console.log(this.state.tweets[0].time)
+            console.log(moment(this.state.tweets[0].time, 'ddd, DD MMM YYYY h:mm:ss').format('DD MMM'))
         });
         setTimeout(() => {
             Axios.get("/api/getcurrentuser", {
@@ -85,6 +90,7 @@ class MainPage extends React.Component {
                                             content={item.content}
                                             author={item.username}
                                             time={item.time}
+                                            likes={item.like_number}
                                             isOwner={this.state.currentUser.username === item.username}
                                             key={index}
                                         />

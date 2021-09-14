@@ -43,7 +43,7 @@ class Register extends Component {
                     )}
                     <form onSubmit={this.register}>
                         <p>
-                            <label htmlFor="email">Email (optionl for resetting password)</label>
+                            <label htmlFor="email">Email (optional for resetting password)</label>
                             <input
                                 type="email"
                                 class="w3-input w3-border"

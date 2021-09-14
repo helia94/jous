@@ -62,6 +62,7 @@ class TweetDetailPage extends React.Component {
                         content={this.state.question.content}
                         author={this.state.question.username}
                         time={this.state.question.time}
+                        likes={this.state.question.like_number}
                         isOwner={this.state.currentUser.username === this.state.question.username}
                         key={0}
                     />
