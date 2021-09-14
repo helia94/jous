@@ -526,6 +526,16 @@ def delete_question(tid):
         return jsonify({"error": "Invalid form"})
 
 
+@api.route("/likequestion/<tid>", methods=["POST"], endpoint="likeQuestion")
+def like_question(tid):
+    try:
+        Question.query.get(tid).like_number += 1
+        db.session.commit()
+        return jsonify({"success": "true"})
+    except:
+        return jsonify({"error": "delete did not work"})
+
+
 @api.route("/deleteanswer/<tid>", methods=["DELETE"], endpoint="deleteAnswer")
 @jwt_required()
 def delete_answer(tid):

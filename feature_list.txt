@@ -14,14 +14,15 @@
 *handle app secret
 *deploy
 
-proper feed api
-reply button works
+*proper feed api
+*like
 fix time display
+reply button works
 prettify (bring login and register to semantic ui)
-like
 
 better readme
+add pol
 add follow
 force following 
 add reask 
-add pole
+
