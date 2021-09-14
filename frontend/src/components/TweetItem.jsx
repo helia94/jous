@@ -70,7 +70,7 @@ class TweetItem extends React.Component {
                 <div className="content" onClick={this.routeToQuestion}>
                     <div class="right floated meta">
                         {moment(this.props.time, 'ddd, DD MMM YYYY h:mm:ss').format('DD MMM')}
-                        </div>
+                    </div>
                     <div class="left floated meta" onClick={this.routeToAuthor}>{this.props.author}</div>
                     <div className="description">
                         <p>{this.props.content}</p>
@@ -97,14 +97,9 @@ class TweetItem extends React.Component {
                         </div>
                     </div>
                     <div class="ui buttons">
-                        <div class="ui buttons mini">
-                            <div className="ui basic grey button"
-                                data-tooltip="answer"><i class="reply icon"></i>
-                            </div>
-                            <div className="ui basic grey button"
-                                data-tooltip="answer anonymously">
-                                <i class="user secret icon"></i>
-                            </div>
+                        <div className="ui basic grey button"
+                            data-tooltip="answer"
+                            onClick={this.routeToQuestion}><i class="reply icon"></i>
                         </div>
                         {this.props.isOwner &&
                             <button className="mini ui basic red button" onClick={this.deleteTweet}><i class="trash alternate outline icon"></i>

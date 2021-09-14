@@ -17,7 +17,7 @@
 *proper feed api
 *like
 *fix time display
-reply button works
+*reply button works
 prettify (bring login and register to semantic ui)
 
 better readme

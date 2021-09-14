@@ -16,8 +16,6 @@ class MainPage extends React.Component {
                 tweets: res.data.reverse(),
                 page: this.state.page + 1
             })
-            console.log(this.state.tweets[0].time)
-            console.log(moment(this.state.tweets[0].time, 'ddd, DD MMM YYYY h:mm:ss').format('DD MMM'))
         });
         setTimeout(() => {
             Axios.get("/api/getcurrentuser", {

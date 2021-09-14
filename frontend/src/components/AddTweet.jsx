@@ -56,7 +56,7 @@ class AddTweet extends React.Component {
                     <p>
                         <div class="ui buttons">
                             <button type="submit" class="ui olive  submit icon button" value="post" onClick={() => (this.setState({anon : 'False'}))}><i class="icon edit"></i></button>
-                            <button type="submit" class="ui olive  submit icon button" onClick={() => (this.setState({anon : 'True'}))}><i class="user secret icon"></i></button>
+                            <button type="submit" class="ui olive  submit icon button"  onClick={() => (this.setState({anon : 'True'}))}><i class="user secret icon"></i></button>
                         </div>
                     </p>
                 </form>

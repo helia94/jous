@@ -90,9 +90,21 @@ class TweetDetailPage extends React.Component {
                         <div class="field" value={this.state.newAnswer} onChange={this.handleInputChange}>
                             <textarea></textarea>
                         </div>
-                        <button class="ui olive labeled submit icon button" type='submit' form="submit-form">
-                            <i class="icon edit"></i> Add answer
-                        </button >
+                        <div class="ui buttons">
+                            <button type="submit" 
+                            class="ui olive  submit icon button" 
+                            value="post" 
+                            data-tooltip="add answer"
+                            onClick={() => (this.setState({anon : 'False'}))}>
+                                <i class="icon edit"></i>
+                                </button>
+                            <button type="submit" 
+                            class="ui olive  submit icon button"
+                            data-tooltip="add answer anonymously"  
+                            onClick={() => (this.setState({anon : 'True'}))}>
+                                <i class="user secret icon"></i>
+                            </button>
+                        </div>
                     </form>
                 </div>
             </React.Fragment>
