@@ -68,7 +68,9 @@ class TweetItem extends React.Component {
         return (
             <a className="ui card" id={this.props.id} >
                 <div className="content" onClick={this.routeToQuestion}>
-                    <div class="right floated meta">{moment(this.props.time).format('d MMM')}</div>
+                    <div class="right floated meta">
+                        {moment(this.props.time, 'ddd, DD MMM YYYY h:mm:ss').format('DD MMM')}
+                        </div>
                     <div class="left floated meta" onClick={this.routeToAuthor}>{this.props.author}</div>
                     <div className="description">
                         <p>{this.props.content}</p>
