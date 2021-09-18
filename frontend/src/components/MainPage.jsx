@@ -63,7 +63,10 @@ class MainPage extends React.Component {
                         </div>
                         : null}
                     <h1>Home</h1>
-                    {this.state.login ? <AddTweet /> : null}
+                    {this.state.login ? <AddTweet /> : 
+                    <div class="ui warning message">
+                    <p>Only logged-in users can ask and answer questions</p>
+                    </div>}
                     <div class="ui hidden divider"></div>
                     {
                         <InfiniteScroll
