@@ -475,6 +475,7 @@ def get_user_answers():
                          "content" : i.content,
                          "username": i.user.username,
                          "time"    : i.time,
+                         "question": i.question
                          }
                         for i in answers])
     except Exception as e:

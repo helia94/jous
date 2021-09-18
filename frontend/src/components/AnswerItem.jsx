@@ -19,6 +19,8 @@ function routeToAuthor(e, author) {
 
 function AnswerItem(props) {
 
+    let [showQuestion, setShowQuestion] = React.useState(false);
+
     return (
         <a className="ui card" id={props.id}>
             <div className="content">
@@ -32,7 +34,10 @@ function AnswerItem(props) {
                 {props.isOwner &&
                     <button className="mini ui basic red button" onClick={e => deleteAnswer(e, props.id)}><i class="trash alternate outline icon"></i>
                     </button>}
+                <button className="mini ui basic button" onClick={e => setShowQuestion(!showQuestion)}><i class="question circle outline icon"></i>
+                </button>
             </div>
+            {showQuestion ? <div class="ui small message ">{props.question}</div> : null}
         </a >
     );
 }

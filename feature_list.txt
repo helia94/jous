@@ -18,10 +18,17 @@
 *like
 *fix time display
 *reply button works
-prettify (bring login and register to semantic ui)
+*add answer number to question
+*go to usr page button [f]
+page for games [f,b]
+infinit feed in user page [f]
+*goto question button in answers [f]
+answers to my questions section [f, b]
+brows all users page [f,b]
+prettify (bring login and register to semantic ui) [f]
 
-better readme
-add pol
+better readme []
+add pol [f, b]
 add follow
 force following 
 add reask 

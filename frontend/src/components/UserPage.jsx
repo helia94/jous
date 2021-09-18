@@ -89,6 +89,7 @@ class UserPage extends React.Component {
                                                 id={item.id}
                                                 content={item.content}
                                                 author={item.username}
+                                                question={item.question}
                                                 time={item.time}
                                                 isOwner={this.state.currentUser.username === item.username}
                                                 key={index}
