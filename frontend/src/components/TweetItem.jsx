@@ -77,29 +77,34 @@ class TweetItem extends React.Component {
                     </div>
                 </div>
                 <div className="extra content">
-                    <div class="ui buttons">
+                    <div class="mini ui buttons">
                         <div class="mini ui labeled button" tabindex="0" data-tooltip="like">
                             <div class="mini ui button" onClick={this.likeTweet}>
                                 <i class="heart icon"></i>
                             </div>
-                            <a class="ui basic label">
+                            <a class="mini ui basic label">
                                 {this.props.likes + this.state.like}
                             </a>
                         </div>
                         <div class="ui buttons mini">
-                            <div className="ui basic grey button" data-tooltip="reask"><i class="retweet icon"></i></div>
+                            <div className="mini ui basic grey button" data-tooltip="reask"><i class="retweet icon"></i></div>
                             {this.state.showGroupNameForm ? null :
-                                <div className="ui basic grey button"
+                                <div className="mini ui basic grey button"
                                     data-tooltip="post to group"
                                     onClick={this.postToGroupClick}>
                                     <i class="share icon"></i>
                                 </div>}
                         </div>
                     </div>
-                    <div class="ui buttons">
-                        <div className="ui basic grey button"
-                            data-tooltip="answer"
-                            onClick={this.routeToQuestion}><i class="reply icon"></i>
+                    <div class="mini ui buttons">
+                        <div class="mini ui labeled button" tabindex="0">
+                            <div className="mini ui basic grey button"
+                                data-tooltip="answer"
+                                onClick={this.routeToQuestion}><i class="reply icon"></i>
+                            </div>
+                            <a class="mini ui basic label">
+                                {this.props.answers}
+                            </a>
                         </div>
                         {this.props.isOwner &&
                             <button className="mini ui basic red button" onClick={this.deleteTweet}><i class="trash alternate outline icon"></i>

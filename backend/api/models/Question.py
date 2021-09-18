@@ -32,4 +32,4 @@ class Question(Mixin, db.Model):
 
 
     def __repr__(self):
-        return f"<Question {self.title}>"
+        return f"<Question {self.content}>"

@@ -5,7 +5,6 @@ import AddTweet from "./AddTweet";
 import AddGroup from "./AddGroup";
 import { check } from "../login";
 import InfiniteScroll from 'react-infinite-scroll-component';
-import moment from 'moment'
 
 class MainPage extends React.Component {
     state = { tweets: [], currentUser: { username: "" }, login: false, hasMore: true, page: 0 }
@@ -89,6 +88,7 @@ class MainPage extends React.Component {
                                             author={item.username}
                                             time={item.time}
                                             likes={item.like_number}
+                                            answers={item.answer_number}
                                             isOwner={this.state.currentUser.username === item.username}
                                             key={index}
                                         />

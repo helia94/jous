@@ -29,14 +29,6 @@ function AnswerItem(props) {
                 </div>
             </div>
             <div className="extra content">
-                <div class="mini ui labeled button" tabindex="0" data-tooltip="like">
-                    <div class="mini ui button">
-                        <i class="heart icon"></i>
-                    </div>
-                    <a class="ui basic label">
-                        13
-                    </a>
-                </div>
                 {props.isOwner &&
                     <button className="mini ui basic red button" onClick={e => deleteAnswer(e, props.id)}><i class="trash alternate outline icon"></i>
                     </button>}

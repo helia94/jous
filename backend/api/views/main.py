@@ -121,6 +121,23 @@ def format_answers(answers):
             for i in answers]
 
 
+def get_group_id(groupname):
+    group = Group.query.filter(Group.group_name == groupname).first()
+    return group
+
+
+def jsoniy_questions(questions):
+    return jsonify([{"id"          : i.id,
+                     "content"     : i.content,
+                     "username"    : i.user.username,
+                     "time"        : i.time,
+                     "reask_number": i.reask_number,
+                     "like_number" : i.like_number,
+                     "answer_number" : len(i.public_answer)
+                     }
+                    for i in questions])
+
+
 @api.route("/<a>")
 def react_routes(a):
     return app.send_static_file("index.html")
@@ -269,22 +286,6 @@ def get_group_questions(groupname, offset):
                     for i in questions])
 
 
-def get_group_id(groupname):
-    group = Group.query.filter(Group.group_name == groupname).first()
-    return group
-
-
-def jsoniy_questions(questions):
-    return jsonify([{"id"          : i.id,
-                     "content"     : i.content,
-                     "username"    : i.user.username,
-                     "time"        : i.time,
-                     "reask_number": i.reask_number,
-                     "like_number" : i.like_number
-                     }
-                    for i in questions])
-
-
 @api.route("/addquestion", methods=["POST"], endpoint="addQuestion")
 @jwt_required()
 def add_question():
@@ -300,7 +301,9 @@ def add_question():
         else:
             question = Question(uid, content, [])
         success = commit_db(question)
-        User.query.get(uid).questions += [question.id]
+        questions = User.query.get(uid).questions
+        questions.append(question.id)
+        User.query.get(uid).questions = questions
         db.session.commit()
         if success:
             return jsonify({"success": "true"})
@@ -335,7 +338,12 @@ def add_answer():
             else:
                 return jsonify({"error": "group name is wrong"})
         success = commit_db(answer)
-        User.query.get(uid).answers += [answer.id]
+        user_answers = User.query.get(uid).answers
+        user_answers.append(answer.id)
+        User.query.get(uid).answers = user_answers
+        question_answers = Question.query.get(int(question)).public_answer
+        question_answers.append(answer.id)
+        Question.query.get(int(question)).public_answer = question_answers
         db.session.commit()
         if success:
             return jsonify({"success": "true"})
@@ -400,7 +408,9 @@ def add_user_to_group():
         group.users = list(set(group.users + uids))
         success = commit_db()
         for u in uids:
-            User.query.get(u).groups += [group.id]
+            user_groups = User.query.get(u).groups
+            user_groups.append(group.id)
+            User.query.get(u).groups = user_groups
         db.session.commit()
         if success:
             return jsonify({"success": "true"})
