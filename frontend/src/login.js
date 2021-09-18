@@ -40,6 +40,22 @@ async function check() {
     }
 }
 
+async function getCurrentUser() {
+    const token = localStorage.getItem("token")
+    try {
+        const res = await Axios.get("/api/getcurrentuser", {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        })
+        const {data} = await res;
+        return data.username
+    } catch {
+        console.log("could not get current user")
+        return "noUser"
+    }
+}
+
 function logout() {
     if (localStorage.getItem("token")) {
         const token = localStorage.getItem("token")
@@ -73,4 +89,4 @@ function logout() {
     setTimeout(() => window.location = "/", 500)
 }
 
-export {login, check, logout};
+export {login, check,getCurrentUser, logout};

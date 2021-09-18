@@ -1,19 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
+import { getCurrentUser } from "../login";
 
 function Navbar() {
-    let [theme, setTheme] = React.useState(localStorage.getItem("theme") || "light");
 
-    React.useEffect(() => {
-        if (theme === "dark") {
-            document.body.classList.add("dark");
-        } else {
-            document.body.classList.remove("dark");
-        }
-    }, [theme])
+    let [user, setUser] = React.useState("noUser");
+
+    getCurrentUser().then(r => setUser(r))
+
+    function routeToUser() {
+        let path = "/user/" + user;
+        window.location.href = path;
+    }
 
     let x = localStorage.getItem("token");
-    let a = {name: x ? "Settings" : "Login", link: x ? "/settings" : "/login"}
-    let b = {name: x ? "Logout" : "Register", link: x ? "/logout" : "/register"}
+    let a = { name: x ? "Settings" : "Login", link: x ? "/settings" : "/login" }
+    let b = { name: x ? "Logout" : "Register", link: x ? "/logout" : "/register" }
 
     return (
         <div className="ui menu yellow">
@@ -21,15 +22,9 @@ function Navbar() {
                 Jous
             </a>
             <div class="right menu">
-                <button className="w3-bar-item w3-btn" onClick={() => {
-                    if (theme === "dark") {
-                        localStorage.setItem("theme", "light");
-                        setTheme("light")
-                    } else {
-                        localStorage.setItem("theme", "dark");
-                        setTheme("dark")
-                    }
-                }}>{theme === "dark" ? "☀️" : "🌙"}</button>
+                {x ? <a className="w3-bar-item w3-button" onClick={routeToUser}>
+                    {<i class="user outline icon"></i>}
+                </a> : null}
                 <a className="w3-bar-item w3-button" href={a.link}>
                     {a.name}
                 </a>
