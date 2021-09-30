@@ -498,7 +498,6 @@ def get_user_groups():
 
 
 @api.route("/question/<tid>", methods=["GET"], endpoint="question")
-@jwt_required()
 def get_question(tid):
     try:
         q = Question.query.get(tid)
