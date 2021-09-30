@@ -182,8 +182,6 @@ def register():
             return jsonify({"error": "Invalid form"})
         # Check to see if user already exists
         users = get_user_auths()
-        if len(list(filter(lambda x: x["email"] == email, users))) == 1:
-            return jsonify({"error": "Email is used."})
         if len(list(filter(lambda x: x["username"] == username, users))) == 1:
             return jsonify({"error": "Username is used."})
         # Email validation check
