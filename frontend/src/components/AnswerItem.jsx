@@ -17,9 +17,22 @@ function routeToAuthor(e, author) {
     window.location.href = path;
 }
 
+export function getQuestion(questionId) {  
+    return Axios.get("/api/question/" + questionId)
+      .then(response => {
+          const content = response.data.question.content
+          console.log(content)
+        return content;
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }
+
 function AnswerItem(props) {
 
     let [showQuestion, setShowQuestion] = React.useState(false);
+    let [questionContent, setQuestionContent] = React.useState("");
 
     return (
         <a className="ui card" id={props.id}>
@@ -34,10 +47,14 @@ function AnswerItem(props) {
                 {props.isOwner &&
                     <button className="mini ui basic red button" onClick={e => deleteAnswer(e, props.id)}><i class="trash alternate outline icon"></i>
                     </button>}
-                <button className="mini ui basic button" onClick={e => setShowQuestion(!showQuestion)}><i class="question circle outline icon"></i>
+                <button className="mini ui basic button" onClick={e => {
+                    setShowQuestion(!showQuestion);
+                    if (questionContent === ""){
+                    getQuestion(props.question).then(data =>setQuestionContent(data));}
+                }}><i class="question circle outline icon"></i>
                 </button>
             </div>
-            {showQuestion ? <div class="ui small message ">{props.question}</div> : null}
+            {showQuestion ? <div class="ui small message ">{questionContent}</div> : null}
         </a >
     );
 }
