@@ -325,8 +325,8 @@ def add_answer():
         uid = get_jwt_identity()
         if not groupname:
             if anon == "True":
-                uid1 = get_uid_hannah()
-                answer = PublicAnswer(uid1, question, content)
+                uid = get_uid_hannah()
+                answer = PublicAnswer(uid, question, content)
             else:
                 answer = PublicAnswer(uid, question, content)
         else:
