@@ -87,7 +87,7 @@ class TweetItem extends React.Component {
                             </a>
                         </div>
                         <div class="ui buttons mini">
-                            <div className="mini ui basic grey button" data-tooltip="reask"><i class="retweet icon"></i></div>
+                            <div className="mini ui basic disabled grey button" data-tooltip="reask"><i class="retweet icon"></i></div>
                             {this.state.showGroupNameForm ? null :
                                 <div className="mini ui basic grey button"
                                     data-tooltip="post to group"
