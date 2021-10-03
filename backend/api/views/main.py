@@ -481,6 +481,27 @@ def get_user_answers():
         return jsonify({"success": "false"})
 
 
+@api.route("/useranswerstoquestions", methods=["GET"])
+@jwt_required()
+def get_answers_to_user_question():
+    try:
+        uid = get_jwt_identity()
+        user = User.query.get(uid)
+        questions = user.questions
+        answers = PublicAnswer.query.filter(PublicAnswer.question.in_(questions)).order_by(PublicAnswer.id.desc()).limit(50).all()
+        answers = list(reversed(answers))
+        return jsonify([{"id"      : i.id,
+                         "content" : i.content,
+                         "username": i.user.username,
+                         "time"    : i.time,
+                         "question": i.question
+                         }
+                        for i in answers])
+    except Exception as e:
+        logger.error(e)
+        return jsonify({"success": "false"})
+
+
 @api.route("/usergroups", methods=["POST"])
 def get_user_groups():
     username = request.json["username"]
