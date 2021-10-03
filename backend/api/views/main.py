@@ -468,7 +468,6 @@ def get_user_answers():
     username = request.json["username"]
     try:
         answers = PublicAnswer.query.filter(PublicAnswer.user.has(username=username)).order_by(PublicAnswer.id.desc()).limit(50).all()
-        answers = list(reversed(answers))
         return jsonify([{"id"      : i.id,
                          "content" : i.content,
                          "username": i.user.username,
@@ -489,7 +488,6 @@ def get_answers_to_user_question():
         user = User.query.get(uid)
         questions = user.questions
         answers = PublicAnswer.query.filter(PublicAnswer.question.in_(questions)).order_by(PublicAnswer.id.desc()).limit(50).all()
-        answers = list(reversed(answers))
         return jsonify([{"id"      : i.id,
                          "content" : i.content,
                          "username": i.user.username,
