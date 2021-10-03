@@ -60,7 +60,7 @@ class TweetItem extends React.Component {
 
     postToGroupClick = (e) => {
         this.setState({
-            showGroupNameForm: true
+            showGroupNameForm: !this.state.showGroupNameForm
         });
     }
 
@@ -88,12 +88,12 @@ class TweetItem extends React.Component {
                         </div>
                         <div class="ui buttons mini">
                             <div className="mini ui basic disabled grey button" data-tooltip="reask"><i class="retweet icon"></i></div>
-                            {this.state.showGroupNameForm ? null :
-                                <div className="mini ui basic grey button"
-                                    data-tooltip="post to group"
-                                    onClick={this.postToGroupClick}>
-                                    <i class="share icon"></i>
-                                </div>}
+
+                            <div className="mini ui basic grey button"
+                                data-tooltip="post to group"
+                                onClick={this.postToGroupClick}>
+                                <i class="share icon"></i>
+                            </div>
                         </div>
                     </div>
                     <div class="mini ui buttons">
