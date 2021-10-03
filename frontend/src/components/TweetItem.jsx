@@ -66,7 +66,7 @@ class TweetItem extends React.Component {
 
     render() {
         return (
-            <a className="ui card" id={this.props.id} >
+            <a className="ui fluid card" id={this.props.id} >
                 <div className="content" onClick={this.routeToQuestion}>
                     <div class="right floated meta">
                         {moment(this.props.time, 'ddd, DD MMM YYYY h:mm:ss').format('DD MMM')}

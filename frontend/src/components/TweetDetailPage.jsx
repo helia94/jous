@@ -54,7 +54,7 @@ class TweetDetailPage extends React.Component {
     render() {
         return (
             <React.Fragment>
-                <div class="ui basic segment" style={{ width: 400 }}>
+                <div class="ui basic segment" style={{ width: 500 }}>
                     <TweetItem
                         id={this.state.question.id}
                         content={this.state.question.content}

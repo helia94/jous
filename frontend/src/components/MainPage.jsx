@@ -49,7 +49,7 @@ class MainPage extends React.Component {
     render() {
         return (
             <React.Fragment>
-                <div class="ui basic segment" style={{ width: 400 }}>
+                <div class="ui basic segment" style={{ width: 500 }}>
                     {this.state.login ?
                         <div class="ui right dividing rail">
 
