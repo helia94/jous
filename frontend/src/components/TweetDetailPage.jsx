@@ -7,9 +7,7 @@ class TweetDetailPage extends React.Component {
     state = { question: { id: 0, content: "", author: "", time: "" }, answers: [], currentUser: { username: "" }, newAnswer: "", anon: "False" }
 
     componentDidMount() {
-        console.log(this.props.match.params.question)
-        Axios.get("/api/question/" + this.props.match.params.question, { headers: { Authorization: "Bearer " + localStorage.getItem("token") } }).then(res => {
-            console.log(res.data)
+        Axios.get("/api/question/" + this.props.match.params.question).then(res => {
             this.setState({ question: res.data.question, answers: res.data.answers });
         });
         setTimeout(() => {
