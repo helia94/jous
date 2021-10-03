@@ -23,7 +23,7 @@
 page for games [f,b]
 infinit feed in user page [f]
 *goto question button in answers [f]
-answers to my questions section [f, b]
+*answers to my questions section [f, b]
 brows all users page [f,b]
 prettify (bring login and register to semantic ui) [f]
 

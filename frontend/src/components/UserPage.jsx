@@ -66,7 +66,7 @@ class UserPage extends React.Component {
     render() {
         return (
             <React.Fragment>
-                <div class="ui basic segment" style={{ width: 400 }}>
+                <div class="ui basic segment" style={{ width: 500 }}>
                     <div className="ui basic segment">
                         <div class="ui yellow large header">{this.props.match.params.username}</div>
                     </div>
