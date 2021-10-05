@@ -3,7 +3,7 @@ import { getCurrentUser } from "../login";
 
 function Navbar() {
 
-    let [user, setUser] = React.useState("noUser");
+    let [user, setUser] = useState("noUser");
 
     getCurrentUser().then(r => setUser(r))
 

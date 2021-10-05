@@ -80,7 +80,7 @@ class GroupQuestion extends React.Component {
                             <label></label>
                             <textarea rows="2" placeholder="your answer"></textarea>
                         </div>
-                        <button type="submit" class="ui button" type="submit">add</button>
+                        <button type="submit" class="ui button" >add</button>
                     </form>
                 }
                 </div>
