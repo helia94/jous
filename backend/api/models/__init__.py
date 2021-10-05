@@ -9,7 +9,8 @@ from .GroupAnswer import GroupAnswer
 from .PublicAnswer import PublicAnswer
 from .InvalidToken import InvalidToken
 from .base import db
+from .Activity import Activity
 
-__all__ = ["UserAuth", "Question", "InvalidToken", "User", "Group", "GroupAnswer", "PublicAnswer", "db"]
+__all__ = ["UserAuth", "Question", "InvalidToken", "User", "Group", "GroupAnswer", "PublicAnswer", "Activity", "db"]
 
 # You must import all of the new Models you create to this page

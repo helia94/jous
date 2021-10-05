@@ -1,15 +1,49 @@
 import React, { useState } from "react";
 import { getCurrentUser } from "../login";
+import { Button, Modal } from 'semantic-ui-react'
+import Axios from "axios";
+import moment from 'moment'
+
+const activityMessage = {
+    'answer': "answered your question",
+    'newGroup': "You are added to ",
+    'questionInGroup': " posted a question to ",
+    'answerInGroup': " answered a question in "
+}
+
+const activityLink = {
+    'answer': "question",
+    'newGroup': "group",
+    'questionInGroup': "group",
+    'answerInGroup': "group"
+}
 
 function Navbar() {
 
     let [user, setUser] = useState("noUser");
+    let [activities, setActivities] = useState([]);
+    const [open, setOpen] = useState(false)
 
     getCurrentUser().then(r => setUser(r))
 
     function routeToUser() {
         let path = "/user/" + user;
         window.location.href = path;
+    }
+
+    function getActivities() {
+        if (activities.length === 0) {
+            Axios.get("/api/useractivity", {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`
+                }
+            }).then(res => {
+                console.log(res.data)
+                setActivities(res.data)
+            }).catch((error) => {
+                console.error({ error });
+            });;
+        }
     }
 
     let x = localStorage.getItem("token");
@@ -22,6 +56,53 @@ function Navbar() {
                 Jous
             </a>
             <div class="right menu">
+                <Modal
+                    onClose={() => setOpen(false)}
+                    onOpen={() => {
+                        setOpen(true);
+                        getActivities();
+                    }}
+                    open={open}
+                    trigger={
+                        <a className="w3-bar-item w3-button">
+                            {<span class="modal-btn"><i class="lemon outline icon"></i></span>}
+                        </a>
+                    }
+                >
+                    <Modal.Content image>
+                        <Modal.Description>
+                            {activities.length === 0 ?
+                                <div>No activities to show</div> :
+                                <div class="ui feed">
+                                    {activities.map((item, index) =>
+                                        <div class="event" href={'/' + activityLink[item.type] + '/' + item.what}>
+                                            <div class="label">
+                                            </div>
+                                            <div class="content">
+                                                <div class="summary">
+                                                    <a class="user">
+                                                        {item.fromUid}
+                                                    </a> {activityMessage[item.type]}
+                                                    {item.type==="answer"? "" : <a class="group">
+                                                        {item.what}
+                                                    </a>}
+                                                    <div class="date">
+                                                        {moment(item.time, 'ddd, DD MMM YYYY h:mm:ss').fromNow()}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            }
+                        </Modal.Description>
+                    </Modal.Content>
+                    <Modal.Actions>
+                        <Button color='black' onClick={() => setOpen(false)}>
+                            OK
+                        </Button>
+                    </Modal.Actions>
+                </Modal>
                 {x ? <a className="w3-bar-item w3-button" onClick={routeToUser}>
                     {<i class="user outline icon"></i>}
                 </a> : null}
