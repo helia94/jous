@@ -1,13 +1,13 @@
 import React from "react";
-import TweetItem from "./TweetItem";
 import Axios from "axios";
+import InfiniteScroll from 'react-infinite-scroll-component';
+import TweetItem from "./TweetItem";
 import AddTweet from "./AddTweet";
 import AddGroup from "./AddGroup";
 import { check } from "../login";
-import InfiniteScroll from 'react-infinite-scroll-component';
 
 class MainPage extends React.Component {
-    state = { tweets: [], currentUser: { username: "" }, login: false, hasMore: true, page: 0 }
+    state = { tweets: [], currentUser: { username: "" }, login: false, hasMore: true, page: 0, width: 500 }
 
     componentDidMount() {
         Axios.get("/api/questions/0").then(res => {
@@ -27,6 +27,8 @@ class MainPage extends React.Component {
         }, 500);
 
         check().then(r => this.setState({ login: r }));
+
+        window.addEventListener('resize', this.updateDimensions);
     }
 
     fetchMoreData = () => {
@@ -46,10 +48,18 @@ class MainPage extends React.Component {
         window.location.reload()
     }
 
+    updateDimensions = () => {
+        this.setState({ width: window.innerWidth, height: window.innerHeight });
+    };
+
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.updateDimensions);
+    }
+
     render() {
         return (
             <React.Fragment>
-                <div class="ui basic segment" style={{ width: 500 }}>
+                <div class="ui basic segment" style={{ width: Math.min(this.state.width * 0.9, 500) }}>
                     {this.state.login ?
                         <div class="ui right dividing rail">
 
@@ -63,10 +73,10 @@ class MainPage extends React.Component {
                         </div>
                         : null}
                     <h1>Home</h1>
-                    {this.state.login ? <AddTweet /> : 
-                    <div class="ui warning message">
-                    <p>Only logged-in users can ask and answer questions</p>
-                    </div>}
+                    {this.state.login ? <AddTweet /> :
+                        <div class="ui warning message">
+                            <p>Only logged-in users can ask and answer questions</p>
+                        </div>}
                     <div class="ui hidden divider"></div>
                     {
                         <InfiniteScroll

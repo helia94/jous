@@ -4,7 +4,8 @@ import Axios from "axios";
 import moment from 'moment'
 
 class TweetDetailPage extends React.Component {
-    state = { question: { id: 0, content: "", author: "", time: "" }, answers: [], currentUser: { username: "" }, newAnswer: "", anon: "False" }
+    state = { question: { id: 0, content: "", author: "", time: "" }, answers: [], 
+    currentUser: { username: "" }, newAnswer: "", anon: "False", width: 500 }
 
     componentDidMount() {
         Axios.get("/api/question/" + this.props.match.params.question).then(res => {
@@ -51,10 +52,18 @@ class TweetDetailPage extends React.Component {
         });
     }
 
+    updateDimensions = () => {
+        this.setState({ width: window.innerWidth, height: window.innerHeight });
+    };
+
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.updateDimensions);
+    }
+
     render() {
         return (
             <React.Fragment>
-                <div class="ui basic segment" style={{ width: 500 }}>
+                <div class="ui basic segment" style={{ width: Math.min(this.state.width * 0.9, 500) }}>
                     <TweetItem
                         id={this.state.question.id}
                         content={this.state.question.content}

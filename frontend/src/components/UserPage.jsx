@@ -6,7 +6,7 @@ import AnswerItem from "./AnswerItem";
 class UserPage extends React.Component {
     state = {
         currentUser: {}, active: "q", isOwener: false,
-        questions: [], answers: [], groups: [], answersToQuestions: []
+        questions: [], answers: [], groups: [], answersToQuestions: [], width: 500
     }
 
     componentDidMount() {
@@ -63,10 +63,18 @@ class UserPage extends React.Component {
         }
     }
 
+    updateDimensions = () => {
+        this.setState({ width: window.innerWidth, height: window.innerHeight });
+    };
+
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.updateDimensions);
+    }
+
     render() {
         return (
             <React.Fragment>
-                <div class="ui basic segment" style={{ width: 500 }}>
+                <div class="ui basic segment" style={{ width: Math.min(this.state.width * 0.9, 500) }}>
                     <div className="ui basic segment">
                         <div class="ui yellow large header">{this.props.match.params.username}</div>
                     </div>
