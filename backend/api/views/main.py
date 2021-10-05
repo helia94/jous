@@ -5,10 +5,12 @@ import dotenv
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, \
     create_refresh_token, get_jwt
 
+from api.models.Activity import ActivityType
+
 api = Blueprint("main", __name__)  # initialize blueprint
 
 from backend import security
-from backend.api.models import db, UserAuth, Question, PublicAnswer, Group, GroupAnswer
+from backend.api.models import db, UserAuth, Question, PublicAnswer, Group, GroupAnswer, Activity
 from backend.api.models.User import User
 from backend.api.models.InvalidToken import InvalidToken
 from backend.api.core import logger
@@ -127,13 +129,13 @@ def get_group_id(groupname):
 
 
 def jsoniy_questions(questions):
-    return jsonify([{"id"          : i.id,
-                     "content"     : i.content,
-                     "username"    : i.user.username,
-                     "time"        : i.time,
-                     "reask_number": i.reask_number,
-                     "like_number" : i.like_number,
-                     "answer_number" : len(i.public_answer)
+    return jsonify([{"id"           : i.id,
+                     "content"      : i.content,
+                     "username"     : i.user.username,
+                     "time"         : i.time,
+                     "reask_number" : i.reask_number,
+                     "like_number"  : i.like_number,
+                     "answer_number": len(i.public_answer)
                      }
                     for i in questions])
 
@@ -237,25 +239,28 @@ def refresh_logout():
         logger.error(e)
         return {"error": e}
 
+
 @api.route("/questions/<offset>")
 @api.route("/questions", defaults={"offset": "0"})
 def get_questions(offset):
     pageSize = 20
-    questions = Question.query.order_by(Question.id.desc())\
+    questions = Question.query.order_by(Question.id.desc()) \
         .limit(pageSize).offset(pageSize * int(offset)).all()
     questions = list(reversed(questions))
     return jsoniy_questions((questions))
+
 
 @api.route("/userquestions/<offset>", methods=["POST"])
 @api.route("/userquestions", methods=["POST"], defaults={"offset": "0"})
 def get_user_questions(offset):
     pageSize = 10
     username = request.json["username"]
-    questions = Question.query.filter(Question.user.has(username=username))\
-        .order_by(Question.id.desc())\
+    questions = Question.query.filter(Question.user.has(username=username)) \
+        .order_by(Question.id.desc()) \
         .limit(pageSize).offset(pageSize * offset).all()
     questions = list(reversed(questions))
     return jsoniy_questions(questions)
+
 
 @api.route("/groupquestions/<groupname>", methods=["GET"], defaults={"offset": "0"})
 @api.route("/groupquestions/<groupname>/<offset>", methods=["GET"])
@@ -269,8 +274,8 @@ def get_group_questions(groupname, offset):
     if uid not in group.users:
         return jsonify({"error": "Must be a group member"})
     group_questions = group.questions
-    questions = Question.query.filter(Question.id.in_(group_questions))\
-        .order_by(Question.id.desc())\
+    questions = Question.query.filter(Question.id.in_(group_questions)) \
+        .order_by(Question.id.desc()) \
         .limit(pageSize).offset(pageSize * offset).all()
     questions = list(reversed(questions))
     return jsonify([{"question": {"id"          : i.id,
@@ -327,21 +332,39 @@ def add_answer():
             if anon == "True":
                 uid = get_uid_hannah()
                 answer = PublicAnswer(uid, question, content)
+
             else:
                 answer = PublicAnswer(uid, question, content)
+            activity_type = "answer"
+            what = question
         else:
             group = get_group_id(groupname)
             if group:
                 answer = GroupAnswer(uid, group.id, question, content)
+                activity_type = "answerInGroup"
+                what = group.id
+                toUid = group.users.remove(uid)
             else:
                 return jsonify({"error": "group name is wrong"})
         success = commit_db(answer)
-        user_answers = User.query.get(uid).answers
-        user_answers.append(answer.id)
-        User.query.get(uid).answers = user_answers
-        question_answers = Question.query.get(int(question)).public_answer
-        question_answers.append(answer.id)
-        Question.query.get(int(question)).public_answer = question_answers
+        if not groupname:
+            user_answers = User.query.get(uid).answers
+            user_answers.append(answer.id)
+            User.query.get(uid).answers = user_answers
+            question_object = Question.query.get(int(question))
+            question_answers = question_object.public_answer
+            question_author = question_object.uid
+            toUid = question_author
+            question_answers.append(answer.id)
+            Question.query.get(int(question)).public_answer = question_answers
+        if isinstance(toUid, int):
+            if toUid != uid:
+                activity = Activity(toUid, uid, activity_type, what)
+                commit_db(activity)
+        else:
+            for u in toUid:
+                activity = Activity(u, uid, activity_type, what)
+                commit_db(activity)
         db.session.commit()
         if success:
             return jsonify({"success": "true"})
@@ -501,6 +524,7 @@ def get_answers_to_user_question():
 
 
 @api.route("/usergroups", methods=["POST"])
+@jwt_required()
 def get_user_groups():
     username = request.json["username"]
     uid = get_uid(username)
@@ -511,6 +535,45 @@ def get_user_groups():
                          "group_name": i.group_name,
                          }
                         for i in groups])
+    except Exception as e:
+        logger.error(e)
+        return jsonify({"success": "false"})
+
+
+@api.route("/useractivity", methods=["GET"])
+@jwt_required()
+def get_user_activity():
+    uid = get_jwt_identity()
+    try:
+        activities = Activity.query.filter(Activity.toUid == uid).order_by(Activity.id.desc()).limit(10).all()
+        return jsonify([
+            {
+                "toUid"  : i.toUid,
+                "fromUid": get_username(i.fromUid),
+                "time"   : i.time,
+                "type"   : i.type.value,
+                "read"   : i.read,
+                "what"   : i.what
+            }
+            for i in activities])
+    except Exception as e:
+        logger.error(e)
+        return jsonify({"success": "false"})
+
+
+@api.route("/readuseractivity/<lastactivityid>", methods=["GET"])
+@jwt_required()
+def read_activity(lastactivityid):
+    uid = get_jwt_identity()
+    try:
+        activities = Activity.query.filter(Activity.toUid == uid).filter(Activity.id < lastactivityid).filter(Activity.read == True).order_by(Activity.id.desc()).limit(10).all()
+        for activity in activities:
+            activity.read = True
+        success = commit_db()
+        if success:
+            return jsonify({"success": "true"})
+        else:
+            return jsonify({"success": "false"})
     except Exception as e:
         logger.error(e)
         return jsonify({"success": "false"})

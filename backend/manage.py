@@ -2,8 +2,7 @@ from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
 
 from backend.api import create_app
-from backend.api.models import db, UserAuth
-from backend.api.views.main import add_user_auth
+from backend.api.models import db
 
 # sets up the app
 
@@ -36,6 +35,11 @@ def recreate_db():
     db.drop_all()
     db.create_all()
     db.session.commit()
+
+
+@manager.command
+def create_all():
+    db.create_all()
 
 
 if __name__ == "__main__":
