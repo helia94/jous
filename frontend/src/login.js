@@ -41,7 +41,6 @@ async function check() {
 }
 
 async function getCurrentUser() {
-    const token = localStorage.getItem("token")
     try {
         const res = await Axios.get("/api/getcurrentuser", {
             headers: {
