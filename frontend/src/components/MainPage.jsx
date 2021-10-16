@@ -29,6 +29,7 @@ class MainPage extends React.Component {
         check().then(r => this.setState({ login: r }));
 
         window.addEventListener('resize', this.updateDimensions);
+        this.setState({ width: window.innerWidth, height: window.innerHeight });
     }
 
     fetchMoreData = () => {

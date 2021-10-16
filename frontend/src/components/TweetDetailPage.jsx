@@ -20,6 +20,7 @@ class TweetDetailPage extends React.Component {
                 this.setState({ currentUser: res.data })
             })
         }, 500)
+        this.setState({ width: window.innerWidth, height: window.innerHeight });
     }
 
     handleFormSubmit = (e) => {

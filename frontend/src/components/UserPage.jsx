@@ -25,6 +25,8 @@ class UserPage extends React.Component {
                 })
             })
         }, 500)
+        
+        this.setState({ width: window.innerWidth, height: window.innerHeight });
     }
 
     toAnswers = (e) => {
