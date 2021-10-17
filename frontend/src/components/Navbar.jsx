@@ -56,6 +56,7 @@ function Navbar() {
                 }
             }).then(res => {
                 console.log('read activities')
+                setNotify(false)
             }).catch((error) => {
                 console.error({ error });
             });;
@@ -105,7 +106,7 @@ function Navbar() {
                                                     </a>}
                                                     {<a style={{ color: '#ffc107', alignItems: 'top' }}>{item.read ? null : '\u2022'}</a>}
                                                     <div class="date">
-                                                        {moment(item.time, 'ddd, DD MMM YYYY h:mm:ss').fromNow()}
+                                                        {moment.utc(item.time, 'ddd, DD MMM YYYY h:mm:ss').fromNow()}
                                                     </div>
                                                 </div>
                                             </div>
