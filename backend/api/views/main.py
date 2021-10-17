@@ -5,7 +5,6 @@ import dotenv
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, \
     create_refresh_token, get_jwt
 
-from api.models.Activity import ActivityType
 
 api = Blueprint("main", __name__)  # initialize blueprint
 
@@ -14,6 +13,7 @@ from backend.api.models import db, UserAuth, Question, PublicAnswer, Group, Grou
 from backend.api.models.User import User
 from backend.api.models.InvalidToken import InvalidToken
 from backend.api.core import logger
+
 
 dotenv.load_dotenv()
 
@@ -357,14 +357,7 @@ def add_answer():
             toUid = question_author
             question_answers.append(answer.id)
             Question.query.get(int(question)).public_answer = question_answers
-        if isinstance(toUid, int):
-            if toUid != uid:
-                activity = Activity(toUid, uid, activity_type, what)
-                commit_db(activity)
-        else:
-            for u in toUid:
-                activity = Activity(u, uid, activity_type, what)
-                commit_db(activity)
+        add_activity_to_db(toUid, uid, activity_type, what)
         db.session.commit()
         if success:
             return jsonify({"success": "true"})
@@ -373,6 +366,17 @@ def add_answer():
     except Exception as e:
         logger.error(e)
         return jsonify({"error": e})
+
+
+def add_activity_to_db(toUid, uid, activity_type, what):
+    if isinstance(toUid, int):
+        if toUid != uid:
+            activity = Activity(toUid, uid, activity_type, what)
+            commit_db(activity)
+    else:
+        for u in toUid:
+            activity = Activity(u, uid, activity_type, what)
+            commit_db(activity)
 
 
 @api.route("/addgroup", methods=["POST"], endpoint="addgroup")
