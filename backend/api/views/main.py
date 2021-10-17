@@ -74,9 +74,9 @@ def get_uid(username):
     return user.uid
 
 
-def commit_db(answer):
+def commit_db(db_object):
     try:
-        db.session.add(answer)
+        db.session.add(db_object)
         db.session.commit()
         return True
     except Exception as e:
@@ -540,7 +540,7 @@ def get_user_groups():
         return jsonify({"success": "false"})
 
 
-@api.route("/useractivity", methods=["GET"])
+@api.route("/useractivities", methods=["GET"])
 @jwt_required()
 def get_user_activity():
     uid = get_jwt_identity()
@@ -548,6 +548,7 @@ def get_user_activity():
         activities = Activity.query.filter(Activity.toUid == uid).order_by(Activity.id.desc()).limit(10).all()
         return jsonify([
             {
+                "id"  : i.id,
                 "toUid"  : i.toUid,
                 "fromUid": get_username(i.fromUid),
                 "time"   : i.time,
@@ -566,10 +567,10 @@ def get_user_activity():
 def read_activity(lastactivityid):
     uid = get_jwt_identity()
     try:
-        activities = Activity.query.filter(Activity.toUid == uid).filter(Activity.id < lastactivityid).filter(Activity.read == True).order_by(Activity.id.desc()).limit(10).all()
+        activities = Activity.query.filter(Activity.toUid == uid).filter(Activity.id <= lastactivityid).filter(Activity.read == False).order_by(Activity.id.desc()).limit(10).all()
         for activity in activities:
             activity.read = True
-        success = commit_db()
+        success = db.session.commit()
         if success:
             return jsonify({"success": "true"})
         else:

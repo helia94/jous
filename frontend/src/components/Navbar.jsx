@@ -22,7 +22,8 @@ function Navbar() {
 
     let [user, setUser] = useState("noUser");
     let [activities, setActivities] = useState([]);
-    const [open, setOpen] = useState(false)
+    let [open, setOpen] = useState(false)
+    let [notify, setNotify] = useState(false)
 
     getCurrentUser().then(r => setUser(r))
 
@@ -33,18 +34,34 @@ function Navbar() {
 
     function getActivities() {
         if (activities.length === 0) {
-            Axios.get("/api/useractivity", {
+            Axios.get("/api/useractivities", {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("token")}`
                 }
             }).then(res => {
-                console.log(res.data)
                 setActivities(res.data)
+                setNotify(res.data.map((item, index) => item.read).some((element) =>element==false))
+            }).catch((error) => {
+                console.error({ error });
+            });;
+        }
+        
+    }
+
+    function setActivitiesToRead() {
+        if (activities.length > 0) {
+            Axios.get("/api/readuseractivity/" + activities[0].id, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`
+                }
+            }).then(res => {
+                console.log('read activities')
             }).catch((error) => {
                 console.error({ error });
             });;
         }
     }
+    getActivities();
 
     let x = localStorage.getItem("token");
     let a = { name: x ? "Settings" : "Login", link: x ? "/settings" : "/login" }
@@ -65,7 +82,7 @@ function Navbar() {
                     open={open}
                     trigger={
                         <a className="w3-bar-item w3-button">
-                            {<span class="modal-btn"><i class="lemon outline icon"></i></span>}
+                            {<span class="modal-btn"><i class={"lemon "+ (notify ? "yellow" : "outline") + " icon"}></i></span>}
                         </a>
                     }
                 >
@@ -75,17 +92,18 @@ function Navbar() {
                                 <div>No activities to show</div> :
                                 <div class="ui feed">
                                     {activities.map((item, index) =>
-                                        <div class="event" href={'/' + activityLink[item.type] + '/' + item.what}>
+                                        <div class="event">
                                             <div class="label">
                                             </div>
-                                            <div class="content">
-                                                <div class="summary">
-                                                    <a class="user">
+                                            <div class="content" >
+                                                <div class="summary" >
+                                                    <a class="user" href={'/' + activityLink[item.type] + '/' + item.what}>
                                                         {item.fromUid}
                                                     </a> {activityMessage[item.type]}
-                                                    {item.type==="answer"? "" : <a class="group">
+                                                    {item.type === "answer" ? "" : <a class="group">
                                                         {item.what}
                                                     </a>}
+                                                    {<a style={{ color: '#ffc107', alignItems: 'top' }}>{item.read ? null : '\u2022'}</a>}
                                                     <div class="date">
                                                         {moment(item.time, 'ddd, DD MMM YYYY h:mm:ss').fromNow()}
                                                     </div>
@@ -98,7 +116,10 @@ function Navbar() {
                         </Modal.Description>
                     </Modal.Content>
                     <Modal.Actions>
-                        <Button color='black' onClick={() => setOpen(false)}>
+                        <Button color='black' onClick={() => {
+                            setOpen(false);
+                            setActivitiesToRead();
+                        }}>
                             OK
                         </Button>
                     </Modal.Actions>
