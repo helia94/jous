@@ -84,9 +84,9 @@ def commit_db(db_object):
         return False
 
 
-def delete(object):
+def delete(db_object):
     try:
-        db.session.delete(object)
+        db.session.delete(db_object)
         db.session.commit()
         return True
     except Exception as e:
