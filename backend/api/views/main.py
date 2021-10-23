@@ -357,8 +357,8 @@ def add_answer():
             toUid = question_author
             question_answers.append(answer.id)
             Question.query.get(int(question)).public_answer = question_answers
+            db.session.commit()
         add_activity_to_db(toUid, uid, activity_type, what)
-        db.session.commit()
         if success:
             return jsonify({"success": "true"})
         else:
