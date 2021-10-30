@@ -351,9 +351,9 @@ def add_answer():
             user_answers = User.query.get(uid).answers
             user_answers.append(answer.id)
             User.query.get(uid).answers = user_answers
-            question_object = Question.query.get(int(question))
-            question_answers = question_object.public_answer
-            question_author = question_object.uid
+            db.session.commit()
+            question_answers = Question.query.get(int(question)).public_answer
+            question_author = Question.query.get(int(question)).uid
             toUid = question_author
             question_answers.append(answer.id)
             Question.query.get(int(question)).public_answer = question_answers
@@ -614,8 +614,8 @@ def get_question(tid):
 @jwt_required()
 def delete_question(tid):
     try:
-        question = Question.query.get(tid)
-        delete(question)
+        PublicAnswer.query.filter(PublicAnswer.question==tid).delete()
+        delete(Question.query.get(tid))
         return jsonify({"success": "true"})
     except:
         return jsonify({"error": "Invalid form"})
