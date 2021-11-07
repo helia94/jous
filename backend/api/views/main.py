@@ -299,10 +299,8 @@ def add_question():
             return jsonify({"error": "Invalid form"})
         uid = get_jwt_identity()
         if anon == "True":
-            uid1 = get_uid_hannah()
-            question = Question(uid1, content, [])
-        else:
-            question = Question(uid, content, [])
+            uid = get_uid_hannah()
+        question = Question(uid, content, [])
         success = commit_db(question)
         questions = User.query.get(uid).questions
         questions.append(question.id)
