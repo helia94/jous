@@ -7,7 +7,7 @@ import AddGroup from "./AddGroup";
 import { check } from "../login";
 
 class MainPage extends React.Component {
-    state = { tweets: [], currentUser: { username: "" }, login: false, hasMore: true, page: 0, width: 500 }
+    state = { tweets: [], currentUser: { username: "" }, login: false, hasMore: true, page: 0, width: 500, height: 600 }
 
     componentDidMount() {
         Axios.get("/api/questions/0").then(res => {
@@ -60,7 +60,7 @@ class MainPage extends React.Component {
     render() {
         return (
             <React.Fragment>
-                <div class="ui basic segment" style={{ width: Math.min(this.state.width * 0.9, 500) }}>
+                <div class="ui basic segment" style={{ width: Math.min(this.state.width * 0.9, 700) }}>
                     {this.state.login ?
                         <div class="ui right dividing rail">
 
@@ -91,7 +91,7 @@ class MainPage extends React.Component {
                                 </p>
                             }
                             useWindow={false}
-                            height={600}
+                            height={Math.max(this.state.height - 200, 300)}
                         >
                             {this.state.tweets.map((item, index) => {
                                 return (
