@@ -8,7 +8,7 @@ function Bug() {
             <div class="ui container">
                 <h2>Thanks for noticing!</h2>
                 <p>
-                    Write an email to helia.jm@gmail.com and I will try to fix it as soon as possible. 
+                    Write me an email to helia.jm@gmail.com and I will try to fix it as soon as possible. 
                 </p>
             </div>
         </React.Fragment>
