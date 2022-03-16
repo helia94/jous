@@ -25,7 +25,7 @@ function Home() {
             <div class="ui container">
                 <h2>About Jous</h2>
                 <p>
-                    Post your questions in Jous. And browes question from others.
+                    Post your questions in Jous. Browes and answer question from others.
                     Dont ask <i>"what's the best budget fitness tracker?"</i> rather questions
                     that can be asked again and again, with new audiance. Like
                     <i>"What do you often deny yourself?"</i>

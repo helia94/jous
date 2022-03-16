@@ -22,6 +22,7 @@ function Navbar() {
 
     let [user, setUser] = useState("noUser");
     let [activities, setActivities] = useState([]);
+    let [checkedForActivities, setCheckedForActivities] = useState(false);
     let [open, setOpen] = useState(false)
     let [notify, setNotify] = useState(false)
 
@@ -33,19 +34,20 @@ function Navbar() {
     }
 
     function getActivities() {
-        if (activities.length === 0) {
+        if (activities.length === 0 && !checkedForActivities) {
             Axios.get("/api/useractivities", {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("token")}`
                 }
             }).then(res => {
                 setActivities(res.data)
-                setNotify(res.data.map((item, index) => item.read).some((element) =>element==false))
+                setCheckedForActivities(true)
+                setNotify(res.data.map((item, index) => item.read).some((element) => element == false))
             }).catch((error) => {
                 console.error({ error });
             });;
         }
-        
+
     }
 
     function setActivitiesToRead() {
@@ -67,7 +69,7 @@ function Navbar() {
     let x = localStorage.getItem("token");
     let a = { name: x ? "Settings" : "Login", link: x ? "/settings" : "/login" }
     let b = { name: x ? "Logout" : "Register", link: x ? "/logout" : "/register" }
-
+    let c = { name: "Report bugs", link: "/bug" }
     return (
         <div className="ui menu yellow">
             <a className="w3-bar-item w3-button" href="/">
@@ -83,7 +85,7 @@ function Navbar() {
                     open={open}
                     trigger={
                         <a className="w3-bar-item w3-button">
-                            {<span class="modal-btn"><i class={"lemon "+ (notify ? "yellow" : "outline") + " icon"}></i></span>}
+                            {<span class="modal-btn"><i class={"lemon " + (notify ? "yellow" : "outline") + " icon"}></i></span>}
                         </a>
                     }
                 >
@@ -133,6 +135,9 @@ function Navbar() {
                 </a>
                 <a className="w3-bar-item w3-button" href={b.link}>
                     {b.name}
+                </a>
+                <a className="w3-bar-item w3-button" href={c.link}>
+                    {c.name}
                 </a>
             </div>
         </div>

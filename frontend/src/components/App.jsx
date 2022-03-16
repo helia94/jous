@@ -2,6 +2,7 @@ import React from "react";
 import Home from "./Home";
 import Navbar from "./Navbar";
 import Login from "./Login";
+import Bug from "./Bug";
 import Register from "./Register";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import MainPage from "./MainPage";
@@ -35,6 +36,7 @@ function App() {
                     <Route path="/register" exact component={Register}/>
                     <Route path="/logout" exact component={Logout}/>
                     <Route path="/settings" exact component={UserSettings}/>
+                    <Route path="/bug" exact component={Bug}/>
                     <Route component={NotFound} />
                 </Switch>
             </Router>
