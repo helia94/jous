@@ -1,3 +1,3 @@
 #!/bin/bash
-python manage.py recreate_db
-python manage.py runserver
+python backend/manage.py recreate_db
+python backend/manage.py runserver
