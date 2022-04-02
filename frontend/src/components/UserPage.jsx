@@ -59,7 +59,8 @@ class UserPage extends React.Component {
     toGroups = (e) => {
         this.setState({ active: "g" })
         if (this.state.groups.length === 0) {
-            Axios.post("/api/usergroups", { username: this.props.match.params.username }).then(res => {
+            Axios.post("/api/usergroups", { username: this.props.match.params.username }
+            , { headers: { Authorization: "Bearer " + localStorage.getItem("token") } }).then(res => {
                 this.setState({ groups: res.data })
             });
         }
