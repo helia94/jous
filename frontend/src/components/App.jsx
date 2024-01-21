@@ -1,5 +1,6 @@
 import React from "react";
 import Home from "./Home";
+import Random from "./Random";
 import Navbar from "./Navbar";
 import Login from "./Login";
 import Bug from "./Bug";
@@ -29,6 +30,7 @@ function App() {
                         {login ? <MainPage/> : <Home/>}
                     </Route>
                     <Route path="/home" component={MainPage}/>
+                    <Route path="/random" component={Random}/>
                     <Route path="/user/:username" component={UserPage}/>
                     <Route path="/group/:groupname" component={GroupHome}/>
                     <Route path="/question/:question" component={TweetDetailPage}/>

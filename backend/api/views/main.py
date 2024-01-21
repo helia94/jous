@@ -240,7 +240,7 @@ def refresh_logout():
         return {"error": e}
 
 
-@api.route("/questions/<offset>")
+@api.route("/questions/<offset>", methods=["GET"])
 @api.route("/questions", defaults={"offset": "0"})
 def get_questions(offset):
     pageSize = 20
@@ -248,6 +248,13 @@ def get_questions(offset):
         .limit(pageSize).offset(pageSize * int(offset)).all()
     questions = list(reversed(questions))
     return jsoniy_questions((questions))
+
+
+
+@api.route("/question/random", methods=["GET"])
+def get_random_question():
+    random_question = Question.query.order_by(db.func.random()).first()
+    return return_question(random_question)
 
 
 @api.route("/userquestions/<offset>", methods=["POST"])
@@ -586,26 +593,32 @@ def read_activity(lastactivityid):
 def get_question(tid):
     try:
         q = Question.query.get(tid)
-        if q is not None:
-            return jsonify({
-                "question": {
-                    "id"          : q.id,
-                    "content"     : q.content,
-                    "username"    : q.user.username,
-                    "time"        : q.time,
-                    "reask_number": q.reask_number,
-                    "like_number" : q.like_number,
-                    "tags"        : q.tags,
-                    "likes"       : q.likes,
-                    "reasks"      : q.reasks,
-                },
-                "answers" : get_answers(q.id)
-            })
-        else:
-            return jsonify({"error": "invalid question id"})
+        return return_question(q)
     except Exception as e:
         logger.error(e)
         return jsonify({"success": "false"})
+
+
+def return_question(q):
+    if q is not None:
+        answers = get_answers(q.id)
+        return jsonify({
+            "question": {
+                "id": q.id,
+                "content": q.content,
+                "username": q.user.username,
+                "time": q.time,
+                "reask_number": q.reask_number,
+                "like_number": q.like_number,
+                "tags": q.tags,
+                "likes": q.likes,
+                "reasks": q.reasks,
+                "answer_number": len(answers)
+            },
+            "answers": answers
+        })
+    else:
+        return jsonify({"error": "invalid question id"})
 
 
 @api.route("/deletequestion/<tid>", methods=["DELETE"], endpoint="deleteQuestion")

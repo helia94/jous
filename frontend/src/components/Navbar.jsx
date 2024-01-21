@@ -33,6 +33,11 @@ function Navbar() {
         window.location.href = path;
     }
 
+    function routeToRandom() {
+        let path = "/random" ;
+        window.location.href = path;
+    }
+
     function getActivities() {
         if (activities.length === 0 && !checkedForActivities) {
             Axios.get("/api/useractivities", {
@@ -70,6 +75,7 @@ function Navbar() {
     let a = { name: x ? "Settings" : "Login", link: x ? "/settings" : "/login" }
     let b = { name: x ? "Logout" : "Register", link: x ? "/logout" : "/register" }
     let c = { name: "Report bugs", link: "/bug" }
+    let d = {name: "Random", link: "/random"}
     return (
         <div className="ui menu yellow">
             <a className="w3-bar-item w3-button" href="/">
@@ -127,6 +133,9 @@ function Navbar() {
                         </Button>
                     </Modal.Actions>
                 </Modal>
+                <a className="w3-bar-item w3-button" href={d.link}>
+                {<i class="random icon"></i>}
+                </a>
                 {x ? <a className="w3-bar-item w3-button" onClick={routeToUser}>
                     {<i class="user outline icon"></i>}
                 </a> : null}

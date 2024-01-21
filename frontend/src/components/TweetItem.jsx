@@ -25,6 +25,15 @@ class TweetItem extends React.Component {
         window.location.href = path;
     }
 
+    copyQuestionAddressToKeyboard = (e) => {
+        let host = window.location.host;
+        let path = host + "/question/" + this.props.id;
+        e.stopPropagation();
+        navigator.clipboard.writeText(path);
+        // auto closable notification that says copied
+        alert("Copied to clipboard");
+    }
+
     routeToAuthor = (e) => {
         e.stopPropagation();
         let path = "/user/" + this.props.author;
@@ -99,6 +108,11 @@ class TweetItem extends React.Component {
                             data-tooltip="post to group"
                             onClick={this.postToGroupClick}>
                             <i class="share icon"></i>
+                        </div>
+                        <div className="ui basic button"
+                            data-tooltip="share"
+                            onClick={this.copyQuestionAddressToKeyboard}>
+                            <i class="external share icon"></i>
                         </div>
                         {this.props.isOwner &&
                             <button className="ui basic button" onClick={this.deleteTweet}><i class="trash alternate outline icon"></i>
