@@ -35,7 +35,7 @@ function AnswerItem(props) {
     let [questionContent, setQuestionContent] = React.useState("");
 
     return (
-        <a className="ui fluid card" id={props.id}>
+        <div className="ui fluid card" id={props.id}>
             <div className="content">
                 <div class="right floated meta">{moment(props.time, 'ddd, DD MMM YYYY h:mm:ss').format('DD MMM')}</div>
                 <div class="left floated meta" onClick={(e) => routeToAuthor(e, props.author)}>{props.author}</div>
@@ -55,7 +55,7 @@ function AnswerItem(props) {
                 </button>
             </div>
             {showQuestion ? <div class="ui small message ">{questionContent}</div> : null}
-        </a >
+        </div >
     );
 }
 

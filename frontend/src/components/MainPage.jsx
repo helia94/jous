@@ -17,14 +17,18 @@ class MainPage extends React.Component {
             })
         });
         setTimeout(() => {
-            Axios.get("/api/getcurrentuser", {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem("token")}`
-                }
-            }).then(res => {
-                this.setState({ currentUser: res.data })
-            })
-        }, 500);
+            const token = localStorage.getItem("token");
+            if (token) {
+                Axios.get("/api/getcurrentuser", {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`
+                    }
+                }).then(res => {
+                    this.setState({ currentUser: res.data })
+                })
+            }
+        } , 500);
+    
 
         check().then(r => this.setState({ login: r }));
 

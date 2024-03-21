@@ -75,7 +75,7 @@ class TweetItem extends React.Component {
 
     render() {
         return (
-            <a className="ui fluid card" id={this.props.id} >
+            <div className="ui fluid card" id={this.props.id} >
                 <div className="content" onClick={this.routeToQuestion}>
                     <div class="right floated meta">
                         {moment(this.props.time, 'ddd, DD MMM YYYY h:mm:ss').format('DD MMM')}
@@ -91,18 +91,18 @@ class TweetItem extends React.Component {
                             <div class="ui button" onClick={this.likeTweet}>
                                 <i class="heart icon"></i>
                             </div>
-                            <a class="ui basic left pointing label">
+                            <div class="ui basic left pointing label">
                                 {this.props.likes + this.state.like}
-                            </a>
+                            </div>
                         </div>
                         <div class="ui labeled button" tabindex="0">
                             <div className="ui button"
                                 data-tooltip="answer"
                                 onClick={this.routeToQuestion}><i class="reply icon"></i>
                             </div>
-                            <a class="ui basic left pointing label">
+                            <div class="ui basic left pointing label">
                                 {this.props.answers}
-                            </a>
+                            </div>
                         </div>
                         <div className="ui basic button"
                             data-tooltip="post to group"
@@ -129,7 +129,7 @@ class TweetItem extends React.Component {
                     </form>
                     : null
                 }
-            </a >
+            </div >
         );
     }
 }

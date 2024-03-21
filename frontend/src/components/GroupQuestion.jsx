@@ -48,7 +48,7 @@ class GroupQuestion extends React.Component {
 
     render() {
         return (
-            <a className="ui card" id={this.props.question.id} >
+            <div className="ui card" id={this.props.question.id} >
                 <div className="content" onClick={this.routeToQuestion}>
                     <div class="right floated meta">{moment(this.props.question.time).format('d MMM')}</div>
                     <div class="left floated meta" onClick={this.routeToAuthor}>{this.props.question.author}</div>
@@ -84,7 +84,7 @@ class GroupQuestion extends React.Component {
                     </form>
                 }
                 </div>
-            </a >
+            </div >
 
         );
     }

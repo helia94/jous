@@ -47,7 +47,7 @@ function Navbar() {
             }).then(res => {
                 setActivities(res.data)
                 setCheckedForActivities(true)
-                setNotify(res.data.map((item, index) => item.read).some((element) => element == false))
+                setNotify(res.data.map((item, index) => item.read).some((element) => element === false))
             }).catch((error) => {
                 console.error({ error });
             });;
@@ -90,9 +90,9 @@ function Navbar() {
                     }}
                     open={open}
                     trigger={
-                        <a className="w3-bar-item w3-button">
+                        <div className="w3-bar-item w3-button">
                             {<span class="modal-btn"><i class={"lemon " + (notify ? "yellow" : "outline") + " icon"}></i></span>}
-                        </a>
+                        </div>
                     }
                 >
                     <Modal.Content image>
@@ -106,13 +106,13 @@ function Navbar() {
                                             </div>
                                             <div class="content" >
                                                 <div class="summary" >
-                                                    <a class="user" href={'/' + activityLink[item.type] + '/' + item.what}>
+                                                    <div class="user" href={'/' + activityLink[item.type] + '/' + item.what}>
                                                         {item.fromUid}
-                                                    </a> {activityMessage[item.type]}
-                                                    {item.type === "answer" ? "" : <a class="group">
+                                                    </div> {activityMessage[item.type]}
+                                                    {item.type === "answer" ? "" : <div class="group">
                                                         {item.what}
-                                                    </a>}
-                                                    {<a style={{ color: '#ffc107', alignItems: 'top' }}>{item.read ? null : '\u2022'}</a>}
+                                                    </div>}
+                                                    {<div style={{ color: '#ffc107', alignItems: 'top' }}>{item.read ? null : '\u2022'}</div>}
                                                     <div class="date">
                                                         {moment.utc(item.time, 'ddd, DD MMM YYYY h:mm:ss').fromNow()}
                                                     </div>

@@ -82,17 +82,17 @@ class UserPage extends React.Component {
                         <div class="ui yellow large header">{this.props.match.params.username}</div>
                     </div>
                     <div class="ui tabular menu">
-                        <a class={(this.state.active === "q" ? "active" : "") + " item"}
-                            onClick={this.toQuestions}>Questions</a>
-                        <a class={(this.state.active === "a" ? "active" : "") + " item"}
-                            onClick={this.toAnswers}>Answers</a>
+                        <div class={(this.state.active === "q" ? "active" : "") + " item"}
+                            onClick={this.toQuestions}>Questions</div>
+                        <div class={(this.state.active === "a" ? "active" : "") + " item"}
+                            onClick={this.toAnswers}>Answers</div>
                         {this.state.isOwener ?
-                            <a class={(this.state.active === "g" ? "active" : "") + " item"}
-                                onClick={this.toGroups}>Groups</a>
+                            <div class={(this.state.active === "g" ? "active" : "") + " item"}
+                                onClick={this.toGroups}>Groups</div>
                             : null}
                         {this.state.isOwener ?
-                            <a class={(this.state.active === "aq" ? "active" : "") + " item"}
-                                onClick={this.toAnswersToQuestion}>Answers to my questions</a>
+                            <div class={(this.state.active === "aq" ? "active" : "") + " item"}
+                                onClick={this.toAnswersToQuestion}>Answers to my questions</div>
                             : null}
                     </div>
                     <div class="ui feed">

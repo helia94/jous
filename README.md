@@ -6,34 +6,18 @@
 Set up the backend:
 
 ```shell
-cd backend
-python3 -m venv venv
-. venv/bin/activate
-pip install -r requirements.txt
+docker-compose up
 ```
 
-Create the database:
-```python
-$ python3 # open the shell
-import app
-app.db.create_all()
-```
-
-Run the application
-```shell script
-python manage.py runserver
-```
 
 Set up the frontend in a new terminal window:
 
 ```shell
 cd frontend
+set NODE_OPTIONS=--openssl-legacy-provider
 npm install
 npm start
 ```
-
-## run locally (alternative backend in docker)
-
 
 
 ## run as deployment would do
