@@ -21,14 +21,14 @@ class MainPage extends React.Component {
             if (token) {
                 Axios.get("/api/getcurrentuser", {
                     headers: {
-                        Authorization: `Bearer ${localStorage.getItem("token")}`
+                        Authorization: `Bearer ${token}`
                     }
                 }).then(res => {
                     this.setState({ currentUser: res.data })
                 })
             }
-        } , 500);
-    
+        }, 500);
+
 
         check().then(r => this.setState({ login: r }));
 
@@ -65,23 +65,17 @@ class MainPage extends React.Component {
         return (
             <React.Fragment>
                 <div class="ui basic segment" style={{ width: Math.min(this.state.width * 0.9, 700) }}>
-                    {this.state.login ?
-                        <div class="ui right dividing rail">
-
-                            <div className="ui olive button"
-                                onClick={() => {
-                                    document.getElementById("addTweet").style.display = "block"
-                                }}>
-                                Add a question
-                            </div>
-                            <AddGroup />
+                    <div class="ui right dividing rail">
+                        <div className="ui olive button"
+                            onClick={() => {
+                                document.getElementById("addTweet").style.display = "block"
+                            }}>
+                            Add a question
                         </div>
-                        : null}
+                        <AddGroup />
+                    </div>
                     <h1>Home</h1>
-                    {this.state.login ? <AddTweet /> :
-                        <div class="ui warning message">
-                            <p>Only logged-in users can ask and answer questions</p>
-                        </div>}
+                    <AddTweet/>
                     <div class="ui hidden divider"></div>
                     {
                         <InfiniteScroll
@@ -109,6 +103,7 @@ class MainPage extends React.Component {
                                             answers={item.answer_number}
                                             isOwner={this.state.currentUser.username === item.username}
                                             key={index}
+                                            isLoggedIn={this.state.login}
                                         />
                                     </div>
                                 );

@@ -104,11 +104,13 @@ class TweetItem extends React.Component {
                                 {this.props.answers}
                             </div>
                         </div>
-                        <div className="ui basic button"
-                            data-tooltip="post to group"
-                            onClick={this.postToGroupClick}>
-                            <i class="share icon"></i>
-                        </div>
+                        {this.props.isLoggedIn &&
+                            <div className="ui basic button"
+                                data-tooltip="post to group"
+                                onClick={this.postToGroupClick}>
+                                <i class="share icon"></i>
+                            </div>
+                        }
                         <div className="ui basic button"
                             data-tooltip="share"
                             onClick={this.copyQuestionAddressToKeyboard}>
@@ -119,7 +121,7 @@ class TweetItem extends React.Component {
                             </button>}
                     </div>
                 </div>
-                {this.state.showGroupNameForm ?
+                {this.props.isLoggedIn && this.state.showGroupNameForm &&
                     <form class="ui small form" onSubmit={this.handleSubmit}>
                         <div class="field" value={this.state.groupName} onChange={this.handleInputChange}>
                             <label>Group name</label>
@@ -127,7 +129,6 @@ class TweetItem extends React.Component {
                         </div>
                         <button type="submit" class="ui button">add</button>
                     </form>
-                    : null
                 }
             </div >
         );

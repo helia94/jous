@@ -1,31 +1,23 @@
-from flask_script import Manager
-from flask_migrate import Migrate, MigrateCommand
-
+from flask_migrate import Migrate
 from backend.api import create_app
 from backend.api.models import db
 
-# sets up the app
-
 app, jwt = create_app()
 
-manager = Manager(app)
+# Initialize Flask-Migrate
 migrate = Migrate(app, db)
 
-# adds the python manage.py db init, db migrate, db upgrade commands
-manager.add_command("db", MigrateCommand)
-
-
-@manager.command
-def runserver():
+@app.cli.command("runserver")
+def run_server():
+    """Run the Flask development server."""
     app.run(debug=True, host="0.0.0.0", port=5000)
 
-
-@manager.command
-def runworker():
+@app.cli.command("runworker")
+def run_worker():
+    """Run a worker."""
     app.run(debug=False)
 
-
-@manager.command
+@app.cli.command("recreate_db")
 def recreate_db():
     """
     Recreates a database. This should only be used once
@@ -36,11 +28,10 @@ def recreate_db():
     db.create_all()
     db.session.commit()
 
-
-@manager.command
+@app.cli.command("create_all")
 def create_all():
+    """Create all database tables."""
     db.create_all()
 
-
 if __name__ == "__main__":
-    manager.run()
+    app.run()

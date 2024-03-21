@@ -153,14 +153,19 @@ def react_index():
 @api.route("/login", methods=["POST"])
 def login():
     try:
+        logger.info(request.json)
         emailorusername = request.json["email"]
         password = request.json["pwd"]
         if emailorusername and password:
             user = list(filter(lambda x: (x["email"] == emailorusername or x["username"] == emailorusername) and security.checkpwd(password, x["password"]), get_user_auths()))
             # Check if user exists
             if len(user) == 1:
-                token = create_access_token(identity=user[0]["id"])
+                logger.info("one user")
+                logger.info(user[0]["id"])
+                token = create_access_token(identity=str(user[0]["id"]))
+                logger.info(token)
                 refresh_token = create_refresh_token(identity=user[0]["id"])
+                logger.info(refresh_token)
                 return jsonify({"token": token, "refreshToken": refresh_token})
             else:
                 logger.info("pass and user do not match")
@@ -199,11 +204,11 @@ def register():
         logger.error(e)
         return jsonify({"error": str(e)})
 
-
 @api.route("/checkiftokenexpire", methods=["POST"], endpoint="checkiftokenexpire")
-@jwt_required()
+@jwt_required
 def check_if_token_expire():
     return jsonify({"success": True})
+
 
 
 @api.route("/refreshtoken", methods=["POST"], endpoint="refreshtoken")
@@ -215,7 +220,7 @@ def refresh():
 
 
 @api.route("/logout/access", methods=["POST"], endpoint="logout_access")
-@jwt_required()
+@jwt_required
 def access_logout():
     jti = get_jwt()["jti"]
     try:
@@ -228,7 +233,7 @@ def access_logout():
 
 
 @api.route("/logout/refresh", methods=["POST"], endpoint="access_refresh")
-@jwt_required()
+@jwt_required
 def refresh_logout():
     jti = get_jwt()["jti"]
     try:
@@ -271,7 +276,7 @@ def get_user_questions(offset):
 
 @api.route("/groupquestions/<groupname>", methods=["GET"], defaults={"offset": "0"})
 @api.route("/groupquestions/<groupname>/<offset>", methods=["GET"])
-@jwt_required()
+@jwt_required
 def get_group_questions(groupname, offset):
     pageSize = 20
     group = get_group_id(groupname)
@@ -297,16 +302,17 @@ def get_group_questions(groupname, offset):
 
 
 @api.route("/addquestion", methods=["POST"], endpoint="addQuestion")
-@jwt_required()
+@jwt_required(optional=True)
 def add_question():
     try:
         content = request.json["content"]
         anon = request.json["anon"]
         if not content:
             return jsonify({"error": "Invalid form"})
-        uid = get_jwt_identity()
         if anon == "True":
             uid = get_uid_hannah()
+        else:
+            uid = get_jwt_identity()
         question = Question(uid, content, [])
         success = commit_db(question)
         questions = User.query.get(uid).questions
@@ -322,8 +328,9 @@ def add_question():
         return jsonify({"error": e})
 
 
+
 @api.route("/addanswer", methods=["POST"], endpoint="addanswer")
-@jwt_required()
+@jwt_required(optional=True)
 def add_answer():
     try:
         content = request.json["content"]
@@ -332,14 +339,12 @@ def add_answer():
         groupname = request.json.get("group")
         if not content and question:
             return jsonify({"error": "Invalid form"})
-        uid = get_jwt_identity()
+        if anon == "True":
+            uid = get_uid_hannah()
+        else:
+            uid = get_jwt_identity()
         if not groupname:
-            if anon == "True":
-                uid = get_uid_hannah()
-                answer = PublicAnswer(uid, question, content)
-
-            else:
-                answer = PublicAnswer(uid, question, content)
+            answer = PublicAnswer(uid, question, content)
             activity_type = "answer"
             what = question
         else:
@@ -385,7 +390,7 @@ def add_activity_to_db(toUid, uid, activity_type, what):
 
 
 @api.route("/addgroup", methods=["POST"], endpoint="addgroup")
-@jwt_required()
+@jwt_required
 def add_group():
     try:
         name = request.json["name"]
@@ -420,7 +425,7 @@ def add_group():
 
 
 @api.route("/adduserstogroup", methods=["POST"], endpoint="adduserstogroup")
-@jwt_required()
+@jwt_required
 def add_user_to_group():
     try:
         name = request.json["name"]
@@ -452,7 +457,7 @@ def add_user_to_group():
 
 
 @api.route("/addquestiontogroup", methods=["POST"], endpoint="addquestiongroup")
-@jwt_required()
+@jwt_required
 def add_question_to_group():
     try:
         name = request.json["name"]
@@ -471,7 +476,7 @@ def add_question_to_group():
 
 
 @api.route("/removeuserfromgroup", methods=["POST"], endpoint="removeuserfromgroup")
-@jwt_required()
+@jwt_required
 def remove_user_from_group():
     try:
         name = request.json["name"]
@@ -495,7 +500,7 @@ def remove_user_from_group():
         return jsonify({"error": e})
 
 
-@api.route("/useranswers", methods=["POST"])
+@api.route("/useranswers", methods=["POST"], endpoint="useranswers")
 def get_user_answers():
     username = request.json["username"]
     try:
@@ -512,8 +517,8 @@ def get_user_answers():
         return jsonify({"success": "false"})
 
 
-@api.route("/useranswerstoquestions", methods=["GET"])
-@jwt_required()
+@api.route("/useranswerstoquestions", methods=["GET"], endpoint="useranswerstoquestions")
+@jwt_required
 def get_answers_to_user_question():
     try:
         uid = get_jwt_identity()
@@ -532,8 +537,8 @@ def get_answers_to_user_question():
         return jsonify({"success": "false"})
 
 
-@api.route("/usergroups", methods=["POST"])
-@jwt_required()
+@api.route("/usergroups", methods=["POST"], endpoint="usergroups")
+@jwt_required
 def get_user_groups():
     username = request.json["username"]
     uid = get_uid(username)
@@ -549,8 +554,8 @@ def get_user_groups():
         return jsonify({"success": "false"})
 
 
-@api.route("/useractivities", methods=["GET"])
-@jwt_required()
+@api.route("/useractivities", methods=["GET"], endpoint="useractivites")
+@jwt_required
 def get_user_activity():
     uid = get_jwt_identity()
     try:
@@ -571,8 +576,8 @@ def get_user_activity():
         return jsonify({"success": "false"})
 
 
-@api.route("/readuseractivity/<lastactivityid>", methods=["GET"])
-@jwt_required()
+@api.route("/readuseractivity/<lastactivityid>", methods=["GET"], endpoint="readuseractivity")
+@jwt_required
 def read_activity(lastactivityid):
     uid = get_jwt_identity()
     try:
@@ -622,7 +627,7 @@ def return_question(q):
 
 
 @api.route("/deletequestion/<tid>", methods=["DELETE"], endpoint="deleteQuestion")
-@jwt_required()
+@jwt_required
 def delete_question(tid):
     try:
         PublicAnswer.query.filter(PublicAnswer.question==tid).delete()
@@ -643,7 +648,7 @@ def like_question(tid):
 
 
 @api.route("/deleteanswer/<tid>", methods=["DELETE"], endpoint="deleteAnswer")
-@jwt_required()
+@jwt_required
 def delete_answer(tid):
     try:
         answer = PublicAnswer.query.get(tid)
@@ -657,7 +662,7 @@ def delete_answer(tid):
 
 
 @api.route("/deletegroup/<tid>", methods=["DELETE"], endpoint="deletegroup")
-@jwt_required()
+@jwt_required
 def delete_group(tid):
     try:
         group = Group.query.get(tid)
@@ -671,7 +676,7 @@ def delete_group(tid):
 
 
 @api.route("/getcurrentuser", endpoint="getcurrentuser")
-@jwt_required()
+@jwt_required
 def get_current_user():
     uid = get_jwt_identity()
     user_auths = UserAuth.query.all()
@@ -683,7 +688,7 @@ def get_current_user():
 
 
 @api.route("/changepassword", methods=["POST"], endpoint="changepassword")
-@jwt_required()
+@jwt_required
 def change_password():
     try:
         userAuth = UserAuth.query.get(get_jwt_identity())
@@ -701,7 +706,7 @@ def change_password():
 
 
 @api.route("/deleteaccount", methods=["DELETE"], endpoint="deleteaccount")
-@jwt_required()
+@jwt_required
 def delete_account():
     try:
         user = User.query.get(get_jwt_identity())
@@ -712,7 +717,3 @@ def delete_account():
     except Exception as e:
         return jsonify({"error": str(e)})
 
-# @jwt.token_in_blacklist_loader
-# def check_if_blacklisted_token(decrypted):
-#     jti = decrypted["jti"]
-#     return InvalidToken.is_invalid(jti)

@@ -2,7 +2,23 @@ import React from "react";
 import Axios from "axios";
 
 class AddTweet extends React.Component {
-    state = { content: "", titleErr: "", contentErr: "", formErr: "", anon: "False" }
+    state = { content: "", titleErr: "", contentErr: "", formErr: "", anon: "False" , isLoggedIn: false}
+
+    componentDidMount() {
+
+        setTimeout(() => {
+            const token = localStorage.getItem("token");
+            if (token) {
+                Axios.get("/api/getcurrentuser", {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }).then(res => {
+                    this.setState({ isLoggedIn: true })
+                })
+            }
+        }, 20)
+    }
 
     handleInputChange = (e) => {
         e.preventDefault();
@@ -57,7 +73,7 @@ class AddTweet extends React.Component {
                             <textarea rows="3"></textarea>
                         </div>
                         <div class="ui mini buttons">
-                            <button type="submit" class="ui olive  submit icon button" value="post" onClick={() => (this.setState({ anon: 'False' }))}><i class="icon edit"></i></button>
+                            {this.state.isLoggedIn && <button type="submit" class="ui olive  submit icon button" value="post" onClick={() => (this.setState({ anon: 'False' }))}><i class="icon edit"></i></button>}
                             <button type="submit" class="ui olive  submit icon button" onClick={() => (this.setState({ anon: 'True' }))}><i class="user secret icon"></i></button>
                         </div>
                     </form>

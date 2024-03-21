@@ -1,6 +1,5 @@
 import os
 import logging
-
 from flask import Flask, request
 from flask_cors import CORS
 from flask_migrate import Migrate
@@ -8,7 +7,7 @@ from sqlalchemy_utils import create_database, database_exists
 from flask_jwt_extended import JWTManager
 from backend.api.config import config
 from backend.api.core import all_exception_handler
-
+import sys
 
 class RequestFormatter(logging.Formatter):
     def format(self, record):
@@ -16,80 +15,62 @@ class RequestFormatter(logging.Formatter):
         record.remote_addr = request.remote_addr
         return super().format(record)
 
-
-# why we use application factories http://flask.pocoo.org/docs/1.0/patterns/appfactories/#app-factories
 def create_app(test_config=None):
     """
-    The flask application factory. To run the app somewhere else you can:
-    ```
-    from api import create_app
-    app = create_app()
-
-    if __main__ == "__name__":
-        app.run()
+    Creates and configures the Flask application.
     """
     app = Flask(__name__)
 
-    CORS(app)  # add CORS
+    # Setup CORS
+    CORS(app)
 
-    # check environment variables to see which config to load
+    # Determine the environment and load the appropriate configuration
     env = os.environ.get("FLASK_ENV", "dev")
-    # for configuration options, look at api/config.py
     if test_config:
-        # purposely done so we can inject test configurations
-        # this may be used as well if you'd like to pass
-        # in a separate configuration although I would recommend
-        # adding/changing it in api/config.py instead
-        # ignore environment variable config if config was given
         app.config.from_mapping(**test_config)
     else:
-        app.config.from_object(config[env])  # config dict is from api/config.py
+        app.config.from_object(config[env])
 
-    # logging
+
+    # Setup logging
     formatter = RequestFormatter(
         "%(asctime)s %(remote_addr)s: requested %(url)s: %(levelname)s in [%(module)s: %(lineno)d]: %(message)s"
     )
-    if app.config.get("LOG_FILE"):
-        fh = logging.FileHandler(app.config.get("LOG_FILE"))
-        fh.setLevel(logging.DEBUG)
-        fh.setFormatter(formatter)
-        app.logger.addHandler(fh)
 
-    strm = logging.StreamHandler()
-    strm.setLevel(logging.DEBUG)
-    strm.setFormatter(formatter)
-
-    app.logger.addHandler(strm)
+    # Configure logging to output to stdout explicitly
+    stream_handler = logging.StreamHandler(sys.stdout)  # Change to sys.stdout
+    stream_handler.setLevel(logging.DEBUG)
+    stream_handler.setFormatter(formatter)
+    app.logger.addHandler(stream_handler)
     app.logger.setLevel(logging.DEBUG)
 
-    root = logging.getLogger("core")
-    root.addHandler(strm)
+    root = logging.getLogger()
+    root.addHandler(stream_handler)
+    root.setLevel(logging.DEBUG)
 
-    # decide whether to create database
+
+    # Setup database (if not in production and database does not exist)
     if env != "prod":
         db_url = app.config["SQLALCHEMY_DATABASE_URI"]
         if not database_exists(db_url):
             create_database(db_url)
 
-    # register sqlalchemy to this app
+    # Initialize SQLAlchemy
     from backend.api.models import db
-
-    db.init_app(app)  # initialize Flask SQLALchemy with this flask app
+    db.init_app(app)
     Migrate(app, db)
 
-    # import and register blueprints
+    # Register blueprints
     from backend.api.views import main
 
-    # why blueprints http://flask.pocoo.org/docs/1.0/blueprints/
     app.register_blueprint(main.api, url_prefix="/api")
 
-    # register error Handler
+
+    # Register error handler
     app.register_error_handler(Exception, all_exception_handler)
 
-
-    #jwt
+    # Setup JWT
     app.config["JWT_SECRET_KEY"] = "myawesomesecretisnevergonnagiveyouup"
-    # app.config["JWT_BLACKLIST_ENABLED"] = True
-    # app.config["JWT_BLACKLIST_TOKEN_CHECKS"] = ["access", "refresh"]
     jwt = JWTManager(app)
+
     return app, jwt
