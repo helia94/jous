@@ -36,14 +36,17 @@ class AddTweet extends React.Component {
             return;
         }
         console.log("will try to add your tweet")
+        const config = {
+            headers: {}
+        };
+        
+        if (this.state.isLoggedIn) {
+            config.headers['Authorization'] = "Bearer " + localStorage.getItem("token");
+        }
         Axios.post("/api/addquestion", {
             content: this.state.content,
             anon: this.state.anon
-        }, {
-            headers: {
-                Authorization: "Bearer " + localStorage.getItem("token")
-            }
-        }).then(res => {
+        }, config).then(res => {
             if (res.data.success) {
                 window.location.reload()
                 console.log("added tweet")

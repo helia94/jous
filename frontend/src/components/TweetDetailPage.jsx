@@ -32,15 +32,18 @@ class TweetDetailPage extends React.Component {
 
     handleFormSubmit = (e) => {
         e.preventDefault();
+        const config = {
+            headers: {}
+        };
+        
+        if (this.state.isLoggedIn) {
+            config.headers['Authorization'] = "Bearer " + localStorage.getItem("token");
+        }
         Axios.post("/api/addanswer", {
             content: this.state.newAnswer,
             anon: this.state.anon,
             question: this.props.match.params.question
-        }, {
-            headers: {
-                Authorization: "Bearer " + localStorage.getItem("token")
-            }
-        }).then(res => {
+        }, config).then(res => {
             if (res.data.success) {
                 window.location.reload()
                 console.log("added answer")

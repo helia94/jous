@@ -14,15 +14,22 @@ class UserPage extends React.Component {
             this.setState({ questions: res.data.reverse() })
         });
         setTimeout(() => {
-            Axios.get("/api/getcurrentuser", {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem("token")}`
-                }
-            }).then(res => {
+            const config = {
+                headers: {}
+            };
+            
+            if (this.state.isLoggedIn) {
+                config.headers['Authorization'] = "Bearer " + localStorage.getItem("token");
+            }
+            Axios.get("/api/getcurrentuser", 
+            config
+            ).then(res => {
                 this.setState({
                     currentUser: res.data,
                     isOwener: res.data.username === this.props.match.params.username
                 })
+            }).catch(error => {
+                console.error("Error fetching current user:", error);
             })
         }, 500)
         

@@ -4,9 +4,6 @@ from backend.api.models import db
 
 app, jwt = create_app()
 
-# Initialize Flask-Migrate
-migrate = Migrate(app, db)
-
 @app.cli.command("runserver")
 def run_server():
     """Run the Flask development server."""
@@ -34,4 +31,4 @@ def create_all():
     db.create_all()
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True, host="0.0.0.0", port=5000)

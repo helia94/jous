@@ -139,6 +139,16 @@ def jsoniy_questions(questions):
                      }
                     for i in questions])
 
+@api.route("/ping")
+def ping():
+    return "pong"
+
+@api.route("/error")
+def log_error():
+    logger.error("testing log error")
+    return "check logs"
+
+
 
 @api.route("/<a>")
 def react_routes(a):
@@ -205,7 +215,7 @@ def register():
         return jsonify({"error": str(e)})
 
 @api.route("/checkiftokenexpire", methods=["POST"], endpoint="checkiftokenexpire")
-@jwt_required
+@jwt_required()
 def check_if_token_expire():
     return jsonify({"success": True})
 
@@ -258,6 +268,7 @@ def get_questions(offset):
 
 @api.route("/question/random", methods=["GET"])
 def get_random_question():
+    logger.error("random question")
     random_question = Question.query.order_by(db.func.random()).first()
     return return_question(random_question)
 
@@ -305,6 +316,7 @@ def get_group_questions(groupname, offset):
 @jwt_required(optional=True)
 def add_question():
     try:
+        logger.info("addquestion")
         content = request.json["content"]
         anon = request.json["anon"]
         if not content:
@@ -676,15 +688,18 @@ def delete_group(tid):
 
 
 @api.route("/getcurrentuser", endpoint="getcurrentuser")
-@jwt_required
+@jwt_required()
 def get_current_user():
     uid = get_jwt_identity()
-    user_auths = UserAuth.query.all()
-    user_auth = list(filter(lambda x: x.id == uid, user_auths))[0]
-    return jsonify({"id"      : user_auth.id,
-                    "username": user_auth.username,
-                    "email"   : user_auth.email,
-                    "password": user_auth.pwd})
+    user_auth = UserAuth.query.filter_by(id=uid).first()
+    if not user_auth:
+        return jsonify({"error": "User not found"}), 404
+    return jsonify({
+        "id": user_auth.id,
+        "username": user_auth.username,
+        "email": user_auth.email
+    })
+
 
 
 @api.route("/changepassword", methods=["POST"], endpoint="changepassword")

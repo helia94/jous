@@ -17,17 +17,23 @@ class MainPage extends React.Component {
             })
         });
         setTimeout(() => {
-            const token = localStorage.getItem("token");
-            if (token) {
+            if (this.state.login) {
                 Axios.get("/api/getcurrentuser", {
                     headers: {
-                        Authorization: `Bearer ${token}`
+                        Authorization: `Bearer ${localStorage.getItem("token")}`
                     }
                 }).then(res => {
-                    this.setState({ currentUser: res.data })
-                })
+                    if (res.status === 200) {
+                        this.setState({ currentUser: res.data });
+                    } else {
+                        console.log("could not get current user");
+                    }
+                }).catch(error => {
+                    console.error("Error fetching current user:", error);
+                });
             }
         }, 500);
+        
 
 
         check().then(r => this.setState({ login: r }));
