@@ -1,3 +1,3 @@
 #!/bin/bash
-#python backend/manage.py recreate_db
+python backend/manage.py create_all
 python backend/manage.py runserver

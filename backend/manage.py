@@ -21,14 +21,18 @@ def recreate_db():
     when there's a new database instance. This shouldn't be
     used when you migrate your database.
     """
-    db.drop_all()
-    db.create_all()
-    db.session.commit()
+    with app.app_context():
+        db.drop_all()
+        db.create_all()
+        db.session.commit()
 
 @app.cli.command("create_all")
 def create_all():
     """Create all database tables."""
-    db.create_all()
+    with app.app_context():
+        db.create_all()
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5000)
+    with app.app_context():
+        db.create_all()
