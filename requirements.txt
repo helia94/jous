@@ -10,7 +10,6 @@ flask-api
 flask-caching
 flask_jwt_extended==4.6.0
 gunicorn>=20.1.0  
-psycopg2-binary
 python-dotenv==0.19.2 
 sqlalchemy-utils==0.41.1 
 sqlalchemy==2.0.28  

@@ -7,6 +7,9 @@ DO NOT HARD CODE YOUR PRODUCTION URLS EVER. Either use creds.ini or use environm
 """
 import os
 from backend.api.core import get_pg_url
+import re
+
+# rest of connection code using the connection string `uri`
 
 # more configuration options here http://flask.pocoo.org/docs/1.0/config/
 class Config:
@@ -47,9 +50,10 @@ class ProductionConfig(Config):
     Requires the environment variable `FLASK_ENV=prod`
     """
 
-    SQLALCHEMY_DATABASE_URI = os.environ.get(
-        "DATABASE_URL"
-    )  # you may do the same as the development config but this currently gets the database URL from an env variable
+    uri = os.getenv("DATABASE_URL")  # or other relevant config var
+    if uri and uri.startswith("postgres://"):
+        uri = uri.replace("postgres://", "postgresql://", 1)
+    SQLALCHEMY_DATABASE_URI = uri
     DEBUG = False
 
 
