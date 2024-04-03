@@ -21,7 +21,8 @@ function Home() {
             <div class="ui container">
                 <h2>About Jous</h2>
                 <p>
-                    Hi, I'm glad you found your way here. I'm Helia from Karlsruhe, and I made Jous [just pronounced like juice], mainly for myself, but also for my friends and other people trying to avoid small talk as much as possible. It is an app for collecting and sharing questions to start a conversation with.</p>
+                    Hi, I'm glad you found your way here. I'm Helia from Karlsruhe, and I made Jous [just pronounced like juice], mainly for myself, but also for my friends and other people trying to avoid small talk as much as possible. It is an app for collecting and sharing questions to start a conversation with.
+                </p>
                 <p>
                     Yes, this is a website for questions, and no, it is not like Reddit. Okay, let me explain more. Let's say, that to be able to answer a question, you should either look inward, inside yourself, or outside in the world. Jous is the place only for the first type of questions. You will not find questions like <i>"what's the best budget fitness tracker?"</i> rather Like <i>"What do you often deny yourself?"</i>
                 </p>
