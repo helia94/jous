@@ -1,0 +1,30 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Styles for screens wider than 600px */
+@media (min-width: 600px) {
+    .container {
+      flex-direction: row;
+    }
+  }
+  
+  /* Styles for screens smaller than 600px */
+  @media (max-width: 599px) {
+    .button {
+      width: 90%; /* Make buttons wider on smaller screens */
+    }
+  }
+
+  
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .header {
+    font-size: 4vw;
+  }
+  
