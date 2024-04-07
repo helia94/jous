@@ -34,13 +34,13 @@ function Homev2() {
 
     const gridButtonsPosition = {
         position: 'absolute',
-        bottom: '15%',
+        bottom: windowWidth < 768 ? '25%' : '15%',
         left: '50%',
         transform: 'translateX(-50%)'
     };
 
     const buttonStyle = {
-        backgroundColor: 'rgba(0, 0, 0, 0.2)',
+        backgroundColor: 'rgba(0, 0, 0, 0.35)',
         color: '#FFFFFF',
         padding: '10px 10px',
         fontSize: windowWidth < 768 ? '14px' : '24px',
@@ -66,13 +66,13 @@ function Homev2() {
                 <div className="ui center aligned inverted segment transparent-yellow">
                     <h1 className="w3-jumbo">Jous</h1>
                 </div>
-                    <div style={gridButtonsPosition}>
-                        <Grid textAlign='center' columns='equal'  stackable >
-                            <Grid.Row stretched>
-                            <Grid.Column >
-                                {/* Modal Trigger */}
+                <div style={gridButtonsPosition}>
+                    <Grid textAlign='center' columns='equal' stackable >
+                        <Grid.Row stretched>
+                            {/*<Grid.Column >
+                                 Modal Trigger 
                                 <Button fluid style={buttonStyle} onClick={toggleHey} >Hey There!</Button>
-                            </Grid.Column>
+                            </Grid.Column>*/}
                             <Grid.Column >
                                 {/* Questions Modal Trigger */}
                                 <Button fluid style={buttonStyle} onClick={toggleAbout} >About Jous</Button>
@@ -85,89 +85,94 @@ function Homev2() {
                                 {/* Questions Modal Trigger */}
                                 <Button fluid style={buttonStyle} onClick={toggleWrite} >Be a creator</Button>
                             </Grid.Column>
-                            </Grid.Row>
-                        </Grid>
-                    </div>
-                    {/* Hi Modal */}
-                    <Modal open={isHeyModalOpen} onClose={toggleHey} closeIcon centered={false} className="animated-modal">
-                        <Modal.Header>Hey</Modal.Header>
-                        <Modal.Content scrolling>
-                            <Modal.Description>
-                                {
+                        </Grid.Row>
+                    </Grid>
+                </div>
+                {/* Hi Modal */}
+                <Modal open={isHeyModalOpen} onClose={toggleHey} closeIcon centered={false} className="animated-modal">
+                    <Modal.Header>Hey</Modal.Header>
+                    <Modal.Content scrolling>
+                        <Modal.Description>
+                            {
+                                <p>
+                                    Hi, I'm glad you found your way here. I'm Helia from Karlsruhe, and I made Jous [just pronounced like juice], mainly for myself, but also for my friends and other people trying to avoid small talk as much as possible. It is an app for collecting and sharing questions to start a conversation with.
+                                </p>
+                            }
+                        </Modal.Description>
+                    </Modal.Content>
+                </Modal>
+
+                {/* About Modal */}
+                <Modal open={isAboutModalOpen} onClose={toggleAbout} closeIcon centered={false} className="animated-modal">
+                    <Modal.Header>About Jous</Modal.Header>
+                    <Modal.Content scrolling>
+                        <Modal.Description>
+                            {
+                                <div>
                                     <p>
                                         Hi, I'm glad you found your way here. I'm Helia from Karlsruhe, and I made Jous [just pronounced like juice], mainly for myself, but also for my friends and other people trying to avoid small talk as much as possible. It is an app for collecting and sharing questions to start a conversation with.
                                     </p>
-                                }
-                            </Modal.Description>
-                        </Modal.Content>
-                    </Modal>
-
-                    {/* About Modal */}
-                    <Modal open={isAboutModalOpen} onClose={toggleAbout} closeIcon centered={false} className="animated-modal">
-                        <Modal.Header>About Jous</Modal.Header>
-                        <Modal.Content scrolling>
-                            <Modal.Description>
-                                {
                                     <p>
                                         Yes, this is a website for questions, and no, it is not like Reddit. Okay, let me explain more. Let's say, that to be able to answer a question, you should either look inward, inside yourself, or outside in the world. Jous is the place only for the first type of questions. You will not find questions like <i>"what's the best budget fitness tracker?"</i> rather Like <i>"What do you often deny yourself?"</i>
                                     </p>
-                                }
-                            </Modal.Description>
-                        </Modal.Content>
-                    </Modal>
+                                </div>
+                            }
+                        </Modal.Description>
+                    </Modal.Content>
+                </Modal>
 
-                    {/* read Modal */}
-                    <Modal open={isReadModalOpen} onClose={toggleRead} closeIcon centered={false} className="animated-modal">
-                        <Modal.Header>Lets help you avoid small talk</Modal.Header>
-                        <Modal.Content scrolling>
-                            <Modal.Description>
-                                {
-                                    <div>
-                                        <p>
-                                            So what can you do here? Next time you meet your friends and family, or you are on a date and you cannot fill the silence, you can use Jous questions for some nice questions. This is like one of those play cards you can buy, but I promise you, here is less cheesy. Either scroll through all questions posted by different people or use random mode to find a question to start a conversation. No Login is required.
-                                        </p>
-                                        <div class="ui buttons">
-                                            <div className="ui yellow button"
-                                                onClick={() => (window.location = "/home")}>
-                                                all questions
-                                            </div>
-                                            <div className="ui yellow button"
-                                                onClick={() => (window.location = "/random")}>
-                                                random question
-                                            </div>
+                {/* read Modal */}
+                <Modal open={isReadModalOpen} onClose={toggleRead} closeIcon centered={false} className="animated-modal">
+                    <Modal.Header>Lets help you avoid small talk</Modal.Header>
+                    <Modal.Content scrolling>
+                        <Modal.Description>
+                            {
+                                <div>
+                                    <p>
+                                        So what can you do here? Next time you meet your friends and family, or you are on a date and you cannot fill the silence, you can use Jous for some nice questions. This is like one of those play cards you can buy, but I promise you, here is less cheesy. Either scroll through all questions posted by different people or use random mode to find a question. No Login is required.
+                                    </p>
+                                    <div class="ui buttons">
+                                        <div className="ui yellow button"
+                                            onClick={() => (window.location = "/home")}>
+                                            all questions
+                                        </div>
+                                        <div className="ui yellow button"
+                                            onClick={() => (window.location = "/random")}>
+                                            random question
                                         </div>
                                     </div>
-                                }
-                            </Modal.Description>
-                        </Modal.Content>
-                    </Modal>
+                                </div>
+                            }
+                        </Modal.Description>
+                    </Modal.Content>
+                </Modal>
 
-                    {/* write Modal */}
-                    <Modal open={isWriteModalOpen} onClose={toggleWrite} closeIcon centered={false} className="animated-modal">
-                        <Modal.Header>I cant wait to read your questions</Modal.Header>
-                        <Modal.Content scrolling>
-                            <Modal.Description>
-                                {
-                                    <div>
-                                        <p>
-                                            If you want to add your own questions and contribute to the list so everybody can use them, write them down in your name or in an anonymous mode. You can also answer questions from yourself or others. Everyone can contribute in anonymous mode without login, but if you want to see your questions later under your name, you need to register, any ID will do, no emails are required.
-                                        </p>
-                                        <div class="ui buttons">
-                                            <div className="ui grey button"
-                                                onClick={() => (window.location = "/login")}>
-                                                Login
-                                            </div>
-                                            <div className="ui grey button"
-                                                onClick={() => (window.location = "/register")}>
-                                                Register
-                                            </div>
+                {/* write Modal */}
+                <Modal open={isWriteModalOpen} onClose={toggleWrite} closeIcon centered={false} className="animated-modal">
+                    <Modal.Header>I cant wait to read your questions</Modal.Header>
+                    <Modal.Content scrolling>
+                        <Modal.Description>
+                            {
+                                <div>
+                                    <p>
+                                        If you want to add your own questions and contribute to the list so everybody can use them, write them down in your name or in an anonymous mode. You can also answer questions from yourself or others. Everyone can contribute in anonymous mode without login, but if you want to see your questions later under your name, you need to register, any ID will do, no emails are required.
+                                    </p>
+                                    <div class="ui buttons">
+                                        <div className="ui grey button"
+                                            onClick={() => (window.location = "/login")}>
+                                            Login
+                                        </div>
+                                        <div className="ui grey button"
+                                            onClick={() => (window.location = "/register")}>
+                                            Register
                                         </div>
                                     </div>
-                                }
-                            </Modal.Description>
-                        </Modal.Content>
-                    </Modal>
-                </div>
+                                </div>
+                            }
+                        </Modal.Description>
+                    </Modal.Content>
+                </Modal>
+            </div>
         </React.Fragment>
     );
 }
