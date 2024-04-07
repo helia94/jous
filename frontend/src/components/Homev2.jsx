@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { Modal, Button, Grid } from 'semantic-ui-react';
 import 'semantic-ui-css/semantic.min.css';
@@ -6,6 +6,19 @@ import './Homev2.css';
 
 
 function Homev2() {
+
+    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+    const handleWindowSizeChange = () => {
+        setWindowWidth(window.innerWidth);
+    };
+
+    useEffect(() => {
+        window.addEventListener('resize', handleWindowSizeChange);
+        return () => {
+            window.removeEventListener('resize', handleWindowSizeChange);
+        };
+    }, []);
 
     const backgroundStyle = {
         backgroundImage: `url(./jous-awkwart.jpg)`,
@@ -15,6 +28,7 @@ function Homev2() {
         height: '100vh',
         width: '100vw',
         position: 'relative',
+        padding: '15px 20px 5px 10px', // top right bottom left
     };
 
 
@@ -26,8 +40,11 @@ function Homev2() {
     };
 
     const buttonStyle = {
-        backgroundColor: 'rgba(0, 0, 0, 0.2)', // Adjust the RGB values as needed for your desired color
-        color: '#FFFFFF', // Solid text color
+        backgroundColor: 'rgba(0, 0, 0, 0.2)',
+        color: '#FFFFFF',
+        padding: '10px 10px',
+        fontSize: windowWidth < 768 ? '14px' : '24px',
+        textShadow: '0px 1px 2px rgba(0, 0, 0, 0.3)'
     };
 
     const [isHeyModalOpen, setIsHeyModalOpen] = useState(false);
@@ -46,23 +63,30 @@ function Homev2() {
                 {/* Helmet content remains the same */}
             </Helmet>
             <div style={backgroundStyle}>
-                <div className="ui center aligned yellow inverted segment">
+                <div className="ui center aligned inverted segment transparent-yellow">
                     <h1 className="w3-jumbo">Jous</h1>
                 </div>
-                <div className="ui container">
-                <div style={gridButtonsPosition}>
-                    <Grid stackable>
-                        <Grid.Column width={16}>
-                            {/* Modal Trigger */}
-                                <Button style={buttonStyle} onClick={toggleHey} className="ui huge yellow button">Hey There!</Button>
-                            {/* Questions Modal Trigger */}
-                                <Button style={buttonStyle} onClick={toggleAbout} className="ui huge yellow button">About Jous</Button>
-                            {/* Questions Modal Trigger */}
-                                <Button style={buttonStyle} onClick={toggleRead} className="ui huge yellow button">Avoid small talk</Button>
-                            {/* Questions Modal Trigger */}
-                                <Button style={buttonStyle} onClick={toggleWrite} className="ui huge yellow button">Be a creator</Button>
-                        </Grid.Column>
-                    </Grid>
+                    <div style={gridButtonsPosition}>
+                        <Grid textAlign='center' columns='equal'  stackable >
+                            <Grid.Row stretched>
+                            <Grid.Column >
+                                {/* Modal Trigger */}
+                                <Button fluid style={buttonStyle} onClick={toggleHey} >Hey There!</Button>
+                            </Grid.Column>
+                            <Grid.Column >
+                                {/* Questions Modal Trigger */}
+                                <Button fluid style={buttonStyle} onClick={toggleAbout} >About Jous</Button>
+                            </Grid.Column>
+                            <Grid.Column>
+                                {/* Questions Modal Trigger */}
+                                <Button fluid style={buttonStyle} onClick={toggleRead}>Avoid small talk</Button>
+                            </Grid.Column>
+                            <Grid.Column>
+                                {/* Questions Modal Trigger */}
+                                <Button fluid style={buttonStyle} onClick={toggleWrite} >Be a creator</Button>
+                            </Grid.Column>
+                            </Grid.Row>
+                        </Grid>
                     </div>
                     {/* Hi Modal */}
                     <Modal open={isHeyModalOpen} onClose={toggleHey} closeIcon centered={false} className="animated-modal">
@@ -118,7 +142,6 @@ function Homev2() {
                         </Modal.Content>
                     </Modal>
 
-
                     {/* write Modal */}
                     <Modal open={isWriteModalOpen} onClose={toggleWrite} closeIcon centered={false} className="animated-modal">
                         <Modal.Header>I cant wait to read your questions</Modal.Header>
@@ -144,9 +167,7 @@ function Homev2() {
                             </Modal.Description>
                         </Modal.Content>
                     </Modal>
-
                 </div>
-            </div>
         </React.Fragment>
     );
 }

@@ -2,6 +2,7 @@ import React from "react";
 import Axios from "axios";
 import InfiniteScroll from 'react-infinite-scroll-component';
 import TweetItem from "./TweetItem";
+import TweetItemv2 from "./TweetItemv2";
 import AddTweet from "./AddTweet";
 import AddGroup from "./AddGroup";
 import { check } from "../login";
@@ -72,7 +73,7 @@ class MainPage extends React.Component {
             <React.Fragment>
                 <div class="ui basic segment" style={{ width: Math.min(this.state.width * 0.9, 700) }}>
                     <div class="ui right dividing rail">
-                        <div className="ui olive button"
+                        <div className="ui black button"
                             onClick={() => {
                                 document.getElementById("addTweet").style.display = "block"
                             }}>

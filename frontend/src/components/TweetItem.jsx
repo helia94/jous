@@ -2,6 +2,20 @@ import React from "react";
 import Axios from "axios";
 import moment from 'moment'
 
+const buttonStyle = {
+    boxShadow: 'none', // No shadow by default
+    background: 'transparent', // No fill by default
+};
+
+const iconStyle = {
+    color: 'rgba(0, 0, 0, 0.6)', // Customize color
+};
+
+const labelStyle = {
+    border: 'none', // No border for the label
+    background: 'none', // No background for the label
+    paddingLeft: '5px', // Space from the icon
+};
 
 class TweetItem extends React.Component {
     state = { showGroupNameForm: false, groupName: "", like: 0 }
@@ -78,7 +92,7 @@ class TweetItem extends React.Component {
             <div className="ui fluid card" id={this.props.id} >
                 <div className="content" onClick={this.routeToQuestion}>
                     <div class="right floated meta">
-                        {moment(this.props.time, 'ddd, DD MMM YYYY h:mm:ss').format('DD MMM')}
+                        {moment(this.props.time, 'ddd, DD MMM YYYY h:mm:ss').format('DD MMM YYYY')}
                     </div>
                     <div class="left floated meta" onClick={this.routeToAuthor}>{this.props.author}</div>
                     <div className="description">
@@ -87,14 +101,17 @@ class TweetItem extends React.Component {
                 </div>
                 <div className="extra content">
                     <div class="ui mini icon buttons">
-                        <div class="ui labeled button" tabindex="0" data-tooltip="like">
-                            <div class="ui button" onClick={this.likeTweet}>
-                                <i class="heart icon"></i>
+                        <div className="ui labeled button" tabIndex="0" data-tooltip="like">
+                            <div className="ui icon button circular" onClick={this.likeTweet} style={buttonStyle}
+                                onMouseOver={(e) => e.currentTarget.style.boxShadow = '0 0 0 2px #2185D0 inset'}
+                                onMouseOut={(e) => e.currentTarget.style.boxShadow = 'none'}>
+                                <i className="heart icon" style={iconStyle}></i>
                             </div>
-                            <div class="ui basic left pointing label">
+                            <a className="ui basic label" style={labelStyle}>
                                 {this.props.likes + this.state.like}
-                            </div>
+                            </a>
                         </div>
+
                         <div class="ui labeled button" tabindex="0">
                             <div className="ui button"
                                 data-tooltip="answer"
@@ -114,7 +131,7 @@ class TweetItem extends React.Component {
                         <div className="ui basic button"
                             data-tooltip="share"
                             onClick={this.copyQuestionAddressToKeyboard}>
-                            <i class="external share icon"></i>
+                            <i class="share alternate"></i>
                         </div>
                         {this.props.isOwner &&
                             <button className="ui basic button" onClick={this.deleteTweet}><i class="trash alternate outline icon"></i>
