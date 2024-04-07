@@ -108,18 +108,18 @@ class TweetItem extends React.Component {
                                 <i className="heart icon" style={iconStyle}></i>
                             </div>
                             <a className="ui basic label" style={labelStyle}>
-                                {this.props.likes + this.state.like}
+                                {this.props.likes }
                             </a>
                         </div>
-
-                        <div class="ui labeled button" tabindex="0">
-                            <div className="ui button"
-                                data-tooltip="answer"
-                                onClick={this.routeToQuestion}><i class="reply icon"></i>
+                        <div className="ui labeled button" tabIndex="0" data-tooltip="answer">
+                            <div className="ui icon button circular" onClick={this.routeToQuestion} style={buttonStyle}
+                                onMouseOver={(e) => e.currentTarget.style.boxShadow = '0 0 0 2px #2185D0 inset'}
+                                onMouseOut={(e) => e.currentTarget.style.boxShadow = 'none'}>
+                                <i className="reply icon" style={iconStyle}></i>
                             </div>
-                            <div class="ui basic left pointing label">
+                            <a className="ui basic label" style={labelStyle}>
                                 {this.props.answers}
-                            </div>
+                            </a>
                         </div>
                         {this.props.isLoggedIn &&
                             <div className="ui basic button"
