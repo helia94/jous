@@ -2,7 +2,6 @@ import React from "react";
 import Axios from "axios";
 import InfiniteScroll from 'react-infinite-scroll-component';
 import TweetItem from "./TweetItem";
-import TweetItemv2 from "./TweetItemv2";
 import AddTweet from "./AddTweet";
 import AddGroup from "./AddGroup";
 import { check } from "../login";
