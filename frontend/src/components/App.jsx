@@ -1,5 +1,4 @@
 import React from "react";
-import Home from "./Home";
 import Homev2 from "./Homev2";
 import Random from "./Random";
 import Navbar from "./Navbar";
@@ -28,9 +27,8 @@ function App() {
             <Router>
                 <Switch>
                     <Route path="/" exact>
-                        {login ? <MainPage/> : <Home/>}
+                        {login ? <MainPage/> : <Homev2/>}
                     </Route>
-                    <Route path="/v2" component={Homev2}/>
                     <Route path="/home" component={MainPage}/>
                     <Route path="/random" component={Random}/>
                     <Route path="/user/:username" component={UserPage}/>
