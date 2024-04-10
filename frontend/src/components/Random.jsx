@@ -1,6 +1,6 @@
 import React from "react";
 import Axios from "axios";
-import TweetItem from "./TweetItem";
+import TweetItem2 from "./TweetItem2";
 
 
 class Random extends React.Component {
@@ -30,7 +30,7 @@ class Random extends React.Component {
             </div>
             <div class="ui container">
                 <div class="event">
-                    <TweetItem
+                    <TweetItem2
                         id={this.state.question.id}
                         content={this.state.question.content}
                         author={this.state.question.username}

@@ -60,13 +60,13 @@ class AddTweet extends React.Component {
     }
 
     render() {
+        const { onClose } = this.props;
+        
         return (
             <div class="ui fluid card" id="addTweet">
                 <div className="extra content">
                     <div class="right floated meta">
-                        <span className="w3-button w3-display-topright w3-hover-none w3-hover-text-white" onClick={() => {
-                            document.getElementById("addTweet").style.display = "none"
-                        }}>X</span></div>
+                        <span className="w3-button w3-display-topright w3-hover-none w3-hover-text-white" onClick={onClose}>X</span></div>
                     <div class="left floated meta" >
                             Add a question
                     </div>

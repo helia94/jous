@@ -1,13 +1,13 @@
 import React from "react";
 import Axios from "axios";
 import InfiniteScroll from 'react-infinite-scroll-component';
-import TweetItem from "./TweetItem";
+import TweetItem2 from "./TweetItem2";
 import AddTweet from "./AddTweet";
 import AddGroup from "./AddGroup";
 import { check } from "../login";
 
 class MainPage extends React.Component {
-    state = { tweets: [], currentUser: { username: "" }, login: false, hasMore: true, page: 0, width: 500, height: 600 }
+    state = { tweets: [], currentUser: { username: "" }, login: false, hasMore: true, page: 0, width: 500, height: 600, showAddQuestion: false }
 
     componentDidMount() {
         Axios.get("/api/questions/0").then(res => {
@@ -33,7 +33,7 @@ class MainPage extends React.Component {
                 });
             }
         }, 500);
-        
+
 
 
         check().then(r => this.setState({ login: r }));
@@ -67,21 +67,20 @@ class MainPage extends React.Component {
         window.removeEventListener('resize', this.updateDimensions);
     }
 
+    toggleShowAddQuestion = () => this.setState({ showAddQuestion: !this.state.showAddQuestion });
+
     render() {
         return (
             <React.Fragment>
-                <div class="ui basic segment" style={{ width: Math.min(this.state.width * 0.9, 700) }}>
-                    <div class="ui right dividing rail">
-                        <div className="ui black button"
-                            onClick={() => {
-                                document.getElementById("addTweet").style.display = "block"
-                            }}>
-                            Add a question
-                        </div>
-                        <AddGroup />
-                    </div>
+                <div class="ui basic segment" style={{ width: Math.min(this.state.width, 768) }}>
                     <h1>Home</h1>
-                    <AddTweet/>
+                    {!this.state.showAddQuestion &&
+                        <div className="ui tiny black button"
+                            onClick={this.toggleShowAddQuestion}>
+                            Add a question
+                        </div>}
+
+                    {this.state.showAddQuestion && <AddTweet onClose={() => this.toggleShowAddQuestion()}/>}
                     <div class="ui hidden divider"></div>
                     {
                         <InfiniteScroll
@@ -100,7 +99,7 @@ class MainPage extends React.Component {
                             {this.state.tweets.map((item, index) => {
                                 return (
                                     <div class="event">
-                                        <TweetItem
+                                        <TweetItem2
                                             id={item.id}
                                             content={item.content}
                                             author={item.username}
