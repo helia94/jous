@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect }  from "react";
 import Homev2 from "./Homev2";
 import Random from "./Random";
 import Navbar from "./Navbar";
@@ -15,9 +15,16 @@ import UserPage from "./UserPage"
 import GroupHome from "./GroupHome"
 import TweetDetailPage from "./TweetDetailPage"
 import "./theme.css"
+import ReactGA from 'react-ga4';
+
 
 function App() {
     let [login, setLogin] = React.useState(false);
+
+    useEffect(() => {
+        ReactGA.initialize('G-21G3CNF1CB');
+        ReactGA.send('pageview');
+      }, []);
 
     check().then(r => setLogin(r))
 
