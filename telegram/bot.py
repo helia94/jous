@@ -1,8 +1,9 @@
 import logging
-from telegram import Update, InlineQueryResultArticle, InputTextMessageContent
+from telegram import Update, InlineQueryResultArticle, InputTextMessageContent, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, InlineQueryHandler, ContextTypes
 import requests
 import os
+from uuid import uuid4
 
 # Define the Telegram bot token from environment variable
 TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN')
