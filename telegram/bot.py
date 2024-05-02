@@ -37,19 +37,18 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 async def inline_query(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     query = update.inline_query.query
-    if not query:
-        return
     response = requests.get(API_URL)
     if response.status_code == 200:
         question_content = response.json()['question']['content']
         results = [
             InlineQueryResultArticle(
-                id=str(response.json()['question']['id']),
+                id=str(uuid4()),
                 title="Random Question",
                 input_message_content=InputTextMessageContent(question_content)
             )
         ]
         await update.inline_query.answer(results)
+        logger.info("Fetched and sent a new question for inline query.")
     else:
         logger.error("Failed to fetch question for inline query. Status code: %s", response.status_code)
 
