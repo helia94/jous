@@ -4,6 +4,7 @@ from backend.api.core import Mixin
 from .base import db
 
 
+
 class Question(Mixin, db.Model):
     __tablename__ = 'question'
     id = db.Column(db.Integer, primary_key=True)
@@ -17,6 +18,7 @@ class Question(Mixin, db.Model):
     public_answer = db.Column(db.ARRAY(db.Integer))
     reask_number = db.Column(db.Integer)
     like_number = db.Column(db.Integer)
+
 
 
     def __init__(self, uid, content, tags):

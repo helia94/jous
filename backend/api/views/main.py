@@ -4,6 +4,8 @@ from flask import Blueprint, request, jsonify
 import dotenv
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, \
     create_refresh_token, get_jwt
+import traceback
+
 
 
 api = Blueprint("main", __name__)  # initialize blueprint
@@ -13,7 +15,8 @@ from backend.api.models import db, UserAuth, Question, PublicAnswer, Group, Grou
 from backend.api.models.User import User
 from backend.api.models.InvalidToken import InvalidToken
 from backend.api.core import logger
-
+from backend.api.views.Categorizer import Categorizer
+from backend.api.repo.QuestionRepo import QuestionRepo
 
 dotenv.load_dotenv()
 
@@ -139,6 +142,12 @@ def jsoniy_questions(questions):
                      }
                     for i in questions])
 
+@api.errorhandler(Exception)
+def handle_exception(e):
+    logger.error(e)
+    traceback.print_exc()
+    return jsonify({"error": str(e)})
+
 @api.route("/ping")
 def ping():
     return "pong"
@@ -255,6 +264,12 @@ def refresh_logout():
         return {"error": e}
 
 
+@api.route("/categories/<version>", methods=["GET"])
+def get_categories(version):
+    categories = Categorizer().query_categories(version)
+    return jsoniy_questions(categories)
+
+
 @api.route("/questions/<offset>", methods=["GET"])
 @api.route("/questions", defaults={"offset": "0"})
 def get_questions(offset):
@@ -264,9 +279,19 @@ def get_questions(offset):
     questions = list(reversed(questions))
     return jsoniy_questions((questions))
 
+@api.route("/questionsv2/", methods=["POST"])
+def get_questions_post():
+    pageSize = 20
+    offset = int(request.json["offset"])
+    tags = request.json["tags"]
+    questions = QuestionRepo().get_questions(tags, offset, pageSize)
+    return jsoniy_questions((questions))
 
 
-@api.route("/question/random", methods=["GET"])
+
+
+
+@api.route("/question/random/", methods=["GET"])
 def get_random_question():
     logger.error("random question")
     random_question = Question.query.order_by(db.func.random()).first()
@@ -325,7 +350,9 @@ def add_question():
             uid = get_uid_hannah()
         else:
             uid = get_jwt_identity()
-        question = Question(uid, content, [])
+        
+        tags = Categorizer().get_tags(content)
+        question = Question(uid, content, tags)
         success = commit_db(question)
         questions = User.query.get(uid).questions
         questions.append(question.id)
@@ -337,7 +364,10 @@ def add_question():
             return jsonify({"success": "false"})
     except Exception as e:
         logger.error(e)
-        return jsonify({"error": e})
+        traceback.print_exc()
+        logger.error(traceback.format_stack())
+        return jsonify({"error": str(e)})
+
 
 
 

@@ -19,7 +19,9 @@ services:
       context: .
       dockerfile: Dockerfile-dev
     environment:
-      - FLASK_ENV=docker
+      - FLASK_ENV=docker      
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
     ports:
       - 5000:5000
     volumes:
