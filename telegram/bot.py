@@ -1,6 +1,6 @@
 import logging
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes
+from telegram import Update, InlineQueryResultArticle, InputTextMessageContent
+from telegram.ext import Application, CommandHandler, CallbackQueryHandler, InlineQueryHandler, ContextTypes
 import requests
 import os
 
@@ -35,12 +35,31 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     else:
         logger.error("Failed to fetch question. Status code: %s", response.status_code)
 
+async def inline_query(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    query = update.inline_query.query
+    if not query:
+        return
+    response = requests.get(API_URL)
+    if response.status_code == 200:
+        question_content = response.json()['question']['content']
+        results = [
+            InlineQueryResultArticle(
+                id=str(response.json()['question']['id']),
+                title="Random Question",
+                input_message_content=InputTextMessageContent(question_content)
+            )
+        ]
+        await update.inline_query.answer(results)
+    else:
+        logger.error("Failed to fetch question for inline query. Status code: %s", response.status_code)
+
 def main() -> None:
     logger.info("Starting the bot.")
     application = Application.builder().token(TOKEN).build()
 
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CallbackQueryHandler(button))
+    application.add_handler(InlineQueryHandler(inline_query))
 
     application.run_polling()
 
