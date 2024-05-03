@@ -1,18 +1,32 @@
 import os
 import requests
-from requests_oauthlib import OAuth1
 from apscheduler.schedulers.blocking import BlockingScheduler
+from base64 import b64encode
 
-def authenticate_twitter():
+
+def get_bearer_token():
     # Twitter credentials from environment variables
     api_key = os.getenv('TWITTER_API_KEY')
     api_secret_key = os.getenv('TWITTER_API_SECRET_KEY')
-    access_token = os.getenv('TWITTER_ACCESS_TOKEN')
-    access_token_secret = os.getenv('TWITTER_ACCESS_TOKEN_SECRET')
 
-    # Set up OAuth1 authentication
-    auth = OAuth1(api_key, api_secret_key, access_token, access_token_secret)
-    return auth
+    # Encode credentials
+    credentials = f"{api_key}:{api_secret_key}"
+    encoded_credentials = b64encode(credentials.encode()).decode()
+
+    # Headers and data for obtaining the bearer token
+    headers = {
+        'Authorization': f'Basic {encoded_credentials}',
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+    }
+    data = 'grant_type=client_credentials'
+
+    # Post request to obtain bearer token
+    response = requests.post('https://api.twitter.com/oauth2/token', headers=headers, data=data)
+    if response.status_code == 200:
+        token = response.json()['access_token']
+        return token
+    else:
+        raise Exception("Could not obtain bearer token")
 
 def fetch_question():
     while True:
@@ -21,13 +35,16 @@ def fetch_question():
         if len(question) <= 280:  # Twitter's character limit
             return question
 
-def tweet_question(auth):
+def tweet_question():
+    bearer_token = get_bearer_token()
     try:
         question = fetch_question()
-        headers = {"Content-Type": "application/json"}
+        headers = {
+            "Authorization": f"Bearer {bearer_token}",
+            "Content-Type": "application/json"
+        }
         payload = {"text": question}
-        response = requests.post('https://api.twitter.com/2/tweets', 
-                                 headers=headers, json=payload, auth=auth)
+        response = requests.post('https://api.twitter.com/2/tweets', headers=headers, json=payload)
         if response.status_code == 201:
             print("Tweeted: " + question)
         else:
@@ -36,10 +53,9 @@ def tweet_question(auth):
         print("An error occurred:", e)
 
 def main():
-    auth = authenticate_twitter()
     scheduler = BlockingScheduler()
-    tweet_question(auth)
-    scheduler.add_job(lambda: tweet_question(auth), 'interval', hours=4)
+    tweet_question()
+    scheduler.add_job(lambda: tweet_question(), 'interval', hours=4)
     scheduler.start()
 
 if __name__ == '__main__':
