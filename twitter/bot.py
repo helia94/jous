@@ -5,10 +5,10 @@ from apscheduler.schedulers.blocking import BlockingScheduler
 
 def authenticate_twitter():
     # Twitter credentials from environment variables
-    api_key = os.getenv('API_KEY')
-    api_secret_key = os.getenv('API_SECRET_KEY')
-    access_token = os.getenv('ACCESS_TOKEN')
-    access_token_secret = os.getenv('ACCESS_TOKEN_SECRET')
+    api_key = os.getenv('TWITTER_API_KEY')
+    api_secret_key = os.getenv('TWITTER_API_SECRET_KEY')
+    access_token = os.getenv('TWITTER_ACCESS_TOKEN')
+    access_token_secret = os.getenv('TWITTER_ACCESS_TOKEN_SECRET')
 
     # Authenticate to Twitter
     auth = tweepy.OAuth1UserHandler(api_key, api_secret_key, access_token, access_token_secret)
