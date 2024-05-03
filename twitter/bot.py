@@ -1,6 +1,6 @@
 import os
-import tweepy
 import requests
+from requests_oauthlib import OAuth1
 from apscheduler.schedulers.blocking import BlockingScheduler
 
 def authenticate_twitter():
@@ -10,10 +10,9 @@ def authenticate_twitter():
     access_token = os.getenv('TWITTER_ACCESS_TOKEN')
     access_token_secret = os.getenv('TWITTER_ACCESS_TOKEN_SECRET')
 
-    # Authenticate to Twitter
-    auth = tweepy.OAuth1UserHandler(api_key, api_secret_key, access_token, access_token_secret)
-    api = tweepy.API(auth)
-    return api
+    # Set up OAuth1 authentication
+    auth = OAuth1(api_key, api_secret_key, access_token, access_token_secret)
+    return auth
 
 def fetch_question():
     while True:
@@ -22,19 +21,25 @@ def fetch_question():
         if len(question) <= 280:  # Twitter's character limit
             return question
 
-def tweet_question(api):
+def tweet_question(auth):
     try:
         question = fetch_question()
-        api.update_status(question)
-        print("Tweeted: " + question)
+        headers = {"Content-Type": "application/json"}
+        payload = {"text": question}
+        response = requests.post('https://api.twitter.com/2/tweets', 
+                                 headers=headers, json=payload, auth=auth)
+        if response.status_code == 201:
+            print("Tweeted: " + question)
+        else:
+            print("Failed to tweet:", response.text)
     except Exception as e:
         print("An error occurred:", e)
 
 def main():
-    api = authenticate_twitter()
+    auth = authenticate_twitter()
     scheduler = BlockingScheduler()
-    tweet_question(api)
-    scheduler.add_job(lambda: tweet_question(api), 'interval', hours=4)
+    tweet_question(auth)
+    scheduler.add_job(lambda: tweet_question(auth), 'interval', hours=4)
     scheduler.start()
 
 if __name__ == '__main__':
