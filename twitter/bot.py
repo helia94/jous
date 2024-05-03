@@ -16,9 +16,11 @@ def authenticate_twitter():
     return api
 
 def fetch_question():
-    response = requests.get('https://jous.app/api/question/random')
-    question = response.json()['question']['content']
-    return question
+    while True:
+        response = requests.get('https://jous.app/api/question/random')
+        question = response.json()['question']['content']
+        if len(question) <= 280:  # Twitter's character limit
+            return question
 
 def tweet_question(api):
     try:
@@ -31,6 +33,7 @@ def tweet_question(api):
 def main():
     api = authenticate_twitter()
     scheduler = BlockingScheduler()
+    tweet_question(api)
     scheduler.add_job(lambda: tweet_question(api), 'interval', hours=4)
     scheduler.start()
 
