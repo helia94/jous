@@ -1,3 +1,3 @@
 web: gunicorn wsgi:app
-bot: python telegram/bot.py
-bot: python twitter/bot.py
+telegram_bot: python telegram/bot.py
+twitter_bot: python twitter/bot.py
