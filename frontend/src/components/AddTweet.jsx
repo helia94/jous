@@ -17,7 +17,7 @@ class AddTweet extends React.Component {
                     this.setState({ isLoggedIn: true })
                 })
             }
-        }, 20)
+        }, 0)
     }
 
     handleInputChange = (e) => {

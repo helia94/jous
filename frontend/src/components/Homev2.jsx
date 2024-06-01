@@ -141,6 +141,13 @@ function Homev2() {
                                             random question
                                         </div>
                                     </div>
+                                    <br></br>
+                                    <br></br>
+                                    <div className="ui black button"
+                                        onClick={() => (window.location = "https://t.me/jous_app_bot")}>
+                                            also in telegram
+                                            <i className="telegram plane icon" style={{ marginLeft: '10px' }}></i>
+                                    </div>
                                 </div>
                             }
                         </Modal.Description>

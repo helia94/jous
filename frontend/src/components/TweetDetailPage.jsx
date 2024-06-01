@@ -26,7 +26,7 @@ class TweetDetailPage extends React.Component {
                     this.setState({ currentUser: res.data })
                 })
             }
-        }, 500)
+        }, 20)
         this.setState({ width: window.innerWidth, height: window.innerHeight });
     }
 
@@ -112,7 +112,7 @@ class TweetDetailPage extends React.Component {
 
                             {this.state.isLoggedIn &&
                                 <button type="submit"
-                                    class="ui olive  submit icon button"
+                                    class="ui black submit icon button"
                                     value="post"
                                     data-tooltip="add answer"
                                     onClick={() => (this.setState({ anon: 'False' }))}>
@@ -120,7 +120,7 @@ class TweetDetailPage extends React.Component {
                                 </button>
                             }
                             <button type="submit"
-                                class="ui olive  submit icon button"
+                                class="ui black  submit icon button"
                                 data-tooltip="add answer anonymously"
                                 onClick={() => (this.setState({ anon: 'True' }))}>
                                 <i class="user secret icon"></i>
