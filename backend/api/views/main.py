@@ -230,7 +230,7 @@ def refresh():
 
 
 @api.route("/logout/access", methods=["POST"], endpoint="logout_access")
-@jwt_required
+@jwt_required()
 def access_logout():
     jti = get_jwt()["jti"]
     try:
@@ -243,7 +243,7 @@ def access_logout():
 
 
 @api.route("/logout/refresh", methods=["POST"], endpoint="access_refresh")
-@jwt_required
+@jwt_required()
 def refresh_logout():
     jti = get_jwt()["jti"]
     try:
@@ -287,7 +287,7 @@ def get_user_questions(offset):
 
 @api.route("/groupquestions/<groupname>", methods=["GET"], defaults={"offset": "0"})
 @api.route("/groupquestions/<groupname>/<offset>", methods=["GET"])
-@jwt_required
+@jwt_required()
 def get_group_questions(groupname, offset):
     pageSize = 20
     group = get_group_id(groupname)
@@ -402,7 +402,7 @@ def add_activity_to_db(toUid, uid, activity_type, what):
 
 
 @api.route("/addgroup", methods=["POST"], endpoint="addgroup")
-@jwt_required
+@jwt_required()
 def add_group():
     try:
         name = request.json["name"]
@@ -437,7 +437,7 @@ def add_group():
 
 
 @api.route("/adduserstogroup", methods=["POST"], endpoint="adduserstogroup")
-@jwt_required
+@jwt_required()
 def add_user_to_group():
     try:
         name = request.json["name"]
@@ -469,7 +469,7 @@ def add_user_to_group():
 
 
 @api.route("/addquestiontogroup", methods=["POST"], endpoint="addquestiongroup")
-@jwt_required
+@jwt_required()
 def add_question_to_group():
     try:
         name = request.json["name"]
@@ -488,7 +488,7 @@ def add_question_to_group():
 
 
 @api.route("/removeuserfromgroup", methods=["POST"], endpoint="removeuserfromgroup")
-@jwt_required
+@jwt_required()
 def remove_user_from_group():
     try:
         name = request.json["name"]
@@ -530,7 +530,7 @@ def get_user_answers():
 
 
 @api.route("/useranswerstoquestions", methods=["GET"], endpoint="useranswerstoquestions")
-@jwt_required
+@jwt_required()
 def get_answers_to_user_question():
     try:
         uid = get_jwt_identity()
@@ -550,7 +550,7 @@ def get_answers_to_user_question():
 
 
 @api.route("/usergroups", methods=["POST"], endpoint="usergroups")
-@jwt_required
+@jwt_required()
 def get_user_groups():
     username = request.json["username"]
     uid = get_uid(username)
@@ -567,7 +567,7 @@ def get_user_groups():
 
 
 @api.route("/useractivities", methods=["GET"], endpoint="useractivites")
-@jwt_required
+@jwt_required()
 def get_user_activity():
     uid = get_jwt_identity()
     try:
@@ -589,7 +589,7 @@ def get_user_activity():
 
 
 @api.route("/readuseractivity/<lastactivityid>", methods=["GET"], endpoint="readuseractivity")
-@jwt_required
+@jwt_required()
 def read_activity(lastactivityid):
     uid = get_jwt_identity()
     try:
@@ -639,7 +639,7 @@ def return_question(q):
 
 
 @api.route("/deletequestion/<tid>", methods=["DELETE"], endpoint="deleteQuestion")
-@jwt_required
+@jwt_required()
 def delete_question(tid):
     try:
         PublicAnswer.query.filter(PublicAnswer.question==tid).delete()
@@ -660,7 +660,7 @@ def like_question(tid):
 
 
 @api.route("/deleteanswer/<tid>", methods=["DELETE"], endpoint="deleteAnswer")
-@jwt_required
+@jwt_required()
 def delete_answer(tid):
     try:
         answer = PublicAnswer.query.get(tid)
@@ -674,7 +674,7 @@ def delete_answer(tid):
 
 
 @api.route("/deletegroup/<tid>", methods=["DELETE"], endpoint="deletegroup")
-@jwt_required
+@jwt_required()
 def delete_group(tid):
     try:
         group = Group.query.get(tid)
@@ -703,7 +703,7 @@ def get_current_user():
 
 
 @api.route("/changepassword", methods=["POST"], endpoint="changepassword")
-@jwt_required
+@jwt_required()
 def change_password():
     try:
         userAuth = UserAuth.query.get(get_jwt_identity())
@@ -721,7 +721,7 @@ def change_password():
 
 
 @api.route("/deleteaccount", methods=["DELETE"], endpoint="deleteaccount")
-@jwt_required
+@jwt_required()
 def delete_account():
     try:
         user = User.query.get(get_jwt_identity())

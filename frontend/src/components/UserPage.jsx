@@ -1,6 +1,6 @@
 import React from "react";
 import Axios from "axios";
-import TweetItem from "./TweetItem";
+import TweetItem2 from "./TweetItem2";
 import AnswerItem from "./AnswerItem";
 
 class UserPage extends React.Component {
@@ -102,7 +102,7 @@ class UserPage extends React.Component {
                             this.state.questions.map((item, index) => {
                                 return (
                                     <div class="event">
-                                        <TweetItem
+                                        <TweetItem2
                                             id={item.id}
                                             content={item.content}
                                             author={item.username}

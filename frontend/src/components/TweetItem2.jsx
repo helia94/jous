@@ -49,7 +49,7 @@ class TweetItem2 extends React.Component {
 
     copyQuestionAddressToKeyboard = (e) => {
         let host = window.location.host;
-        let path = host + "/question/" + this.props.id;
+        let path = "https://" + host + "/question/" + this.props.id;
         e.stopPropagation();
         navigator.clipboard.writeText(path);
         // auto closable notification that says copied
@@ -132,6 +132,11 @@ class TweetItem2 extends React.Component {
                                 {this.props.answers}
                             </a>
                         </div>
+                        <div className="ui basic button"
+                            data-tooltip="share"
+                            onClick={this.copyQuestionAddressToKeyboard}>
+                            <i class="share alternate icon"></i>
+                        </div>
                         {this.props.isLoggedIn &&
                             <div className="ui basic button"
                                 data-tooltip="post to group"
@@ -139,11 +144,6 @@ class TweetItem2 extends React.Component {
                                 <i class="share icon"></i>
                             </div>
                         }
-                        <div className="ui basic button"
-                            data-tooltip="share"
-                            onClick={this.copyQuestionAddressToKeyboard}>
-                            <i class="share alternate"></i>
-                        </div>
                         {this.props.isOwner &&
                             <button className="ui basic button" onClick={this.deleteTweet}><i class="trash alternate outline icon"></i>
                             </button>}

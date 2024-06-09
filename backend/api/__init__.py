@@ -40,7 +40,7 @@ def create_app(test_config=None):
     # Configure logging to output to stdout explicitly
     stream_handler = logging.StreamHandler(sys.stdout)  # Change to sys.stdout
     stream_handler.setLevel(logging.DEBUG)
-    stream_handler.setFormatter(formatter)
+    #stream_handler.setFormatter(formatter)
     app.logger.addHandler(stream_handler)
     app.logger.setLevel(logging.DEBUG)
 

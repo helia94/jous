@@ -1,8 +1,7 @@
 import React from "react";
-import TweetItem from "./TweetItem";
 import Axios from "axios";
 import moment from 'moment'
-
+import TweetItem2 from "./TweetItem2";
 class TweetDetailPage extends React.Component {
     state = {
         question: { id: 0, content: "", author: "", time: "" }, answers: [], isLoggedIn: false,
@@ -75,12 +74,13 @@ class TweetDetailPage extends React.Component {
         return (
             <React.Fragment>
                 <div class="ui basic segment" style={{ width: Math.min(this.state.width * 0.9, 500) }}>
-                    <TweetItem
+                    <TweetItem2
                         id={this.state.question.id}
                         content={this.state.question.content}
                         author={this.state.question.username}
                         time={this.state.question.time}
                         likes={this.state.question.like_number}
+                        answers={this.state.question.answer_number}
                         isOwner={this.state.currentUser.username === this.state.question.username}
                         key={0}
                     />
