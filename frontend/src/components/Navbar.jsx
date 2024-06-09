@@ -34,7 +34,7 @@ function Navbar() {
     }
 
     function routeToRandom() {
-        let path = "/random" ;
+        let path = "/random";
         window.location.href = path;
     }
 
@@ -75,7 +75,7 @@ function Navbar() {
     let a = { name: x ? "Settings" : "Login", link: x ? "/settings" : "/login" }
     let b = { name: x ? "Logout" : "Register", link: x ? "/logout" : "/register" }
     let c = { name: "Report bugs", link: "/bug" }
-    let d = {name: "Random", link: "/random"}
+    let d = { name: "Random", link: "/random" }
     return (
         <div className="ui menu yellow">
             <a className="w3-bar-item w3-button" href="/">
@@ -101,22 +101,20 @@ function Navbar() {
                                 <div>No activities to show</div> :
                                 <div class="ui feed">
                                     {activities.map((item, index) =>
-                                        <div class="event">
-                                            <div class="label">
+                                        <div class="summary">
+                                            <a class="user" href={'/' + activityLink[item.type] + '/' + item.what}>
+                                                {item.fromUid}
+                                            </a>
+                                            {' '}
+                                            {activityMessage[item.type]}
+                                            {item.type === "answer" ? "" : <div class="group">
+                                                {item.what}
+                                            </div>}
+                                            <div style={{ color: '#ffc107', alignItems: 'top' }}>
+                                                {item.read ? null : '\u2022'}
                                             </div>
-                                            <div class="content" >
-                                                <div class="summary" >
-                                                    <div class="user" href={'/' + activityLink[item.type] + '/' + item.what}>
-                                                        {item.fromUid}
-                                                    </div> {activityMessage[item.type]}
-                                                    {item.type === "answer" ? "" : <div class="group">
-                                                        {item.what}
-                                                    </div>}
-                                                    {<div style={{ color: '#ffc107', alignItems: 'top' }}>{item.read ? null : '\u2022'}</div>}
-                                                    <div class="date">
-                                                        {moment.utc(item.time, 'ddd, DD MMM YYYY h:mm:ss').fromNow()}
-                                                    </div>
-                                                </div>
+                                            <div class="date">
+                                                {moment.utc(item.time, 'ddd, DD MMM YYYY h:mm:ss').fromNow()}
                                             </div>
                                         </div>
                                     )}
@@ -134,7 +132,7 @@ function Navbar() {
                     </Modal.Actions>
                 </Modal>
                 <a className="w3-bar-item w3-button" href={d.link}>
-                {<i class="random icon"></i>}
+                    {<i class="random icon"></i>}
                 </a>
                 {x ? <a className="w3-bar-item w3-button" onClick={routeToUser}>
                     {<i class="user outline icon"></i>}
