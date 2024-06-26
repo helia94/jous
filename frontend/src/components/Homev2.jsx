@@ -60,8 +60,14 @@ function Homev2() {
 
         <React.Fragment>
             <Helmet>
-                {/* Helmet content remains the same */}
-            </Helmet>
+                <title>Jous - Deep Conversation Starters</title>
+                <meta name="description" content="Avoid small talk and dive deep with Jous. Discover introspective questions to fuel meaningful conversations with friends, family, dates, and strangers. No signup required to share or explore." />
+                <meta name="keywords" content="conversation starters, deep questions, introspective questions, meaningful conversations, social icebreakers, personal growth, dating questions, boring conversations, small talk" />
+                {/* Open Graph tags for better social media sharing */}
+                <meta property="og:title" content="Jous - Deep Conversation Starters" />
+                <meta property="og:description" content="Are you easily bored with small talk? Explore and share deep, introspective questions to spark meaningful conversations. For friends, family, and dates. No login required." />
+                <meta property="og:type" content="website" />
+                <meta property="og:url" content="https://www.jous.app/" />            </Helmet>
             <div style={backgroundStyle}>
                 <div className="ui center aligned inverted segment transparent-yellow">
                     <h1 className="w3-jumbo">Jous</h1>
@@ -145,8 +151,8 @@ function Homev2() {
                                     <br></br>
                                     <div className="ui black button"
                                         onClick={() => (window.location = "https://t.me/jous_app_bot")}>
-                                            also in telegram
-                                            <i className="telegram plane icon" style={{ marginLeft: '10px' }}></i>
+                                        also in telegram
+                                        <i className="telegram plane icon" style={{ marginLeft: '10px' }}></i>
                                     </div>
                                 </div>
                             }
