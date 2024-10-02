@@ -117,19 +117,14 @@ function Homev2() {
 
                                 <h3 style={{ marginTop: '1.5em' }}>Transform Small Talk into Substance</h3>
                                 <p style={{ lineHeight: '1.6' }}>
-                                    Jous isn't just an app; it's your invitation to deeper, more engaging discussions. Consider it a gentle nudge away from awkward silences and toward discussions that matter.
+                                    Jous isn't just an app; it's your invitation to deeper, more engaging discussions. Consider it a gentle nudge away from awkward silences and toward discussions that matter. No sign-ups or passwords needed. Just jump in.
                                 </p>
-
                                 <h3 style={{ marginTop: '1.5em' }}>Choose Your Path</h3>
-                                <p style={{ lineHeight: '1.6' }}>
+                                <p style={{ lineHeight: '1.6', textAlign: 'center' }}>
                                     <strong>All Questions</strong>: Scroll and Explore through the collection of queries.
                                     <br />
                                     <strong>Random Question</strong>: Let chance guide you to your next topic.
                                 </p>
-                                <p style={{ lineHeight: '1.6' }}>
-                                    No sign-ups or passwords needed. Just jump in.
-                                </p>
-
                                 <div style={{ display: 'flex', justifyContent: 'center', margin: '1.5em 0' }}>
                                     <Button
                                         color="yellow"
@@ -142,7 +137,7 @@ function Homev2() {
                                         Random Question
                                     </Button>
                                 </div>
-                                <p style={{ lineHeight: '1.6' }}>
+                                <p style={{ lineHeight: '1.6', textAlign: 'center' }}>
                                     Or add the Telegram Bot to your groups and chat with your friends there.
                                 </p>
                                 <div style={{ textAlign: 'center', marginBottom: '1.5em' }}>
