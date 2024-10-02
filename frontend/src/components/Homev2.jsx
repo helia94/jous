@@ -160,7 +160,7 @@ function Homev2() {
                                 <p style={{ lineHeight: '1.6' }}>
                                     Got feedback, a question, or whatever? Feel free to reach out at{' '}
                                     <a href="mailto:helia.jm@gmail.com">
-                                        <strong>helia.jm@gmail.com</strong>
+                                        <strong>info@jous.app</strong>
                                     </a>. I promise I'm friendly!
                                 </p>
                             </section>
