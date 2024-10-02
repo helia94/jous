@@ -110,46 +110,68 @@ function Homev2() {
                     <Modal.Content scrolling>
                         <Modal.Description>
                             <section style={{ padding: '1em' }}>
+                                <h3 style={{ marginTop: '1.5em' }}>Welcome to Jous!</h3>
                                 <p style={{ fontSize: '1.1em', lineHeight: '1.6' }}>
-                                    Welcome to <strong>Jous</strong>, an innovative app designed for <strong>collecting and sharing intriguing questions</strong> to <strong>spark engaging conversations</strong>. This platform is not merely a forum; it is a tool to transform mundane small talk into meaningful interactions.
+                                    Have you ever found yourself stuck in yet another conversation about the weather, desperately seeking an exit strategy? Fear not; <strong>Jous</strong> is here to elevate your dialogues from the mundane to the meaningful.
                                 </p>
 
-                                <h3 style={{ marginTop: '1.5em' }}>Tired of the Same Old Small Talk?</h3>
+                                <h3 style={{ marginTop: '1.5em' }}>Transform Small Talk into Substance</h3>
                                 <p style={{ lineHeight: '1.6' }}>
-                                    Jous empowers you to elevate your interactions, guiding you towards deeper, more meaningful conversations. Forget about those awkward silences and start a conversation that matters.
+                                    Jous isn't just an app; it's your invitation to deeper, more engaging discussions. Consider it a gentle nudge away from awkward silences and toward discussions that matter.
                                 </p>
 
+                                <h3 style={{ marginTop: '1.5em' }}>Choose Your Path</h3>
                                 <p style={{ lineHeight: '1.6' }}>
-                                    Either scroll through all questions posted by different people or use <strong>random mode</strong> to find a question. No login is required.
+                                    <strong>All Questions</strong>: Scroll and Explore through the collection of queries.
+                                    <br />
+                                    <strong>Random Question</strong>: Let chance guide you to your next topic.
+                                </p>
+                                <p style={{ lineHeight: '1.6' }}>
+                                    No sign-ups or passwords needed. Just jump in.
                                 </p>
 
                                 <div style={{ display: 'flex', justifyContent: 'center', margin: '1.5em 0' }}>
-                                    <Button color="yellow" onClick={() => (window.location = '/home')} style={{ marginRight: '1em' }}>
+                                    <Button
+                                        color="yellow"
+                                        onClick={() => (window.location = '/home')}
+                                        style={{ marginRight: '1em' }}
+                                    >
                                         All Questions
                                     </Button>
                                     <Button color="yellow" onClick={() => (window.location = '/random')}>
                                         Random Question
                                     </Button>
                                 </div>
-
+                                <p style={{ lineHeight: '1.6' }}>
+                                    Or add the Telegram Bot to your groups and chat with your friends there.
+                                </p>
                                 <div style={{ textAlign: 'center', marginBottom: '1.5em' }}>
-                                    <Button color="black" onClick={() => (window.location = 'https://t.me/jous_app_bot')}>
-                                        Also on Telegram
+                                    <Button
+                                        color="black"
+                                        onClick={() => (window.location = 'https://t.me/jous_app_bot')}
+                                    >
+                                        On Telegram
                                         <Icon name="telegram plane" style={{ marginLeft: '0.5em' }} />
                                     </Button>
                                 </div>
 
+                                <h3 style={{ marginTop: '1.5em' }}>Contribute Your Curiosity</h3>
                                 <p style={{ lineHeight: '1.6' }}>
-                                    You can also be a creator of new questions. Share your own thought-provoking questions and contribute to the gathering of minds seeking meaningful connections.
+                                    Why not add your own questions to the mix? Share your insights and watch as they spark discussions around the globe.
                                 </p>
 
+                                <h3 style={{ marginTop: '1.5em' }}>Let's Stay Connected</h3>
                                 <p style={{ lineHeight: '1.6' }}>
-                                    Contact me for any reason: <a href="mailto:helia.jm@gmail.com"><strong>helia.jm@gmail.com</strong></a>
+                                    Got feedback, a question, or whatever? Feel free to reach out at{' '}
+                                    <a href="mailto:helia.jm@gmail.com">
+                                        <strong>helia.jm@gmail.com</strong>
+                                    </a>. I promise I'm friendly!
                                 </p>
                             </section>
                         </Modal.Description>
                     </Modal.Content>
                 </Modal>
+
 
 
 
