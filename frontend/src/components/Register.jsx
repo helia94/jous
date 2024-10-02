@@ -1,15 +1,18 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import axios from "axios";
 import Alert from "./Alert";
-import {check} from "../login";
+import { check } from "../login";
+import { Helmet } from 'react-helmet';
 
 class Register extends Component {
-    state = {err: ""};
+    state = { err: "" };
 
     componentDidMount() {
-        check().then(r => {if (r) {
-            window.location = "/"
-        }})
+        check().then(r => {
+            if (r) {
+                window.location = "/"
+            }
+        })
     }
 
     register = (e) => {
@@ -22,7 +25,7 @@ class Register extends Component {
             })
             .then((res) => {
                 if (res.data.error) {
-                    this.setState({err: res.data.error});
+                    this.setState({ err: res.data.error });
                 } else {
                     window.location = "/login"
                 }
@@ -31,7 +34,11 @@ class Register extends Component {
 
     render() {
         return (
-            <div className="w3-card-4" style={{margin: "2rem"}}>
+            <div className="w3-card-4" style={{ margin: "2rem" }}>
+                <Helmet>
+                    <title>Register</title>
+                    <link rel="canonical" href="https://www.jous.app/register" />
+                </Helmet>
                 <div className="w3-container w3-blue w3-center w3-xlarge">
                     REGISTER
                 </div>

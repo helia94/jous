@@ -1,31 +1,38 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import Alert from "./Alert";
-import {login, check} from "../login";
+import { login, check } from "../login";
+import { Helmet } from 'react-helmet';
 
 class Login extends Component {
-    state = {err: ""};
+    state = { err: "" };
 
     componentDidMount() {
-        check().then(r => {if (r) {
-            window.location = "/"
-        }})
+        check().then(r => {
+            if (r) {
+                window.location = "/"
+            }
+        })
     }
 
     login = (e) => {
         e.preventDefault();
         login(document.getElementById("email").value,
             document.getElementById("password").value).then(r => {
-            if (r === true) {
-                window.location = "/"
-            } else {
-                this.setState({err: r})
-            }
-        })
+                if (r === true) {
+                    window.location = "/"
+                } else {
+                    this.setState({ err: r })
+                }
+            })
     };
 
     render() {
         return (
-            <div className="w3-card-4" style={{margin: "2rem"}}>
+            <div className="w3-card-4" style={{ margin: "2rem" }}>
+                <Helmet>
+                    <title>Login</title>
+                    <link rel="canonical" href="https://www.jous.app/login" />
+                </Helmet>
                 <div className="w3-container w3-blue w3-center w3-xlarge">
                     LOGIN
                 </div>

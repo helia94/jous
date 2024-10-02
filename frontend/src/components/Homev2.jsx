@@ -71,6 +71,7 @@ function Homev2() {
                 <meta property="og:description" content="Are you easily bored with small talk? Explore and share deep, introspective questions to spark meaningful conversations. For friends, family, and dates. No login required." />
                 <meta property="og:type" content="website" />
                 <meta property="og:url" content="https://www.jous.app/" />
+                <link rel="canonical" href="https://www.jous.com/" />
             </Helmet>
             <div style={backgroundStyle}>
                 <div className="ui center aligned inverted segment transparent-yellow">

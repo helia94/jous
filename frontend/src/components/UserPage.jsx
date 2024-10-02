@@ -2,6 +2,7 @@ import React from "react";
 import Axios from "axios";
 import TweetItem2 from "./TweetItem2";
 import AnswerItem from "./AnswerItem";
+import { Helmet } from 'react-helmet';
 
 class UserPage extends React.Component {
     state = {
@@ -27,7 +28,7 @@ class UserPage extends React.Component {
                 console.error("Error fetching current user:", error);
             })
         }, 500)
-        
+
         this.setState({ width: window.innerWidth, height: window.innerHeight });
     }
 
@@ -62,9 +63,9 @@ class UserPage extends React.Component {
         this.setState({ active: "g" })
         if (this.state.groups.length === 0) {
             Axios.post("/api/usergroups", { username: this.props.match.params.username }
-            , { headers: { Authorization: "Bearer " + localStorage.getItem("token") } }).then(res => {
-                this.setState({ groups: res.data })
-            });
+                , { headers: { Authorization: "Bearer " + localStorage.getItem("token") } }).then(res => {
+                    this.setState({ groups: res.data })
+                });
         }
     }
 
@@ -79,6 +80,10 @@ class UserPage extends React.Component {
     render() {
         return (
             <React.Fragment>
+                <Helmet>
+                    <title>{`User ${this.state.currentUser.username}`}</title>
+                    <link rel="canonical" href={`https://jous.app/user/${this.state.currentUser.username}`} />
+                </Helmet>
                 <div class="ui basic segment" style={{ width: Math.min(this.state.width * 0.9, 500) }}>
                     <div className="ui basic segment">
                         <div class="ui yellow large header">{this.props.match.params.username}</div>

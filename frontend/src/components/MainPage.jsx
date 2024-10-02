@@ -5,6 +5,7 @@ import TweetItem2 from "./TweetItem2";
 import AddTweet from "./AddTweet";
 import AddGroup from "./AddGroup";
 import { check } from "../login";
+import { Helmet } from 'react-helmet';
 
 class MainPage extends React.Component {
     state = { tweets: [], currentUser: { username: "" }, login: false, hasMore: true, page: 0, width: 500, height: 600, showAddQuestion: false }
@@ -72,6 +73,10 @@ class MainPage extends React.Component {
     render() {
         return (
             <React.Fragment>
+                <Helmet>
+                    <title>Home</title>
+                    <link rel="canonical" href="https://www.jous.app/home" />
+                </Helmet>
                 <div class="ui basic segment" style={{ width: Math.min(this.state.width, 768) }}>
                     <h1>Home</h1>
                     {!this.state.showAddQuestion &&
@@ -80,7 +85,7 @@ class MainPage extends React.Component {
                             Add a question
                         </div>}
 
-                    {this.state.showAddQuestion && <AddTweet onClose={() => this.toggleShowAddQuestion()}/>}
+                    {this.state.showAddQuestion && <AddTweet onClose={() => this.toggleShowAddQuestion()} />}
                     <div class="ui hidden divider"></div>
                     {
                         <InfiniteScroll

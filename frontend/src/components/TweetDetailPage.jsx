@@ -2,10 +2,17 @@ import React from "react";
 import Axios from "axios";
 import moment from 'moment'
 import TweetItem2 from "./TweetItem2";
+import { Helmet } from 'react-helmet';
+
 class TweetDetailPage extends React.Component {
     state = {
-        question: { id: 0, content: "", author: "", time: "" }, answers: [], isLoggedIn: false,
-        currentUser: { username: "" }, newAnswer: "", anon: "False", width: 500
+        question: { id: 0, content: "", author: "", time: "" },
+        answers: [],
+        isLoggedIn: false,
+        currentUser: { username: "" },
+        newAnswer: "",
+        anon: "False",
+        width: 500,
     }
 
     componentDidMount() {
@@ -34,7 +41,7 @@ class TweetDetailPage extends React.Component {
         const config = {
             headers: {}
         };
-        
+
         if (this.state.isLoggedIn) {
             config.headers['Authorization'] = "Bearer " + localStorage.getItem("token");
         }
@@ -73,6 +80,10 @@ class TweetDetailPage extends React.Component {
     render() {
         return (
             <React.Fragment>
+                <Helmet>
+                    <title>{`Question ${this.state.question.id}`}</title>
+                    <link rel="canonical" href={`https://jous.app/question/${this.state.question.id}`} />
+                </Helmet>
                 <div class="ui basic segment" style={{ width: Math.min(this.state.width * 0.9, 500) }}>
                     <TweetItem2
                         id={this.state.question.id}
