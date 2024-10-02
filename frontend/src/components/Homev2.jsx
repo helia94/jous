@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
-import { Modal, Button, Grid } from 'semantic-ui-react';
+import { Modal, Button, Grid, Icon } from 'semantic-ui-react';
 import 'semantic-ui-css/semantic.min.css';
 import './Homev2.css';
 
@@ -99,46 +99,58 @@ function Homev2() {
 
 
                 {/* About Modal */}
-                <Modal open={isAboutModalOpen} onClose={toggleAbout} closeIcon centered={false} className="animated-modal">
+                <Modal
+                    open={isAboutModalOpen}
+                    onClose={toggleAbout}
+                    closeIcon
+                    centered={false}
+                    className="animated-modal"
+                >
                     <Modal.Header>About Jous</Modal.Header>
                     <Modal.Content scrolling>
                         <Modal.Description>
-                            {
-                                <div>
-                                    <p>
-                                        Welcome to Jous, an innovative app designed for <strong>collecting and sharing intriguing questions</strong> to <strong>spark engaging conversations</strong>. This platform is not merely a forum; it is a tool to transform mundane small talk into meaningful interactions.
-                                    </p>
-                                    <p>
-                                        <strong>Tired of the same old small talk?</strong> Jous empowers you to elevate your interactions, guiding you towards deeper, more meaningful conversations. Forget about those awkward silences and start a conversation that matters.
-                                    </p>
-                                    <p>
-                                        Either scroll through all questions posted by different people or use <strong>random mode</strong> to find a question. No login is required.
-                                    </p>
-                                    <div className="ui buttons">
-                                        <div className="ui yellow button" onClick={() => (window.location = "/home")}>
-                                            all questions
-                                        </div>
-                                        <div className="ui yellow button" onClick={() => (window.location = "/random")}>
-                                            random question
-                                        </div>
-                                    </div>
-                                    <br /><br />
-                                    <div className="ui black button" onClick={() => (window.location = "https://t.me/jous_app_bot")}>
-                                        also in telegram
-                                        <i className="telegram plane icon" style={{ marginLeft: '10px' }}></i>
-                                    </div>
-                                    <br /><br />
-                                    <p>
-                                        You can also be a creator of new questions. Share your own thought-provoking questions and contribute to the gathering of minds seeking meaningful connections.
-                                    </p>
-                                    <p>
-                                        Contact me for whatever reason: <a href="mailto:helia.jm@gmail.com"><strong>helia.jm@gmail.com</strong></a>
-                                    </p>
+                            <section style={{ padding: '1em' }}>
+                                <p style={{ fontSize: '1.1em', lineHeight: '1.6' }}>
+                                    Welcome to <strong>Jous</strong>, an innovative app designed for <strong>collecting and sharing intriguing questions</strong> to <strong>spark engaging conversations</strong>. This platform is not merely a forum; it is a tool to transform mundane small talk into meaningful interactions.
+                                </p>
+
+                                <h3 style={{ marginTop: '1.5em' }}>Tired of the Same Old Small Talk?</h3>
+                                <p style={{ lineHeight: '1.6' }}>
+                                    Jous empowers you to elevate your interactions, guiding you towards deeper, more meaningful conversations. Forget about those awkward silences and start a conversation that matters.
+                                </p>
+
+                                <p style={{ lineHeight: '1.6' }}>
+                                    Either scroll through all questions posted by different people or use <strong>random mode</strong> to find a question. No login is required.
+                                </p>
+
+                                <div style={{ display: 'flex', justifyContent: 'center', margin: '1.5em 0' }}>
+                                    <Button color="yellow" onClick={() => (window.location = '/home')} style={{ marginRight: '1em' }}>
+                                        All Questions
+                                    </Button>
+                                    <Button color="yellow" onClick={() => (window.location = '/random')}>
+                                        Random Question
+                                    </Button>
                                 </div>
-                            }
+
+                                <div style={{ textAlign: 'center', marginBottom: '1.5em' }}>
+                                    <Button color="black" onClick={() => (window.location = 'https://t.me/jous_app_bot')}>
+                                        Also on Telegram
+                                        <Icon name="telegram plane" style={{ marginLeft: '0.5em' }} />
+                                    </Button>
+                                </div>
+
+                                <p style={{ lineHeight: '1.6' }}>
+                                    You can also be a creator of new questions. Share your own thought-provoking questions and contribute to the gathering of minds seeking meaningful connections.
+                                </p>
+
+                                <p style={{ lineHeight: '1.6' }}>
+                                    Contact me for any reason: <a href="mailto:helia.jm@gmail.com"><strong>helia.jm@gmail.com</strong></a>
+                                </p>
+                            </section>
                         </Modal.Description>
                     </Modal.Content>
                 </Modal>
+
 
 
             </div>
