@@ -3,6 +3,7 @@ import { getCurrentUser } from "../login";
 import { Button, Modal } from 'semantic-ui-react'
 import Axios from "axios";
 import moment from 'moment'
+import './Navbar.css';
 
 const activityMessage = {
     'answer': "answered your question",
@@ -78,74 +79,77 @@ function Navbar() {
     let d = { name: "Random", link: "/random" }
     return (
         <div className="ui menu yellow">
-            <a className="w3-bar-item w3-button" href="/">
+            <a className="item ui basic button no-border" href="/">
                 Jous
             </a>
             <div class="right menu">
-                <Modal
-                    onClose={() => setOpen(false)}
-                    onOpen={() => {
-                        setOpen(true);
-                        getActivities();
-                    }}
-                    open={open}
-                    trigger={
-                        <div className="w3-bar-item w3-button">
-                            {<span class="modal-btn"><i class={"lemon " + (notify ? "yellow" : "outline") + " icon"}></i></span>}
-                        </div>
-                    }
-                >
-                    <Modal.Content image>
-                        <Modal.Description>
-                            {activities.length === 0 ?
-                                <div>No activities to show</div> :
-                                <div class="ui feed">
-                                    {activities.map((item, index) =>
-                                        <div class="summary">
-                                            <a class="user" href={'/' + activityLink[item.type] + '/' + item.what}>
-                                                {item.fromUid}
-                                            </a>
-                                            {' '}
-                                            {activityMessage[item.type]}
-                                            {item.type === "answer" ? "" : <div class="group">
-                                                {item.what}
-                                            </div>}
-                                            <div style={{ color: '#ffc107', alignItems: 'top' }}>
-                                                {item.read ? null : '\u2022'}
+
+                <div class="ui buttons">
+                    <Modal
+                        onClose={() => setOpen(false)}
+                        onOpen={() => {
+                            setOpen(true);
+                            getActivities();
+                        }}
+                        open={open}
+                        trigger={
+                            <div className="ui basic button">
+                                {<span class="modal-btn"><i class={"lemon " + (notify ? "yellow" : "outline") + " icon"}></i></span>}
+                            </div>
+                        }
+                    >
+                        <Modal.Content image>
+                            <Modal.Description>
+                                {activities.length === 0 ?
+                                    <div>No activities to show</div> :
+                                    <div class="ui feed">
+                                        {activities.map((item, index) =>
+                                            <div class="summary">
+                                                <a class="user" href={'/' + activityLink[item.type] + '/' + item.what}>
+                                                    {item.fromUid}
+                                                </a>
+                                                {' '}
+                                                {activityMessage[item.type]}
+                                                {item.type === "answer" ? "" : <div class="group">
+                                                    {item.what}
+                                                </div>}
+                                                <div style={{ color: '#ffc107', alignItems: 'top' }}>
+                                                    {item.read ? null : '\u2022'}
+                                                </div>
+                                                <div class="date">
+                                                    {moment.utc(item.time, 'ddd, DD MMM YYYY h:mm:ss').fromNow()}
+                                                </div>
                                             </div>
-                                            <div class="date">
-                                                {moment.utc(item.time, 'ddd, DD MMM YYYY h:mm:ss').fromNow()}
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                            }
-                        </Modal.Description>
-                    </Modal.Content>
-                    <Modal.Actions>
-                        <Button color='black' onClick={() => {
-                            setOpen(false);
-                            setActivitiesToRead();
-                        }}>
-                            OK
-                        </Button>
-                    </Modal.Actions>
-                </Modal>
-                <a className="w3-bar-item w3-button" href={d.link}>
-                    {<i class="random icon"></i>}
-                </a>
-                {x ? <a className="w3-bar-item w3-button" onClick={routeToUser}>
-                    {<i class="user outline icon"></i>}
-                </a> : null}
-                <a className="w3-bar-item w3-button" href={a.link}>
-                    {a.name}
-                </a>
-                <a className="w3-bar-item w3-button" href={b.link}>
-                    {b.name}
-                </a>
-                <a className="w3-bar-item w3-button" href={c.link}>
-                    {c.name}
-                </a>
+                                        )}
+                                    </div>
+                                }
+                            </Modal.Description>
+                        </Modal.Content>
+                        <Modal.Actions>
+                            <Button color='black' onClick={() => {
+                                setOpen(false);
+                                setActivitiesToRead();
+                            }}>
+                                OK
+                            </Button>
+                        </Modal.Actions>
+                    </Modal>
+                    <a className="ui basic button" href={d.link}>
+                        {<i class="random icon"></i>}
+                    </a>
+                    {x ? <a className="ui basic button" onClick={routeToUser}>
+                        {<i class="user outline icon"></i>}
+                    </a> : null}
+                    <a className="ui basic button" href={a.link}>
+                        {a.name}
+                    </a>
+                    <a className="ui basic button" href={b.link}>
+                        {b.name}
+                    </a>
+                    <a className="ui basic button" href={c.link}>
+                        {c.name}
+                    </a>
+                </div>
             </div>
         </div>
     );

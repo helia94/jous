@@ -75,7 +75,7 @@ function Homev2() {
             </Helmet>
             <div style={backgroundStyle}>
                 <div className="ui center aligned inverted segment transparent-yellow">
-                    <h1 className="w3-jumbo">Jous</h1>
+                    <h1 className="huge-header" >Jous</h1>
                 </div>
                 <div style={gridButtonsPosition}>
                     <Grid textAlign='center' columns='equal' stackable >
