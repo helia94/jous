@@ -116,7 +116,7 @@ function Homev2() {
                                     Have you ever found yourself stuck in yet another conversation about the weather, desperately seeking an exit strategy? Fear not; <strong>Jous</strong> is here to elevate your dialogues from the mundane to the meaningful.
                                 </p>
 
-                                <h3 style={{ marginTop: '1.5em' }}>Transform Small Talk into Substance</h3>
+                                <h3 style={{ marginTop: '1.5em' }}>Transform Small Talk into Genuine Interactions</h3>
                                 <p style={{ lineHeight: '1.6' }}>
                                     Jous isn't just an app; it's your invitation to deeper, more engaging discussions. Consider it a gentle nudge away from awkward silences and toward discussions that matter. No sign-ups or passwords needed. Just jump in.
                                 </p>
