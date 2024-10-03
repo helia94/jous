@@ -64,7 +64,7 @@ function Homev2() {
         <React.Fragment>
             <Helmet>
                 <title>Jous - Deep Conversation Starters</title>
-                <meta name="description" content="Avoid small talk and dive deep with Jous. Discover introspective questions to fuel meaningful conversations with friends, family, dates, and strangers. No signup required to share or explore." />
+                <meta name="description" content="Ditch small talk and go deep. Discover 1000 personal questions to start meaningful conversations with friends, family, dates, and strangers. No signup required." />
                 <meta name="keywords" content="conversation starters, deep questions, introspective questions, meaningful conversations, social icebreakers, personal growth, dating questions, boring conversations, small talk" />
                 {/* Open Graph tags for better social media sharing */}
                 <meta property="og:title" content="Jous - Deep Conversation Starters" />
