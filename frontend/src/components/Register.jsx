@@ -37,7 +37,7 @@ class Register extends Component {
             <div className="w3-card-4" style={{ margin: "2rem" }}>
                 <Helmet>
                     <title>Register</title>
-                    <link rel="canonical" href="https://www.jous.app/register" />
+                    <link rel="canonical" href="https://jous.app/register" />
                 </Helmet>
                 <div className="w3-container w3-blue w3-center w3-xlarge">
                     REGISTER
