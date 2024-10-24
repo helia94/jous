@@ -8,7 +8,7 @@ function Bug() {
         <React.Fragment>
             <Helmet>
                 <title>Bug</title>
-                <link rel="canonical" href="https://www.jous.app/bug" />
+                <link rel="canonical" href="https://jous.app/bug" />
             </Helmet>
             <div class="ui container">
                 <h2>Thanks for noticing!</h2>
