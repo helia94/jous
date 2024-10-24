@@ -65,13 +65,12 @@ function Homev2() {
             <Helmet>
                 <title>Jous - Deep Conversation Starters</title>
                 <meta name="description" content="Ditch small talk and go deep. Discover 1000 personal questions to start meaningful conversations with friends, family, dates, and strangers. No signup required." />
-                <meta name="keywords" content="conversation starters, deep questions, introspective questions, meaningful conversations, social icebreakers, personal growth, dating questions, boring conversations, small talk" />
-                {/* Open Graph tags for better social media sharing */}
+                <meta name="keywords" content="conversation starters, conversation cards, deep questions, meaningful conversations, icebreakers, dating questions, small talk" />
                 <meta property="og:title" content="Jous - Deep Conversation Starters" />
                 <meta property="og:description" content="Are you easily bored with small talk? Explore and share deep, introspective questions to spark meaningful conversations. For friends, family, and dates. No login required." />
                 <meta property="og:type" content="website" />
                 <meta property="og:url" content="https://www.jous.app/" />
-                <link rel="canonical" href="https://www.jous.com/" />
+                <link rel="canonical" href="https://www.jous.app/" />
             </Helmet>
             <div style={backgroundStyle}>
                 <div className="ui center aligned inverted segment transparent-yellow">
