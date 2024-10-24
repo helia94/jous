@@ -75,7 +75,7 @@ class MainPage extends React.Component {
             <React.Fragment>
                 <Helmet>
                     <title>Home</title>
-                    <link rel="canonical" href="https://www.jous.app/home" />
+                    <link rel="canonical" href="https://jous.app/home" />
                 </Helmet>
                 <div class="ui basic segment" style={{ width: Math.min(this.state.width, 768) }}>
                     <h1>Home</h1>
