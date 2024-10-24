@@ -31,7 +31,7 @@ class Login extends Component {
             <div className="w3-card-4" style={{ margin: "2rem" }}>
                 <Helmet>
                     <title>Login</title>
-                    <link rel="canonical" href="https://www.jous.app/login" />
+                    <link rel="canonical" href="https://jous.app/login" />
                 </Helmet>
                 <div className="w3-container w3-blue w3-center w3-xlarge">
                     LOGIN
