@@ -12,7 +12,7 @@ class Logout extends React.Component {
             <div className="w3-container w3-xlarge">
                 <Helmet>
                     <title>Logging out...</title>
-                    <link rel="canonical" href="https://www.jous.com/logout" />
+                    <link rel="canonical" href="https://jous.com/logout" />
                 </Helmet>
                 <p>Please wait, logging you out...</p>
             </div>
