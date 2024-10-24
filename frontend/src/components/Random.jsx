@@ -28,7 +28,7 @@ class Random extends React.Component {
             <React.Fragment>
                 <Helmet>
                     <title>Random</title>
-                    <link rel="canonical" href="https://www.jous.app/random" />
+                    <link rel="canonical" href="https://jous.app/random" />
                 </Helmet>
                 <div className="ui center aligned yellow inverted segment">
                     <h1 className="w3-jumbo">Random Jous</h1>
