@@ -70,7 +70,7 @@ def create_app(test_config=None):
     app.register_error_handler(Exception, all_exception_handler)
 
     # Setup JWT
-    app.config["JWT_SECRET_KEY"] = "myawesomesecretisnevergonnagiveyouup"
+    app.config["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET_KEY", "myawesomesecretisnevergonnagiveyouup")
     jwt = JWTManager(app)
 
     return app, jwt
