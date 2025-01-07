@@ -1,8 +1,7 @@
 from datetime import datetime
 import enum
-from backend.api.core import Mixin
+from api.core.utils import Mixin
 from .base import db
-
 
 class ActivityType(enum.Enum):
     answer = "answer"
@@ -21,7 +20,6 @@ class Activity(Mixin, db.Model):
     read = db.Column(db.Boolean)
     what = db.Column(db.Integer)
 
-
     def __init__(self, toUid, fromUid, type, what):
         self.toUid = toUid
         self.fromUid = fromUid
@@ -30,6 +28,5 @@ class Activity(Mixin, db.Model):
         self.read = False
         self.what = what
 
-
     def __repr__(self):
-        return f"<Activity {self.what} from {self.fromUid} to {self.toUid} >"
+        return f"<Activity {self.what} from {self.fromUid} to {self.toUid}>"

@@ -1,0 +1,27 @@
+{
+  "id": "jous-local-environment",
+  "name": "Jous-local",
+  "values": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:5000",
+      "type": "text",
+      "enabled": true
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "text",
+      "enabled": true
+    },
+    {
+      "key": "refresh_token",
+      "value": "",
+      "type": "text",
+      "enabled": true
+    }
+  ],
+  "_postman_variable_scope": "environment",
+  "_postman_exported_at": "2025-01-03T22:40:55.000Z",
+  "_postman_exported_using": "Postman/10.0.0"
+}

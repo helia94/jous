@@ -1,8 +1,6 @@
 from datetime import datetime
-
-from backend.api.core import Mixin
+from api.core.utils import Mixin
 from .base import db
-
 
 class GroupAnswer(Mixin, db.Model):
     __tablename__ = 'groupanswer'
@@ -14,7 +12,6 @@ class GroupAnswer(Mixin, db.Model):
     content = db.Column(db.String(2048))
     time = db.Column(db.TIMESTAMP)
     likes = db.relationship('User', uselist=True)
-
 
     def __init__(self, uid, group, question, content):
         self.uid = uid

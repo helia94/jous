@@ -1,8 +1,6 @@
 from datetime import datetime
-
-from backend.api.core import Mixin
+from api.core.utils import Mixin
 from .base import db
-
 
 class PublicAnswer(Mixin, db.Model):
     __tablename__ = 'publicanswer'
@@ -14,14 +12,12 @@ class PublicAnswer(Mixin, db.Model):
     time = db.Column(db.TIMESTAMP)
     likes = db.relationship('User', uselist=True)
 
-
     def __init__(self, uid, question, content):
         self.uid = uid
         self.question = question
         self.content = content
         self.time = datetime.utcnow()
         self.likes = []
-
 
     def __repr__(self):
         return f"<PublicAnswer {self.id}>"

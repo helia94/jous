@@ -1,4 +1,4 @@
-from backend.api.core import Mixin
+from api.core.utils import Mixin
 from .base import db
 
 class User(Mixin, db.Model):
@@ -13,7 +13,6 @@ class User(Mixin, db.Model):
     questions = db.Column(db.ARRAY(db.Integer))
     answers = db.Column(db.ARRAY(db.Integer))
 
-
     def __init__(self, uid, username):
         self.uid = uid
         self.username = username
@@ -22,7 +21,6 @@ class User(Mixin, db.Model):
         self.followers = []
         self.questions = []
         self.answers = []
-
 
     def __repr__(self):
         return f"<User {self.username}>"

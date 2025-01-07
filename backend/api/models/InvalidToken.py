@@ -1,12 +1,9 @@
-from backend.api.core import Mixin
+from api.core.utils import Mixin
 from .base import db
-
 
 class InvalidToken(Mixin, db.Model):
     __tablename__ = "invalid_tokens"
-    id = db.Column(db.Integer,
-                   unique=True,
-                   primary_key=True)
+    id = db.Column(db.Integer, unique=True, primary_key=True)
     jti = db.Column(db.String)
 
     def save(self):

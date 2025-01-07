@@ -1,0 +1,98 @@
+from api.models.base import db
+from api.models.Question import Question
+from api.models.PublicAnswer import PublicAnswer
+from api.core.logger import logger
+import random
+
+class QuestionRepository:
+    def get_all_questions(self, offset=0, limit=20):
+        questions = Question.query.order_by(Question.id.desc()) \
+            .offset(offset).limit(limit).all()
+        return list(reversed(questions))
+
+    def get_question_by_id(self, question_id):
+        return Question.query.get(question_id)
+
+    def create_question(self, uid, content):
+        try:
+            q = Question(uid, content, [])
+            db.session.add(q)
+            db.session.flush()
+            db.session.commit()
+            return q.id
+        except Exception as e:
+            logger.error(e)
+            db.session.rollback()
+            return None
+
+    def delete_question(self, question_id):
+        try:
+            PublicAnswer.query.filter_by(question=question_id).delete()
+            question = Question.query.get(question_id)
+            if question:
+                db.session.delete(question)
+            db.session.commit()
+            return True
+        except Exception as e:
+            logger.error(e)
+            db.session.rollback()
+            return False
+
+    def get_public_answers_for_question(self, question_id):
+        answers = PublicAnswer.query \
+            .filter_by(question=question_id) \
+            .order_by(PublicAnswer.id.desc()) \
+            .limit(20).all()
+        answers = list(reversed(answers))
+        return [
+            {
+                "id": ans.id,
+                "content": ans.content,
+                "username": ans.user.username if ans.user else "Unknown",
+                "time": ans.time
+            }
+            for ans in answers
+        ]
+
+    def get_random_question(self):
+        try:
+            question_count = Question.query.count()
+            if question_count == 0:
+                return None
+            rand_offset = random.randint(0, question_count - 1)
+            return Question.query.offset(rand_offset).first()
+        except Exception as e:
+            logger.error(e)
+            return None
+
+    def like_question(self, question_id):
+        try:
+            question = Question.query.get(question_id)
+            if not question:
+                return False
+            question.like_number += 1
+            db.session.commit()
+            return True
+        except Exception as e:
+            logger.error(e)
+            db.session.rollback()
+            return False
+        
+    def add_answer_to_question(self, question_id, answer_id):
+        try:
+            question = Question.query.get(question_id)
+            if not question:
+                return False
+
+            # Modify the field in place and reassign to trigger change tracking
+            if question.public_answer is None:
+                question.public_answer = [answer_id]
+            else:
+                question.public_answer = question.public_answer + [answer_id]
+
+            db.session.commit()
+            return True
+        except Exception as e:
+            logger.error(e)
+            db.session.rollback()
+            return False

@@ -1,0 +1,662 @@
+{
+  "info": {
+    "_postman_id": "ebc60672-215f-4e4e-9f75-cf859b5e9381",
+    "name": "Jous Flask API Collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "20250107"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"username\":\"\",\"email\":\"\",\"pwd\":\"\"}"
+            },
+            "url": {
+              "raw": "{{base_url}}/register",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "register"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\":\"\",\"pwd\":\"\"}"
+            },
+            "url": {
+              "raw": "{{base_url}}/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "login"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.token) {",
+                  "    pm.environment.set(\"token\", jsonData.token);",
+                  "}",
+                  "if (jsonData.refreshToken) {",
+                  "    pm.environment.set(\"refresh_token\", jsonData.refreshToken);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Check If Token Expire",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/checkiftokenexpire",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "checkiftokenexpire"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{refresh_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/refreshtoken",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "refreshtoken"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.token) {",
+                  "    pm.environment.set(\"token\", jsonData.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Logout Access",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/logout/access",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "logout",
+                "access"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Logout Refresh",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{refresh_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/logout/refresh",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "logout",
+                "refresh"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"password\":\"\",\"npassword\":\"\"}"
+            },
+            "url": {
+              "raw": "{{base_url}}/changepassword",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "changepassword"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Account",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/deleteaccount",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "deleteaccount"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/getcurrentuser",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "getcurrentuser"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Activity",
+      "item": [
+        {
+          "name": "Get User Activity",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/useractivities",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "useractivities"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Read User Activity",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/readuseractivity/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "readuseractivity",
+                "1"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Group",
+      "item": [
+        {
+          "name": "Add Group",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"name\":\"\",\"users\":\"1,2\"}"
+            },
+            "url": {
+              "raw": "{{base_url}}/addgroup",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "addgroup"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Add Users To Group",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"name\":\"\",\"users\":[\"3\"]}"
+            },
+            "url": {
+              "raw": "{{base_url}}/adduserstogroup",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "adduserstogroup"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Question",
+      "item": [
+        {
+          "name": "Get Questions With Offset",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/questions/0",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "questions",
+                "0"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Single Question",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/question/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "question",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Random Question",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/question/random",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "question",
+                "random"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Add Question",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"content\":\"\",\"anon\":\"False\"}"
+            },
+            "url": {
+              "raw": "{{base_url}}/addquestion",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "addquestion"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Question",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/deletequestion/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "deletequestion",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Like Question",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/likequestion/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "likequestion",
+                "1"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Add Answer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"content\":\"\",\"anon\":\"False\",\"question\":\"1\"}"
+            },
+            "url": {
+              "raw": "{{base_url}}/addanswer",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "addanswer"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Answer",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/deleteanswer/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "deleteanswer",
+                "1"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "User",
+      "item": [
+        {
+          "name": "Get User Questions (No Offset)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"username\":\"\"}"
+            },
+            "url": {
+              "raw": "{{base_url}}/userquestions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "userquestions"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get User Questions (With Offset)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"username\":\"\"}"
+            },
+            "url": {
+              "raw": "{{base_url}}/userquestions/0",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "userquestions",
+                "0"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get User Answers",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"username\":\"\"}"
+            },
+            "url": {
+              "raw": "{{base_url}}/useranswers",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "useranswers"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Answers to User Questions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/useranswerstoquestions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "useranswerstoquestions"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

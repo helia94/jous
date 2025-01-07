@@ -1,8 +1,6 @@
 from datetime import datetime
-
-from backend.api.core import Mixin
+from api.core.utils import Mixin
 from .base import db
-
 
 class Question(Mixin, db.Model):
     __tablename__ = 'question'
@@ -18,7 +16,6 @@ class Question(Mixin, db.Model):
     reask_number = db.Column(db.Integer)
     like_number = db.Column(db.Integer)
 
-
     def __init__(self, uid, content, tags):
         self.uid = uid
         self.content = content
@@ -29,7 +26,6 @@ class Question(Mixin, db.Model):
         self.public_answer = []
         self.reask_number = 0
         self.like_number = 0
-
 
     def __repr__(self):
         return f"<Question {self.content}>"
