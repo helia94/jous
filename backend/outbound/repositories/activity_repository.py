@@ -11,7 +11,6 @@ class ActivityRepository:
         # Convert to list of dicts if needed
         return [{
             "id": a.id,
-            "toUid": a.toUid,
             "fromUid": self.get_user_name(a.fromUid),
             "time": a.time,
             "type": a.type.value,
