@@ -9,3 +9,4 @@ backend/.env
 backend/build
 frontend/build
 quickr/
+__pycache__/
