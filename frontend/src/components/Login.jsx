@@ -7,12 +7,16 @@ class Login extends Component {
     state = { err: "" };
 
     componentDidMount() {
-        check().then(r => {
+        const token = localStorage.getItem("token");
+        if (token) {
+          // Only call check if we have something
+          check().then(r => {
             if (r) {
-                window.location = "/"
+              window.location = "/";
             }
-        })
-    }
+          });
+        }
+      }
 
     login = (e) => {
         e.preventDefault();
