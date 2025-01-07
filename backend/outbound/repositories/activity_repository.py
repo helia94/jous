@@ -1,6 +1,6 @@
 from api.models.base import db
 from api.models.Activity import Activity
-from api.core.logger import logger
+from api.models.User import User
 
 class ActivityRepository:
     def find_activities_for_user(self, uid, limit=10):
@@ -12,7 +12,7 @@ class ActivityRepository:
         return [{
             "id": a.id,
             "toUid": a.toUid,
-            "fromUid": a.fromUid,
+            "fromUid": self.get_user_name(a.fromUid),
             "time": a.time,
             "type": a.type.value,
             "read": a.read,
@@ -36,3 +36,8 @@ class ActivityRepository:
         activity = Activity(recipient_id, actor_id, activity_type, question_id)
         db.session.add(activity)
         return True
+    
+    def get_user_name(self, uid):
+        user = User.query.get(uid)
+        return user.username
+
