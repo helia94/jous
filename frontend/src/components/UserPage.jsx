@@ -7,7 +7,7 @@ import { Helmet } from 'react-helmet';
 class UserPage extends React.Component {
     state = {
         currentUser: {}, active: "q", isOwener: false,
-        questions: [], answers: [], groups: [], answersToQuestions: [], width: 500
+        questions: [], answers: [], answersToQuestions: [], width: 500
     }
 
     componentDidMount() {
@@ -59,15 +59,6 @@ class UserPage extends React.Component {
         this.setState({ active: "q" })
     }
 
-    toGroups = (e) => {
-        this.setState({ active: "g" })
-        if (this.state.groups.length === 0) {
-            Axios.post("/api/usergroups", { username: this.props.match.params.username }
-                , { headers: { Authorization: "Bearer " + localStorage.getItem("token") } }).then(res => {
-                    this.setState({ groups: res.data })
-                });
-        }
-    }
 
     updateDimensions = () => {
         this.setState({ width: window.innerWidth, height: window.innerHeight });
@@ -93,10 +84,6 @@ class UserPage extends React.Component {
                             onClick={this.toQuestions}>Questions</div>
                         <div class={(this.state.active === "a" ? "active" : "") + " item"}
                             onClick={this.toAnswers}>Answers</div>
-                        {this.state.isOwener ?
-                            <div class={(this.state.active === "g" ? "active" : "") + " item"}
-                                onClick={this.toGroups}>Groups</div>
-                            : null}
                         {this.state.isOwener ?
                             <div class={(this.state.active === "aq" ? "active" : "") + " item"}
                                 onClick={this.toAnswersToQuestion}>Answers to my questions</div>
@@ -135,16 +122,7 @@ class UserPage extends React.Component {
                                             />
                                         </div>
                                     );
-                                }) : this.state.active === "g" ?
-                                    <div class="ui segments">
-                                        {this.state.groups.map((item, index) => {
-                                            return (
-                                                <div class="ui basic segment">
-                                                    <a href={`/group/${item.group_name}`} >{item.group_name}</a>
-                                                </div>
-                                            );
-                                        })}
-                                    </div> :
+                                }):
                                     this.state.answersToQuestions.map((item, index) => {
                                         return (
                                             <div class="event">
