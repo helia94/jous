@@ -4,27 +4,16 @@ from api.core.logger import logger
 
 class AnswerRepository:
     def create_public_answer(self, uid, question_id, content):
-        try:
-            ans = PublicAnswer(uid=uid, question=question_id, content=content)
-            db.session.add(ans)
-            db.session.commit()
-            return ans.id
-        except Exception as e:
-            logger.error(e)
-            db.session.rollback()
-            return None
+        ans = PublicAnswer(uid=uid, question=question_id, content=content)
+        db.session.add(ans)
+        db.session.flush()
+        return ans.id
 
     def delete_public_answer(self, answer_id):
-        try:
-            ans = PublicAnswer.query.get(answer_id)
-            if ans:
-                db.session.delete(ans)
-            db.session.commit()
-            return True
-        except Exception as e:
-            logger.error(e)
-            db.session.rollback()
-            return False
+        ans = PublicAnswer.query.get(answer_id)
+        if ans:
+            db.session.delete(ans)
+        return True
 
     def find_public_answer_by_id(self, answer_id):
         return PublicAnswer.query.get(answer_id)

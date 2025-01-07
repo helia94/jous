@@ -20,29 +20,19 @@ class ActivityRepository:
         } for a in activities]
 
     def mark_as_read(self, uid, last_activity_id):
-        try:
-            to_mark = Activity.query \
-                .filter(Activity.toUid == uid) \
-                .filter(Activity.id <= last_activity_id) \
-                .filter(Activity.read == False) \
-                .all()
-            for t in to_mark:
-                t.read = True
-                db.session.add(t)
-            db.session.commit()
-            return True
-        except Exception as e:
-            logger.error(e)
-            db.session.rollback()
-            return False
+        to_mark = Activity.query \
+            .filter(Activity.toUid == uid) \
+            .filter(Activity.id <= last_activity_id) \
+            .filter(Activity.read == False) \
+            .all()
+        for t in to_mark:
+            t.read = True
+            db.session.add(t)
+        return True
+
         
     def log_activity(self, recipient_id, activity_type, actor_id, question_id):
-        try:
-            activity = Activity(recipient_id, actor_id, activity_type, question_id)
-            db.commit_db(activity)
-            return True
-        except Exception as e:
-            logger.error(e)
-            db.session.rollback()
-            return False
-        
+
+        activity = Activity(recipient_id, actor_id, activity_type, question_id)
+        db.session.add(activity)
+        return True

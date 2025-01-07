@@ -16,60 +16,42 @@ class UserRepository:
         return UserAuth.query.filter_by(username=username).first()
 
     def create_user_auth(self, username, email, pwd):
-        try:
-            user_auth = UserAuth(username, email, pwd)
-            db.session.add(user_auth)
-            db.session.flush()
-            user = User(user_auth.id, username)
-            db.session.add(user)
-            db.session.commit()
-            return user_auth.id
-        except Exception as e:
-            logger.error(e)
-            db.session.rollback()
-            return None
+        user_auth = UserAuth(username, email, pwd)
+        db.session.add(user_auth)
+        db.session.flush()
+        user = User(user_auth.id, username)
+        db.session.add(user)
+        db.session.flush()
+        return user_auth.id
+
 
     def delete_user_auth(self, uid):
-        try:
-            user_auth = UserAuth.query.get(uid)
-            user = User.query.get(uid)
-            if user_auth:
-                db.session.delete(user_auth)
-            if user:
-                db.session.delete(user)
-            db.session.commit()
-            return True
-        except Exception as e:
-            logger.error(e)
-            db.session.rollback()
-            return False
+        user_auth = UserAuth.query.get(uid)
+        user = User.query.get(uid)
+        if user_auth:
+            db.session.delete(user_auth)
+        if user:
+            db.session.delete(user)
+        return True
+
 
     def commit_user_auth(self, user_auth):
-        try:
-            db.session.add(user_auth)
-            db.session.commit()
-            return True
-        except Exception as e:
-            logger.error(e)
-            db.session.rollback()
-            return False
+        db.session.add(user_auth)
+        return True
+
 
     def get_or_create_hannah_id(self):
         existing = UserAuth.query.filter_by(username="Hannah").first()
         if existing:
             return existing.id
-        try:
-            new_hannah = UserAuth("Hannah", "hannah@hannah.com", "Hannah")
-            db.session.add(new_hannah)
-            db.session.flush()
-            new_user = User(new_hannah.id, "Hannah")
-            db.session.add(new_user)
-            db.session.commit()
-            return new_hannah.id
-        except Exception as e:
-            logger.error(e)
-            db.session.rollback()
-            return None
+        
+        new_hannah = UserAuth("Hannah", "hannah@hannah.com", "Hannah")
+        db.session.add(new_hannah)
+        db.session.flush()
+        new_user = User(new_hannah.id, "Hannah")
+        db.session.add(new_user)
+        return new_hannah.id
+
 
     def add_question_to_user(self, uid, question_id):
         user = User.query.get(uid)
@@ -78,14 +60,9 @@ class UserRepository:
         qs = user.questions or []
         qs.append(question_id)
         user.questions = qs
-        try:
-            db.session.add(user)
-            db.session.commit()
-            return True
-        except Exception as e:
-            logger.error(e)
-            db.session.rollback()
-            return False
+        db.session.add(user)
+        return True
+
         
     def add_answer_to_user(self, uid, answer_id):
         user = User.query.get(uid)
@@ -94,17 +71,9 @@ class UserRepository:
         qs = user.answers or []
         qs.append(answer_id)
         user.questions = qs
-        try:
-            db.session.add(user)
-            db.session.commit()
-            return True
-        except Exception as e:
-            logger.error(e)
-            db.session.rollback()
-            return False       
-
-
-    # ------------------ Newly added functions ------------------
+        db.session.add(user)
+        return True
+     
     def get_user_questions(self, username, offset=0, limit=20):
         user_auth = self.find_user_auth_by_username(username)
         if not user_auth:

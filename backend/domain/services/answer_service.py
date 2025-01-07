@@ -55,8 +55,5 @@ class AnswerService:
         if answer.uid != current_uid:
             return {"error": "Not authorized"}, 403
 
-        success = self.answer_repository.delete_public_answer(answer_id)
-        if not success:
-            return {"error": "DB error"}, 500
-
+        self.answer_repository.delete_public_answer(answer_id)
         return {"success": True}, 200

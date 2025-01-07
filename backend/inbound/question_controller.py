@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from domain.services.question_service import QuestionService
 from domain.services.answer_service import AnswerService
+from inbound.transaction_utils import transactional
 
 question_api = Blueprint("question_api", __name__)
 question_service = QuestionService()
@@ -28,6 +29,7 @@ def get_random_question():
 
 @question_api.route("/addquestion", methods=["POST"])
 @jwt_required(optional=True)
+@transactional
 def add_question():
     data = request.get_json() or {}
     content = data.get("content")
@@ -40,12 +42,14 @@ def add_question():
 
 @question_api.route("/deletequestion/<int:question_id>", methods=["DELETE"])
 @jwt_required()
+@transactional
 def delete_question(question_id):
     uid = get_jwt_identity()
     response, status_code = question_service.delete_question(question_id, uid)
     return jsonify(response), status_code
 
 @question_api.route("/likequestion/<int:tid>", methods=["POST"])
+@transactional
 def like_question(tid):
     success = question_service.like_question(tid)
     if success:
@@ -55,6 +59,7 @@ def like_question(tid):
 
 @question_api.route("/addanswer", methods=["POST"])
 @jwt_required(optional=True)
+@transactional
 def add_answer():
     data = request.get_json() or {}
     content = data.get("content")
@@ -67,6 +72,7 @@ def add_answer():
 
 @question_api.route("/deleteanswer/<int:tid>", methods=["DELETE"])
 @jwt_required()
+@transactional
 def delete_answer(tid):
     uid = get_jwt_identity()
     response, status_code = answer_service.delete_answer(tid, uid)

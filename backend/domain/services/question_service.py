@@ -45,10 +45,9 @@ class QuestionService:
         # Simple authority check: user must own the question
         if question.uid != current_uid:
             return {"error": "Not authorized"}, 403
-        success = self.question_repository.delete_question(question_id)
-        if success:
-            return {"success": True}, 200
-        return {"error": "Could not delete question"}, 500
+        self.question_repository.delete_question(question_id)
+        return {"success": True}, 200
+
 
     def get_random_question(self):
         question = self.question_repository.get_random_question()

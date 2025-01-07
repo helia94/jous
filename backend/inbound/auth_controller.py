@@ -8,6 +8,7 @@ from flask_jwt_extended import (
 )
 from domain.services.user_service import UserService
 from api.models.InvalidToken import InvalidToken
+from inbound.transaction_utils import transactional
 
 auth_api = Blueprint("auth_api", __name__)
 user_service = UserService()
@@ -28,6 +29,7 @@ def login():
     return jsonify(response), status_code
 
 @auth_api.route("/register", methods=["POST"])
+@transactional
 def register():
     data = request.get_json() or {}
     username = data.get("username")
@@ -66,6 +68,7 @@ def refresh_logout():
     return jsonify({"success": True}), 200
 
 @auth_api.route("/changepassword", methods=["POST"])
+@transactional
 @jwt_required()
 def change_password():
     data = request.get_json() or {}
@@ -76,6 +79,7 @@ def change_password():
     return jsonify(response), status_code
 
 @auth_api.route("/deleteaccount", methods=["DELETE"])
+@transactional
 @jwt_required()
 def delete_account():
     uid = get_jwt_identity()

@@ -1,6 +1,7 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from domain.services.activity_service import ActivityService
+from inbound.transaction_utils import transactional
 
 activity_api = Blueprint("activity_api", __name__)
 activity_service = ActivityService()
@@ -14,6 +15,7 @@ def get_user_activity():
 
 @activity_api.route("/readuseractivity/<int:lastactivityid>", methods=["GET"])
 @jwt_required()
+@transactional
 def read_activity(lastactivityid):
     uid = get_jwt_identity()
     success = activity_service.mark_as_read(uid, lastactivityid)

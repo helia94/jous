@@ -14,29 +14,17 @@ class QuestionRepository:
         return Question.query.get(question_id)
 
     def create_question(self, uid, content):
-        try:
-            q = Question(uid, content, [])
-            db.session.add(q)
-            db.session.flush()
-            db.session.commit()
-            return q.id
-        except Exception as e:
-            logger.error(e)
-            db.session.rollback()
-            return None
+        q = Question(uid, content, [])
+        db.session.add(q)
+        db.session.flush()
+        return q.id
+
 
     def delete_question(self, question_id):
-        try:
-            PublicAnswer.query.filter_by(question=question_id).delete()
-            question = Question.query.get(question_id)
-            if question:
-                db.session.delete(question)
-            db.session.commit()
-            return True
-        except Exception as e:
-            logger.error(e)
-            db.session.rollback()
-            return False
+        PublicAnswer.query.filter_by(question=question_id).delete()
+        question = Question.query.get(question_id)
+        if question:
+            db.session.delete(question)
 
     def get_public_answers_for_question(self, question_id):
         answers = PublicAnswer.query \
@@ -66,33 +54,23 @@ class QuestionRepository:
             return None
 
     def like_question(self, question_id):
-        try:
-            question = Question.query.get(question_id)
-            if not question:
-                return False
-            question.like_number += 1
-            db.session.commit()
-            return True
-        except Exception as e:
-            logger.error(e)
-            db.session.rollback()
+        question = Question.query.get(question_id)
+        if not question:
             return False
+        question.like_number += 1
+        db.session.flush()
+        return True
         
     def add_answer_to_question(self, question_id, answer_id):
-        try:
-            question = Question.query.get(question_id)
-            if not question:
-                return False
-
-            # Modify the field in place and reassign to trigger change tracking
-            if question.public_answer is None:
-                question.public_answer = [answer_id]
-            else:
-                question.public_answer = question.public_answer + [answer_id]
-
-            db.session.commit()
-            return True
-        except Exception as e:
-            logger.error(e)
-            db.session.rollback()
+        question = Question.query.get(question_id)
+        if not question:
             return False
+
+        # Modify the field in place and reassign to trigger change tracking
+        if question.public_answer is None:
+            question.public_answer = [answer_id]
+        else:
+            question.public_answer = question.public_answer + [answer_id]
+        db.session.flush()
+        return True
+
