@@ -46,14 +46,12 @@ def create_app(test_config=None):
     from inbound.auth_controller import auth_api
     from inbound.user_controller import user_api
     from inbound.question_controller import question_api
-    from inbound.group_controller import group_api
     from inbound.activity_controller import activity_api
     
     # Register Blueprints
     app.register_blueprint(auth_api, url_prefix="/api")
     app.register_blueprint(user_api, url_prefix="/api")
     app.register_blueprint(question_api, url_prefix="/api")
-    app.register_blueprint(group_api, url_prefix="/api")
     app.register_blueprint(activity_api, url_prefix="/api")
     
 
