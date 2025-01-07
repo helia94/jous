@@ -7,8 +7,13 @@ from backend.api.models.PublicAnswer import PublicAnswer
 
 class UserRepository:
     def get_all_user_auths(self):
-        return UserAuth.query.all()
-
+        users = UserAuth.query.all()
+        return [{"id"      : i.id,
+                "username": i.username,
+                "email"   : i.email,
+                "password": i.pwd}
+                for i in users]
+    
     def find_user_auth_by_id(self, uid):
         return UserAuth.query.get(uid)
 

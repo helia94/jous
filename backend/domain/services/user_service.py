@@ -1,7 +1,6 @@
 import re
 from backend.outbound.repositories.user_repository import UserRepository
-from backend.outbound.security import check_password, encrypt_password
-from backend.api.core.logger import logger
+from backend.outbound.security import checkpwd, encpwd
 
 class UserService:
     def __init__(self, user_repository=None):
@@ -16,7 +15,7 @@ class UserService:
         if email:
             if not re.match(r"[\w._]{1,}@\w{1,}\.\w{1,}", email):
                 return {"error": "Invalid email"}, 400
-        encrypted_pwd = encrypt_password(plain_pwd)
+        encrypted_pwd = encpwd(plain_pwd)
         new_id = self.user_repository.create_user_auth(username, email, encrypted_pwd)
         if not new_id:
             return {"error": "Database error"}, 500
@@ -25,43 +24,19 @@ class UserService:
     def login_user(self, email_or_username, plain_pwd):
         if not (email_or_username and plain_pwd):
             return {"error": "Invalid form"}, 400
+
         user_auths = self.user_repository.get_all_user_auths()
-        matching = [
-            ua for ua in user_auths
-            if (ua.email == email_or_username or ua.username == email_or_username)
-               and check_password(plain_pwd, ua.pwd)
-        ]
+        
+        matching = list(filter(lambda x: (x["email"] == email_or_username or x["username"] == email_or_username) and checkpwd(plain_pwd, x["password"]), user_auths))
+        
         if len(matching) == 1:
-            user_id = matching[0].id
-            logger.info(f"User {user_id} logged in successfully.")
+            user_id = matching[0]["id"]
             return {"id": user_id}, 200
         else:
             return {"error": "Invalid credentials"}, 401
+    
+ 
 
-    def remove_user(self, uid):
-        return self.user_repository.delete_user_auth(uid)
-
-    def change_password(self, uid, old_password, new_password):
-        user_auth = self.user_repository.find_user_auth_by_id(uid)
-        if not user_auth:
-            return {"error": "User not found"}, 404
-        if not (old_password and new_password):
-            return {"error": "Invalid form"}, 400
-        if not check_password(old_password, user_auth.pwd):
-            return {"error": "Wrong password"}, 400
-        user_auth.pwd = encrypt_password(new_password)
-        if not self.user_repository.commit_user_auth(user_auth):
-            return {"error": "Could not update password"}, 500
-        return {"success": True}, 200
-
-    def delete_account(self, uid):
-        success = self.remove_user(uid)
-        if success:
-            return {"success": True}, 200
-        else:
-            return {"error": "Could not delete user"}, 500
-
-    # ------------------ Newly added functions ------------------
     def get_user_questions(self, username, offset=0):
         questions = self.user_repository.get_user_questions(username, offset)
         return [self._serialize_question(q) for q in questions]

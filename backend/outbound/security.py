@@ -1,10 +1,7 @@
 import bcrypt
-
-def encrypt_password(password: str) -> str:
-    salt = bcrypt.gensalt()
-    return bcrypt.hashpw(password.encode("utf-8"), salt).decode("utf-8")
-
-def check_password(plain_pwd: str, hashed_pwd: str) -> bool:
-    if not plain_pwd or not hashed_pwd:
-        return False
-    return bcrypt.checkpw(plain_pwd.encode("utf-8"), hashed_pwd.encode("utf-8"))
+import base64
+import hashlib
+def encpwd(pwd):
+    return bcrypt.hashpw(base64.b64encode(hashlib.sha256(pwd.encode()).digest()), bcrypt.gensalt()).decode()
+def checkpwd(x, y):
+    return bcrypt.checkpw(base64.b64encode(hashlib.sha256(x.encode()).digest()), y.encode())
