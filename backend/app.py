@@ -34,19 +34,19 @@ def create_app(test_config=None):
             create_database(db_url)
 
     # Initialize SQLAlchemy and Migrations
-    from api.models import db  
+    from backend.api.models import db  
     db.init_app(app)
     Migrate(app, db)
 
-    from api.models import UserAuth, Question, PublicAnswer, Group, GroupAnswer, Activity, User
+    from backend.api.models import UserAuth, Question, PublicAnswer, Group, GroupAnswer, Activity, User
 
     with app.app_context():
         db.create_all()
 
-    from inbound.auth_controller import auth_api
-    from inbound.user_controller import user_api
-    from inbound.question_controller import question_api
-    from inbound.activity_controller import activity_api
+    from backend.inbound.auth_controller import auth_api
+    from backend.inbound.user_controller import user_api
+    from backend.inbound.question_controller import question_api
+    from backend.inbound.activity_controller import activity_api
     
     # Register Blueprints
     app.register_blueprint(auth_api, url_prefix="/api")
@@ -67,9 +67,6 @@ def create_app(test_config=None):
     # Setup JWT
     app.config["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET_KEY", "myawesomesecret")
     jwt = JWTManager(app)
-
-
-
     return app, jwt
 
 
@@ -77,6 +74,6 @@ def create_app(test_config=None):
 if __name__ == "__main__":
     flask_app, _ = create_app()
     flask_app.run(debug=True, host="0.0.0.0", port=5000)
-    from api.models import db 
+    from backend.api.models import db 
     with flask_app.app_context():
         db.create_all()

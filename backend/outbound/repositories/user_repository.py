@@ -3,7 +3,7 @@ from backend.api.models.UserAuth import UserAuth
 from backend.api.models.User import User
 from backend.api.models.Question import Question
 from backend.api.models.PublicAnswer import PublicAnswer
-from backend.api.core.logger import logger
+
 
 class UserRepository:
     def get_all_user_auths(self):

@@ -1,8 +1,8 @@
 import click
 from flask import current_app
 from flask.cli import with_appcontext
-from app import create_app
-from api.models import db
+from backend.app import create_app
+from backend.api.models import db
 
 app, _ = create_app()
 
