@@ -18,6 +18,6 @@ def get_user_activity():
 @transactional
 def read_activity(lastactivityid):
     uid = get_jwt_identity()
-    success = activity_service.mark_as_read(uid, lastactivityid)
+    success = activity_service.mark_activities_as_read(uid, lastactivityid)
     return jsonify({"success": str(success).lower()}), 200
 
