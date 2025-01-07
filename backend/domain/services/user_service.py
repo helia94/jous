@@ -14,7 +14,7 @@ class UserService:
         if existing:
             return {"error": "Username is used."}, 400
         if email:
-            if not re.match(r"[\w._]{5,}@\w{3,}\.\w{2,4}", email):
+            if not re.match(r"[\w._]{1,}@\w{1,}\.\w{1,}", email):
                 return {"error": "Invalid email"}, 400
         encrypted_pwd = encrypt_password(plain_pwd)
         new_id = self.user_repository.create_user_auth(username, email, encrypted_pwd)
