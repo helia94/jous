@@ -1,5 +1,5 @@
 from client_app import client
-from backend.api import create_app
+from backend.app import create_app
 
 # sets up the app
 
