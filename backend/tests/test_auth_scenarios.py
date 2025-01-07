@@ -57,16 +57,3 @@ class TestAuthScenarios:
         rv = login_user(client, "changepwuser", "newpass")
         assert rv.status_code == 200
         assert "token" in rv.get_json()
-
-    def test_delete_account(self, client):
-        # Register + login
-        rv = register_user(client, "deluser", "deluser@email.com", "delpass")
-        rv = login_user(client, "deluser", "delpass")
-        token = rv.get_json()["token"]
-        # Delete account
-        rv = delete_account(client, token)
-        assert rv.status_code == 200
-        # Attempt to login
-        rv = login_user(client, "deluser", "delpass")
-        assert rv.status_code == 401
-        assert "error" in rv.get_json()

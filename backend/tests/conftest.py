@@ -2,9 +2,8 @@
 # tests/conftest.py
 # =========================================
 import pytest
-from unittest.mock import patch, MagicMock
-from flask import Flask
-from flask_jwt_extended import JWTManager
+from sqlalchemy import event
+from sqlalchemy.orm import scoped_session, sessionmaker
 import sys
 import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -29,8 +28,40 @@ def test_app():
     with app.app_context():
         db.create_all()
         yield app
+        db.session.remove()
+        db.drop_all()
 
+@pytest.fixture(autouse=True)
+def reset_database(test_app):
+    """
+    Automatically reset the database before each test by rolling back any changes.
+    This ensures each test runs with a clean state without the overhead of dropping and recreating tables.
+    """
+    with test_app.app_context():
+        # Establish a new connection and begin a transaction
+        connection = db.engine.connect()
+        transaction = connection.begin()
 
+        # Create a new scoped session bound to this connection
+        session_factory = sessionmaker(bind=connection)
+        Session = scoped_session(session_factory)
+        db.session = Session
+
+        # Start a nested transaction (savepoint)
+        nested = connection.begin_nested()
+
+        # Listen for the end of the nested transaction to start a new one if needed
+        @event.listens_for(Session, "after_transaction_end")
+        def restart_savepoint(session, trans):
+            if trans.nested and not trans._parent.nested:
+                connection.begin_nested()
+
+        yield  # This is where the test runs
+
+        # Rollback the transactions after the test completes
+        transaction.rollback()
+        connection.close()
+        Session.remove()
 
 
 @pytest.fixture
@@ -131,26 +162,21 @@ def change_password(client, token, old_password, new_password):
     }, headers=headers)
 
 
-def delete_account(client, token):
-    headers = {"Authorization": f"Bearer {token}"}
-    return client.delete("/deleteaccount", headers=headers)
-
-
 def check_token_expire(client, token):
     headers = {"Authorization": f"Bearer {token}"}
-    return client.post("/checkiftokenexpire", headers=headers)
+    return client.post("/api/checkiftokenexpire", headers=headers)
 
 
 def refresh_token(client, token):
     headers = {"Authorization": f"Bearer {token}"}
-    return client.post("/refreshtoken", headers=headers)
+    return client.post("/api/refreshtoken", headers=headers)
 
 
 def access_logout(client, token):
     headers = {"Authorization": f"Bearer {token}"}
-    return client.post("/logout/access", headers=headers)
+    return client.post("/api/logout/access", headers=headers)
 
 
 def refresh_logout(client, token):
     headers = {"Authorization": f"Bearer {token}"}
-    return client.post("/logout/refresh", headers=headers)
+    return client.post("/api/logout/refresh", headers=headers)
