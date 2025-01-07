@@ -23,7 +23,7 @@ class TweetDetailPage extends React.Component {
         Axios.get("/api/question/" + this.props.match.params.question).then(res => {
             this.setState({ question: res.data.question, answers: res.data.answers });
         });
-
+        
         setTimeout(() => {
             const token = localStorage.getItem("token");
             if (token) {
@@ -36,7 +36,6 @@ class TweetDetailPage extends React.Component {
                 });
             }
         }, 20);
-
         this.setState({ width: window.innerWidth, height: window.innerHeight });
         window.addEventListener('resize', this.updateDimensions);
     }
@@ -89,6 +88,24 @@ class TweetDetailPage extends React.Component {
         window.removeEventListener('resize', this.updateDimensions);
     }
 
+    renderTweetItem(item) {
+        return (
+            item && (
+                    <TweetItem2
+                        id={item.id}
+                        content={item.content}
+                        author={item.username}
+                        time={item.time}
+                        likes={item.like_number}
+                        answers={item.answer_number}
+                        isOwner={this.state.currentUser.username === item.username}
+                        isLoggedIn={this.state.login}
+                    />
+            )
+        );
+    }
+    
+
     render() {
         return (
             <React.Fragment>
@@ -100,16 +117,7 @@ class TweetDetailPage extends React.Component {
                     />
                 </Helmet>
                 <div className="ui basic segment" style={{ width: Math.min(this.state.width * 0.9, 500) }}>
-                    <TweetItem2
-                        id={this.state.question.id}
-                        content={this.state.question.content}
-                        author={this.state.question.username}
-                        time={this.state.question.time}
-                        likes={this.state.question.like_number}
-                        answers={this.state.question.answer_number}
-                        isOwner={this.state.currentUser.username === this.state.question.username}
-                        key={0}
-                    />
+                {this.renderTweetItem(this.state.question)}
                     <div className="ui comments">
                         <h3 className="ui dividing header">Answers</h3>
                         {this.state.answers.map((item, index) => {

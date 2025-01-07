@@ -21,8 +21,8 @@ const labelStyle = {
 class TweetItem2 extends React.Component {
   constructor(props) {
     super(props);
-    // parse likes as a number and use that as initial state
     this.state = {
+      // parse likes as a number and use that as initial state
       likes: Number(props.likes) || 0,
       mobile: false,
       minHeight: 200
@@ -32,6 +32,13 @@ class TweetItem2 extends React.Component {
   componentDidMount() {
     if (window.innerWidth < 450) {
       this.setState({ mobile: true, minHeight: 414 });
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    // if likes changed in props, update local state
+    if (prevProps.likes !== this.props.likes) {
+      this.setState({ likes: Number(this.props.likes) });
     }
   }
 
@@ -79,7 +86,6 @@ class TweetItem2 extends React.Component {
     window.location.href = path;
   }
 
-
   render() {
     return (
       <div
@@ -125,7 +131,6 @@ class TweetItem2 extends React.Component {
               >
                 <i className="heart icon" style={iconStyle}></i>
               </div>
-              {/* Use this.state.likes so it updates without reload */}
               <a className="ui basic label" style={labelStyle}>
                 {this.state.likes}
               </a>
