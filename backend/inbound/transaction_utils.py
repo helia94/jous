@@ -1,4 +1,4 @@
-from api.models.base import db
+from backend.api.models.base import db
 from flask import jsonify
 from functools import wraps
 

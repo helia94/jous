@@ -7,8 +7,8 @@ from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
 from sqlalchemy_utils import create_database, database_exists
 
-from api.config import config
-from api.core.utils import all_exception_handler
+from backend.api.config import config
+from backend.api.core.utils import all_exception_handler
 
 
 def create_app(test_config=None):

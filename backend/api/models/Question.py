@@ -1,5 +1,5 @@
 from datetime import datetime
-from api.core.utils import Mixin
+from backend.api.core.utils import Mixin
 from .base import db
 
 class Question(Mixin, db.Model):

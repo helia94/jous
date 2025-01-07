@@ -1,4 +1,4 @@
-from api.core.utils import Mixin
+from backend.api.core.utils import Mixin
 from .base import db
 
 class InvalidToken(Mixin, db.Model):

@@ -1,5 +1,5 @@
-from outbound.repositories.activity_repository import ActivityRepository
-from api.core.logger import logger
+from backend.outbound.repositories.activity_repository import ActivityRepository
+from backend.api.core.logger import logger
 
 class ActivityService:
     def __init__(self, activity_repository=None):

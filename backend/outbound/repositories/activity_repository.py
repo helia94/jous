@@ -1,6 +1,6 @@
-from api.models.base import db
-from api.models.Activity import Activity
-from api.models.User import User
+from backend.api.models.base import db
+from backend.api.models.Activity import Activity
+from backend.api.models.User import User
 
 class ActivityRepository:
     def find_activities_for_user(self, uid, limit=10):

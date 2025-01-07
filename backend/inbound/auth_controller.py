@@ -6,9 +6,9 @@ from flask_jwt_extended import (
     get_jwt_identity,
     get_jwt
 )
-from domain.services.user_service import UserService
-from api.models.InvalidToken import InvalidToken
-from inbound.transaction_utils import transactional
+from backend.domain.services.user_service import UserService
+from backend.api.models.InvalidToken import InvalidToken
+from backend.inbound.transaction_utils import transactional
 
 auth_api = Blueprint("auth_api", __name__)
 user_service = UserService()

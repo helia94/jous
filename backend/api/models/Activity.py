@@ -1,6 +1,6 @@
 from datetime import datetime
 import enum
-from api.core.utils import Mixin
+from backend.api.core.utils import Mixin
 from .base import db
 
 class ActivityType(enum.Enum):

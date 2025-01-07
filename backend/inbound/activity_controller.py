@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from domain.services.activity_service import ActivityService
-from inbound.transaction_utils import transactional
+from backend.domain.services.activity_service import ActivityService
+from backend.inbound.transaction_utils import transactional
 
 activity_api = Blueprint("activity_api", __name__)
 activity_service = ActivityService()

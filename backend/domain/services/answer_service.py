@@ -1,7 +1,7 @@
-from outbound.repositories.answer_repository import AnswerRepository
-from outbound.repositories.user_repository import UserRepository
-from outbound.repositories.question_repository import QuestionRepository
-from outbound.repositories.activity_repository import ActivityRepository
+from backend.outbound.repositories.answer_repository import AnswerRepository
+from backend.outbound.repositories.user_repository import UserRepository
+from backend.outbound.repositories.question_repository import QuestionRepository
+from backend.outbound.repositories.activity_repository import ActivityRepository
 
 
 

@@ -1,8 +1,8 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from domain.services.question_service import QuestionService
-from domain.services.answer_service import AnswerService
-from inbound.transaction_utils import transactional
+from backend.domain.services.question_service import QuestionService
+from backend.domain.services.answer_service import AnswerService
+from backend.inbound.transaction_utils import transactional
 
 question_api = Blueprint("question_api", __name__)
 question_service = QuestionService()

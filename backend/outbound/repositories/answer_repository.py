@@ -1,6 +1,6 @@
-from api.models.base import db
-from api.models.PublicAnswer import PublicAnswer
-from api.core.logger import logger
+from backend.api.models.base import db
+from backend.api.models.PublicAnswer import PublicAnswer
+from backend.api.core.logger import logger
 
 class AnswerRepository:
     def create_public_answer(self, uid, question_id, content):

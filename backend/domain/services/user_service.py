@@ -1,7 +1,7 @@
 import re
-from outbound.repositories.user_repository import UserRepository
-from outbound.security import check_password, encrypt_password
-from api.core.logger import logger
+from backend.outbound.repositories.user_repository import UserRepository
+from backend.outbound.security import check_password, encrypt_password
+from backend.api.core.logger import logger
 
 class UserService:
     def __init__(self, user_repository=None):

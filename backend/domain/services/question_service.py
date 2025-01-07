@@ -1,7 +1,6 @@
-from outbound.repositories.question_repository import QuestionRepository
-from outbound.repositories.user_repository import UserRepository
-from api.core.logger import logger
-import random
+from backend.outbound.repositories.question_repository import QuestionRepository
+from backend.outbound.repositories.user_repository import UserRepository
+from backend.api.core.logger import logger
 
 class QuestionService:
     def __init__(self, question_repository=None, user_repository=None):
