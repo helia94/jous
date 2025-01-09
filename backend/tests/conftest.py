@@ -7,8 +7,8 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 import sys
 import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from app import create_app 
-from api.models.base import db 
+from backend.app import create_app 
+from backend.api.models.base import db 
 
 @pytest.fixture(scope="session")
 def test_app():
