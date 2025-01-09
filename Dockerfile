@@ -1,5 +1,5 @@
 # this dockerfile is used for product deployments
-FROM python:3.8-alpine
+FROM python:3.11.1-slim-bullseye
 
 COPY requirements.txt requirements.txt
 RUN apk update && \
