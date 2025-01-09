@@ -5,9 +5,10 @@ from backend.api.core.logger import logger
 import random
 
 class QuestionRepository:
-    def get_all_questions(self, offset=0, limit=20):
+    def get_all_questions(self, offset, limit=20):
+        pageSize = 20
         questions = Question.query.order_by(Question.id.desc()) \
-            .offset(offset).limit(limit).all()
+            .offset(pageSize * int(offset)).limit(limit).all()
         return list(reversed(questions))
 
     def get_question_by_id(self, question_id):
