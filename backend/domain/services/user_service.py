@@ -27,10 +27,10 @@ class UserService:
 
         user_auths = self.user_repository.get_all_user_auths()
         
-        matching = list(filter(lambda x: (x["email"] == email_or_username or x["username"] == email_or_username) and checkpwd(plain_pwd, x["password"]), user_auths))
+        matching = list(filter(lambda x: (x.email == email_or_username or x.username == email_or_username) and checkpwd(plain_pwd, x.pwd), user_auths))
         
         if len(matching) == 1:
-            user_id = matching[0]["id"]
+            user_id = matching[0].id
             return {"id": user_id}, 200
         else:
             return {"error": "Invalid credentials"}, 401
