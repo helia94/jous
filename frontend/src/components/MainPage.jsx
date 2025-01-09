@@ -1,14 +1,23 @@
+// MainPage.jsx
 import React from "react";
 import Axios from "axios";
 import InfiniteScroll from 'react-infinite-scroll-component';
 import TweetItem2 from "./TweetItem2";
 import AddTweet from "./AddTweet";
-import AddGroup from "./AddGroup";
 import { check } from "../login";
 import { Helmet } from 'react-helmet';
 
 class MainPage extends React.Component {
-    state = { tweets: [], currentUser: { username: "" }, login: false, hasMore: true, page: 0, width: 500, height: 600, showAddQuestion: false }
+    state = { 
+        tweets: [], 
+        currentUser: { username: "" }, 
+        login: false, 
+        hasMore: true, 
+        page: 0, 
+        width: 500, 
+        height: 600, 
+        showAddQuestion: false 
+    }
 
     componentDidMount() {
         Axios.get("/api/questions/0").then(res => {
@@ -35,8 +44,6 @@ class MainPage extends React.Component {
             }
         }, 500);
 
-
-
         check().then(r => this.setState({ login: r }));
 
         window.addEventListener('resize', this.updateDimensions);
@@ -56,10 +63,6 @@ class MainPage extends React.Component {
         });
     }
 
-    refresh = () => {
-        window.location.reload()
-    }
-
     updateDimensions = () => {
         this.setState({ width: window.innerWidth, height: window.innerHeight });
     };
@@ -70,6 +73,21 @@ class MainPage extends React.Component {
 
     toggleShowAddQuestion = () => this.setState({ showAddQuestion: !this.state.showAddQuestion });
 
+    addNewTweet = (content, anon) => {
+        const newTweet = {
+            id: Date.now(),
+            content: content,
+            username: 'you',
+            time: new Date().toUTCString(),
+            like_number: 0,
+            answer_number: 0
+        };
+        this.setState(prevState => ({
+            tweets: [newTweet, ...prevState.tweets],
+            showAddQuestion: false
+        }));
+    }
+
     render() {
         return (
             <React.Fragment>
@@ -77,7 +95,7 @@ class MainPage extends React.Component {
                     <title>Home</title>
                     <link rel="canonical" href="https://jous.app/home" />
                 </Helmet>
-                <div class="ui basic segment" style={{ width: Math.min(this.state.width, 768) }}>
+                <div className="ui basic segment" style={{ width: Math.min(this.state.width, 768) }}>
                     <h1>Home</h1>
                     {!this.state.showAddQuestion &&
                         <div className="ui tiny black button"
@@ -85,8 +103,8 @@ class MainPage extends React.Component {
                             Add a question
                         </div>}
 
-                    {this.state.showAddQuestion && <AddTweet onClose={() => this.toggleShowAddQuestion()} />}
-                    <div class="ui hidden divider"></div>
+                    {this.state.showAddQuestion && <AddTweet onClose={this.toggleShowAddQuestion} onAdd={this.addNewTweet} />}
+                    <div className="ui hidden divider"></div>
                     {
                         <InfiniteScroll
                             dataLength={this.state.tweets.length}
@@ -101,23 +119,20 @@ class MainPage extends React.Component {
                             useWindow={false}
                             height={Math.max(this.state.height - 200, 300)}
                         >
-                            {this.state.tweets.map((item, index) => {
-                                return (
-                                    <div class="event">
-                                        <TweetItem2
-                                            id={item.id}
-                                            content={item.content}
-                                            author={item.username}
-                                            time={item.time}
-                                            likes={item.like_number}
-                                            answers={item.answer_number}
-                                            isOwner={this.state.currentUser.username === item.username}
-                                            key={index}
-                                            isLoggedIn={this.state.login}
-                                        />
-                                    </div>
-                                );
-                            })}
+                            {this.state.tweets.map((item, index) => (
+                                <div className="event" key={item.id || index}>
+                                    <TweetItem2
+                                        id={item.id}
+                                        content={item.content}
+                                        author={item.username}
+                                        time={item.time}
+                                        likes={item.like_number}
+                                        answers={item.answer_number}
+                                        isOwner={this.state.currentUser.username === item.username}
+                                        isLoggedIn={this.state.login}
+                                    />
+                                </div>
+                            ))}
                         </InfiniteScroll>
                     }
                 </div>

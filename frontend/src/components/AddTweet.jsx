@@ -1,27 +1,33 @@
+// AddTweet.jsx
 import React from "react";
 import Axios from "axios";
 
 class AddTweet extends React.Component {
-    state = { content: "", titleErr: "", contentErr: "", formErr: "", anon: "False" , isLoggedIn: false}
+    state = { 
+        content: "", 
+        titleErr: "", 
+        contentErr: "", 
+        formErr: "", 
+        anon: "False", 
+        isLoggedIn: false 
+    }
 
     componentDidMount() {
-
-        setTimeout(() => {
-            const token = localStorage.getItem("token");
-            if (token) {
-                Axios.get("/api/getcurrentuser", {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }).then(res => {
+        const token = localStorage.getItem("token");
+        if (token) {
+            Axios.get("/api/getcurrentuser", {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }).then(res => {
+                if (res.status === 200) {
                     this.setState({ isLoggedIn: true })
-                })
-            }
-        }, 0)
+                }
+            }).catch(() => {})
+        }
     }
 
     handleInputChange = (e) => {
-        e.preventDefault();
         this.setState({
             content: e.target.value
         });
@@ -29,32 +35,25 @@ class AddTweet extends React.Component {
 
     submitForm = (e) => {
         e.preventDefault()
-        if (this.state.content.length === 0) {
-            this.setState(
-                { contentErr: "Add some data to the content!" }
-            )
+        if (this.state.content.trim().length === 0) {
+            this.setState({ contentErr: "Add some data to the content!" })
             return;
         }
-        console.log("will try to add your tweet")
-        const config = {
-            headers: {}
-        };
+        const config = {};
         
         if (this.state.isLoggedIn) {
-            config.headers['Authorization'] = "Bearer " + localStorage.getItem("token");
+            config.headers = {
+                'Authorization': "Bearer " + localStorage.getItem("token")
+            };
         }
         Axios.post("/api/addquestion", {
             content: this.state.content,
             anon: this.state.anon
         }, config).then(res => {
             if (res.data.success) {
-                window.location.reload()
-                console.log("added tweet")
+                this.props.onAdd(this.state.content, this.state.anon);
             } else {
-                console.log(res.data.error)
-                this.setState(
-                    { formErr: res.data.error }
-                )
+                this.setState({ formErr: res.data.error })
             }
         })
     }
@@ -63,28 +62,53 @@ class AddTweet extends React.Component {
         const { onClose } = this.props;
         
         return (
-            <div class="ui fluid card" id="addTweet">
+            <div className="ui fluid card" id="addTweet">
                 <div className="extra content">
-                    <div class="right floated meta">
-                        <span className="w3-button w3-display-topright w3-hover-none w3-hover-text-white" onClick={onClose}>X</span></div>
-                    <div class="left floated meta" >
-                            Add a question
+                    <div className="right floated meta">
+                        <span 
+                            className="w3-button w3-display-topright w3-hover-none w3-hover-text-white" 
+                            onClick={onClose}
+                        >
+                            X
+                        </span>
+                    </div>
+                    <div className="left floated meta">
+                        Add a question
                     </div>
                     <p></p>
-                    <form class="ui form" onSubmit={this.submitForm} id="submit-form">
-                        <div class="field" value={this.state.content} onChange={this.handleInputChange}>
-                            <textarea rows="3"></textarea>
+                    <form className="ui form" onSubmit={this.submitForm} id="submit-form">
+                        <div className="field">
+                            <textarea 
+                                rows="3" 
+                                value={this.state.content} 
+                                onChange={this.handleInputChange}
+                            ></textarea>
                         </div>
-                        <div class="ui mini buttons">
-                            {this.state.isLoggedIn && <button type="submit" class="ui black  submit icon button" value="post" onClick={() => (this.setState({ anon: 'False' }))}><i class="icon edit"></i></button>}
-                            <button type="submit" class="ui black  submit icon button" onClick={() => (this.setState({ anon: 'True' }))}><i class="user secret icon"></i></button>
+                        {this.state.contentErr && <div className="ui pointing red basic label">{this.state.contentErr}</div>}
+                        {this.state.formErr && <div className="ui pointing red basic label">{this.state.formErr}</div>}
+                        <div className="ui mini buttons">
+                            {this.state.isLoggedIn && 
+                                <button 
+                                    type="submit" 
+                                    className="ui black submit icon button" 
+                                    onClick={() => this.setState({ anon: 'False' })}
+                                >
+                                    <i className="icon edit"></i>
+                                </button>
+                            }
+                            <button 
+                                type="submit" 
+                                className="ui black submit icon button" 
+                                onClick={() => this.setState({ anon: 'True' })}
+                            >
+                                <i className="user secret icon"></i>
+                            </button>
                         </div>
                     </form>
                 </div>
             </div>
-
         )
     }
 }
 
-export default AddTweet
+export default AddTweet;
