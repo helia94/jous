@@ -18,7 +18,7 @@ class QuestionService:
         answers = self.question_repository.get_public_answers_for_question(question_id)
         return {
             "question": self._serialize_question(question),
-            "answers": answers
+            "answers": self._apply_to_list(answers, self._serialize_answer)
         }
 
     def create_question(self, content, anon, current_uid):
@@ -55,7 +55,7 @@ class QuestionService:
         answers = self.question_repository.get_public_answers_for_question(question.id)
         return {
             "question": self._serialize_question(question),
-            "answers": answers
+            "answers": self._apply_to_list(answers, self._serialize_answer)
         }
 
     def like_question(self, question_id):
@@ -75,3 +75,15 @@ class QuestionService:
             "like_number": q.like_number,
             "answer_number": len(q.public_answer)
         }
+    
+    def _serialize_answer(self, ans):
+        return  {
+                "id": ans.id,
+                "content": ans.content,
+                "username": ans.user.username if ans.user else "Unknown",
+                "time": ans.time
+            }
+    
+    def _apply_to_list(self, l, function):
+        return [function(item) for item in l]
+

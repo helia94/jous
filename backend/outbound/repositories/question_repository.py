@@ -32,16 +32,8 @@ class QuestionRepository:
             .order_by(PublicAnswer.id.desc()) \
             .limit(20).all()
         answers = list(reversed(answers))
-        return [
-            {
-                "id": ans.id,
-                "content": ans.content,
-                "username": ans.user.username if ans.user else "Unknown",
-                "time": ans.time
-            }
-            for ans in answers
-        ]
-
+        return answers
+    
     def get_random_question(self):
         try:
             question_count = Question.query.count()
