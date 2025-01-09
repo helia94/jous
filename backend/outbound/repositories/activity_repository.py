@@ -8,15 +8,7 @@ class ActivityRepository:
             .filter_by(toUid=uid) \
             .order_by(Activity.id.desc()) \
             .limit(limit).all()
-        # Convert to list of dicts if needed
-        return [{
-            "id": a.id,
-            "fromUid": self.get_user_name(a.fromUid),
-            "time": a.time,
-            "type": a.type.value,
-            "read": a.read,
-            "what": a.what
-        } for a in activities]
+        return activities
 
     def mark_as_read(self, uid, last_activity_id):
         to_mark = Activity.query \
