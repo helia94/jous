@@ -170,3 +170,24 @@ class TestActivityScenarios:
                 }
                 self.assert_specific_activity(activity, expected)
 
+    def test_no_activity_on_author_answer(self, client, setup_users_and_question):
+        """
+        Test that no activity is logged when the author of a question writes an answer to their own question.
+        
+        Steps:
+        1. userA adds an answer to their own question.
+        2. Verify that no activity is logged for userA.
+        """
+        tokenA, tokenB, question_id = setup_users_and_question
+
+        # userA adds an answer to their own question
+        rv = add_answer(client, tokenA, "Answer from author", question_id, anon=False)
+        assert rv.status_code == 200, "Expected status code 200 when userA adds an answer."
+        assert rv.get_json()["success"] is True, "Adding answer by userA should return success=True."
+
+        # userA checks activity
+        rv = get_activity(client, tokenA)
+        assert rv.status_code == 200, "Expected status code 200 when userA retrieves activities."
+        activities = rv.get_json()
+        assert isinstance(activities, list), f"Expected activities to be a list, got {type(activities)}."
+        assert len(activities) == 0, "Expected no activities when author answers their own question."

@@ -1,6 +1,6 @@
 from backend.outbound.repositories.question_repository import QuestionRepository
 from backend.outbound.repositories.user_repository import UserRepository
-from backend.api.core.logger import logger
+from backend.domain.services.utils import check_uid_equal
 
 class QuestionService:
     def __init__(self, question_repository=None, user_repository=None):
@@ -41,9 +41,10 @@ class QuestionService:
         question = self.question_repository.get_question_by_id(question_id)
         if not question:
             return {"error": "Question not found"}, 404
-        # Simple authority check: user must own the question
-        if question.uid != current_uid:
+        
+        if not check_uid_equal(question.uid , current_uid):
             return {"error": "Not authorized"}, 403
+        
         self.question_repository.delete_question(question_id)
         return {"success": True}, 200
 
