@@ -38,7 +38,7 @@ def create_app(test_config=None):
     db.init_app(app)
     Migrate(app, db)
 
-    from backend.api.models import UserAuth, Question, PublicAnswer, Group, GroupAnswer, Activity, User
+    from backend.api.models import UserAuth, Question, PublicAnswer, Group, GroupAnswer, Activity, User, QuestionTranslation
 
     with app.app_context():
         db.create_all()

@@ -1,5 +1,6 @@
 from backend.api.models.base import db
 from backend.api.models.Question import Question
+from backend.api.models.QuestionTranslation import QuestionTranslation
 from backend.api.models.PublicAnswer import PublicAnswer
 from backend.api.core.logger import logger
 import random
@@ -10,6 +11,12 @@ class QuestionRepository:
         questions = Question.query.order_by(Question.id.desc()) \
             .offset(pageSize * int(offset)).limit(limit).all()
         return list(reversed(questions))
+    
+    def get_translations(self, question_ids, language_id):
+        translations = QuestionTranslation.query.filter(
+        QuestionTranslation.question_id.in_(question_ids),
+        QuestionTranslation.language_id == language_id).all()
+        return {t.question_id: t.translated_content for t in translations}
 
     def get_question_by_id(self, question_id):
         return Question.query.get(question_id)
@@ -19,7 +26,15 @@ class QuestionRepository:
         db.session.add(q)
         db.session.flush()
         return q.id
-
+    
+    def add_question_translation(self, question_id, languse_iso2 , translated_text):
+        t = QuestionTranslation(
+                    question_id=question_id,
+                    language_id=languse_iso2,
+                    translated_content=translated_text
+                )
+        db.session.add(t)
+        db.session.commit()
 
     def delete_question(self, question_id):
         PublicAnswer.query.filter_by(question=question_id).delete()

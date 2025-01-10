@@ -3,7 +3,7 @@ import enum
 from backend.api.core.utils import Mixin
 from .base import db
 
-class QuestionTranslation(db.Model):
+class QuestionTranslation(Mixin, db.Model):
     __tablename__ = 'question_translations'
     id = db.Column(db.Integer, primary_key=True)
     question_id = db.Column(db.Integer, nullable=False)

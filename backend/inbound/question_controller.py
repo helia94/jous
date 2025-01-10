@@ -3,15 +3,37 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from backend.domain.services.question_service import QuestionService
 from backend.domain.services.answer_service import AnswerService
 from backend.inbound.transaction_utils import transactional
+from .utils import to_lower, to_lower_list, filter_none
 
 question_api = Blueprint("question_api", __name__)
 question_service = QuestionService()
 answer_service = AnswerService()
 
-@question_api.route("/questions/<int:offset>", methods=["GET"])
-def get_questions_offset(offset):
-    questions = question_service.get_questions(offset=offset, limit=20)
+@question_api.route("/questions", methods=["GET"])
+def get_questions():
+    query_params = {
+        'offset': request.args.get('offset', type=int, default=None),
+        'language_id': request.args.get('language_id', type=str, default=None),
+        'occasion': request.args.get('occasion', type=str, default=None),
+        'level': request.args.get('level', type=int, default=None)
+    }
+    
+    # Remove keys with None values
+    query_params = to_lower_list(filter_none(query_params))
+    questions = question_service.get_questions(**query_params)
+    
     return jsonify(questions), 200
+    
+    # Use these parameters to fetch questions
+    questions = question_service.get_questions(
+        offset=offset,
+        language_id=language_id,
+        occasion=occasion,
+        level=level
+    )
+    
+    return jsonify(questions), 200
+
 
 @question_api.route("/question/<int:question_id>", methods=["GET"])
 def get_question(question_id):
