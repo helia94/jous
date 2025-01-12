@@ -7,13 +7,14 @@ from backend.outbound.repositories.question_repository import QuestionRepository
 from backend.outbound.llm.gpt import GPT
 from backend.tests.test_llm import TestLMM
 from backend.api.core.logger import logger
+from backend.api.config import configs
 
 from celery import Celery
-
-
+env = os.environ.get("FLASK_ENV", "dev")
+config = configs[env]
 celery = Celery(__name__, )
-celery.conf.broker_url = os.environ.get("CELERY_BROKER_URL", "redis://localhost:6379")
-celery.conf.result_backend = os.environ.get("CELERY_RESULT_BACKEND", "redis://localhost:6379")
+celery.conf.broker_url = config.CELERY_BROKER_URL
+celery.conf.result_backend = config.CELERY_RESULT_BACKEND
 
 @celery.task(name = "backend.outbound.queue.tasks.translation_task.process_question_translation")
 def process_question_translation(question_id, question_content):
