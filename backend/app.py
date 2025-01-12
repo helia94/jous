@@ -7,9 +7,10 @@ from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
 from sqlalchemy_utils import create_database, database_exists
 
-from backend.api.config import config
+from backend.api.config import configs
 from backend.api.core.utils import all_exception_handler
-
+from backend.service_registry import registry
+from backend.outbound.llm.gpt import GPT
 
 def create_app(test_config=None):
     """
@@ -25,7 +26,8 @@ def create_app(test_config=None):
     if test_config:
         app.config.from_mapping(**test_config)
     else:
-        app.config.from_object(config[env])
+        registry.register_llm(GPT())
+        app.config.from_object(configs[env])
 
     # Setup database (optionally auto-create only in dev/test)
     if env != "prod":
@@ -42,6 +44,7 @@ def create_app(test_config=None):
 
     with app.app_context():
         db.create_all()
+
 
     from backend.inbound.auth_controller import auth_api
     from backend.inbound.user_controller import user_api
@@ -72,8 +75,8 @@ def create_app(test_config=None):
 
 # Optional: a direct run hook if you want to run via "python app.py"
 if __name__ == "__main__":
-    flask_app, _ = create_app()
-    flask_app.run(debug=True, host="0.0.0.0", port=5000)
+    app, _ = create_app()
+    app.run(debug=True, host="0.0.0.0", port=5000)
     from backend.api.models import db 
-    with flask_app.app_context():
+    with app.app_context():
         db.create_all()

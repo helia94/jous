@@ -1,6 +1,6 @@
 from backend.domain.supported_languages import supported_languages
 from backend.domain.translator import Translator
-from backend.outbound.gpt import GPT
+from backend.outbound.llm.gpt import GPT
 translator = Translator(GPT())
 
 questions = [

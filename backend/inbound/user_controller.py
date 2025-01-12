@@ -1,10 +1,10 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from backend.domain.services.user_service import UserService
-from backend.inbound.transaction_utils import transactional
+from backend.inbound.service_factory import user_service
 
 user_api = Blueprint("user_api", __name__)
-user_service = UserService()
+
+
 
 @user_api.route("/userquestions", methods=["POST"])
 @user_api.route("/userquestions/<int:offset>", methods=["POST"])

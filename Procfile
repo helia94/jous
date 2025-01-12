@@ -1,3 +1,3 @@
-web: gunicorn wsgi:app
+web: gunicorn backend/wsgi:app
 telegram_bot: python telegram/bot.py
-twitter_bot: python twitter/bot.py
+worker: celery -A celery_app.celery worker --loglevel=info

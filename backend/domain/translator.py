@@ -1,6 +1,6 @@
 import json
 
-from backend.outbound.llm_interface import LLMInterface
+from backend.outbound.llm.llm_interface import LLMInterface
 
 class Translator:
     def __init__(self, llm: LLMInterface):

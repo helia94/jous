@@ -12,6 +12,13 @@ services:
       - flask-app-db:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+
+  redis:
+    image: redis:6-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+
   app:
     container_name: jous-app
     restart: always
@@ -21,13 +28,31 @@ services:
     environment:
       - FLASK_ENV=docker
       - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
     ports:
       - 5000:5000
     volumes:
       - .:/app
     depends_on:
       - postgres
+      - redis
     entrypoint: ["/bin/bash", "/app/backend/scripts/docker_script.sh"]
+
+  worker:
+    container_name: celery_worker
+    build:
+      context: .
+      dockerfile: Dockerfile-dev
+    environment:
+      - FLASK_ENV=docker
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - app
+      - redis
+    command: celery -A backend.outbound.queue.tasks.translation_task worker --loglevel=info
+
 volumes:
   flask-app-db:
     name: flask-app-db

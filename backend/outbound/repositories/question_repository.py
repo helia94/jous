@@ -28,13 +28,19 @@ class QuestionRepository:
         return q.id
     
     def add_question_translation(self, question_id, languse_iso2 , translated_text):
-        t = QuestionTranslation(
-                    question_id=question_id,
-                    language_id=languse_iso2,
-                    translated_content=translated_text
-                )
-        db.session.add(t)
-        db.session.commit()
+        try:
+            t = QuestionTranslation(
+                        question_id=question_id,
+                        language_id=languse_iso2,
+                        translated_content=translated_text
+                    )
+            db.session.add(t)
+            db.session.commit()
+            logger.info(f"add_question_translation: added translation to db")
+
+        except Exception as e:
+            logger.error("adding translation failed", e)
+            db.session.rollback()
 
     def delete_question(self, question_id):
         PublicAnswer.query.filter_by(question=question_id).delete()

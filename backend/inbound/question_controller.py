@@ -1,13 +1,10 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from backend.domain.services.question_service import QuestionService
-from backend.domain.services.answer_service import AnswerService
 from backend.inbound.transaction_utils import transactional
 from .utils import to_lower, to_lower_list, filter_none
+from backend.inbound.service_factory import question_service, answer_service
 
 question_api = Blueprint("question_api", __name__)
-question_service = QuestionService()
-answer_service = AnswerService()
 
 @question_api.route("/questions", methods=["GET"])
 def get_questions():
@@ -23,17 +20,6 @@ def get_questions():
     questions = question_service.get_questions(**query_params)
     
     return jsonify(questions), 200
-    
-    # Use these parameters to fetch questions
-    questions = question_service.get_questions(
-        offset=offset,
-        language_id=language_id,
-        occasion=occasion,
-        level=level
-    )
-    
-    return jsonify(questions), 200
-
 
 @question_api.route("/question/<int:question_id>", methods=["GET"])
 def get_question(question_id):

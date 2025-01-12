@@ -2,7 +2,9 @@
 # tests/test_question_scenarios.py
 # =========================================
 from conftest import *
+from test_llm import TestLMM
 import pytest
+import time
 
 class TestQuestionScenarios:
     def test_add_and_get_question(self, client):
@@ -20,10 +22,7 @@ class TestQuestionScenarios:
         assert rv.get_json().get("success") is True, "Adding question failed: 'success' flag is not True."
 
         # Get questions with offset=0
-        rv = client.get("/api/questions/0")
-        assert rv.status_code == 200, f"Retrieving questions failed: {rv.get_data(as_text=True)}"
-        data = rv.get_json()
-        assert isinstance(data, list), f"Expected questions data to be a list, got {type(data)}."
+        data = get_all_questions(client)
         assert len(data) > 0, "No questions found after adding a question."
 
         # Get the first question's ID for further checks
@@ -59,10 +58,7 @@ class TestQuestionScenarios:
             assert rv.get_json().get("success") is True, f"Adding question {idx} failed: 'success' flag is not True."
 
         # Retrieve all three questions
-        rv = client.get("/api/questions/0")
-        assert rv.status_code == 200, f"Retrieving questions failed: {rv.get_data(as_text=True)}"
-        data = rv.get_json()
-        assert isinstance(data, list), f"Expected questions data to be a list, got {type(data)}."
+        data = get_all_questions(client)
         assert len(data) >= 3, f"Expected at least 3 questions, found {len(data)}."
 
         # Verify that all three questions are present
@@ -82,9 +78,7 @@ class TestQuestionScenarios:
         assert rv.get_json().get("success") is True, "Adding question without login failed: 'success' flag is not True."
 
         # Retrieve the latest question
-        rv = client.get("/api/questions/0")
-        assert rv.status_code == 200, f"Retrieving questions failed: {rv.get_data(as_text=True)}"
-        data = rv.get_json()
+        data = get_all_questions(client)
         assert len(data) > 0, "No questions found after adding an anonymous question."
 
         # Get the latest question's author
@@ -112,9 +106,7 @@ class TestQuestionScenarios:
         assert rv.get_json().get("success") is True, "Author adding question failed: 'success' flag is not True."
 
         # Fetch question ID
-        rv = client.get("/api/questions/0")
-        assert rv.status_code == 200, f"Retrieving questions failed: {rv.get_data(as_text=True)}"
-        data = rv.get_json()
+        data = get_all_questions(client)
         question_id = data[-1].get("id")
         assert isinstance(question_id, int), f"Expected question_id to be int, got {type(question_id)}."
 
@@ -151,9 +143,7 @@ class TestQuestionScenarios:
         assert rv.get_json().get("success") is True, "Adding question failed: 'success' flag is not True."
 
         # Retrieve the question ID
-        rv = client.get("/api/questions/0")
-        assert rv.status_code == 200, f"Retrieving questions failed: {rv.get_data(as_text=True)}"
-        data = rv.get_json()
+        data = get_all_questions(client)
         question = data[-1]
         question_id = question.get("id")
         initial_likes = question.get("like_number", 0)
@@ -194,9 +184,7 @@ class TestQuestionScenarios:
             assert rv.status_code == 200, f"Adding question {idx} failed: {rv.get_data(as_text=True)}"
             assert rv.get_json().get("success") is True, f"Adding question {idx} failed: 'success' flag is not True."
             # Retrieve question ID
-            rv = client.get("/api/questions/0")
-            assert rv.status_code == 200, f"Retrieving questions failed: {rv.get_data(as_text=True)}"
-            data = rv.get_json()
+            data = get_all_questions(client)
             question_id = data[-1].get("id")
             question_ids.append(question_id)
             assert isinstance(question_id, int), f"Expected question_id to be int, got {type(question_id)}."
@@ -233,9 +221,7 @@ class TestQuestionScenarios:
         assert rv.get_json().get("success") is True, "Adding question failed: 'success' flag is not True."
 
         # Fetch question ID
-        rv2 = client.get("/api/questions/0")
-        assert rv2.status_code == 200, f"Retrieving questions failed: {rv2.get_data(as_text=True)}"
-        data = rv2.get_json()
+        data = get_all_questions(client)
         assert len(data) > 0, "No questions found after adding a question."
         question_id = data[-1].get("id")
         assert isinstance(question_id, int), f"Expected question_id to be int, got {type(question_id)}."
@@ -261,6 +247,40 @@ class TestQuestionScenarios:
             assert "question" in rv.get_json(), "Random question retrieval failed: 'question' key not found."
         else:
             assert "error" in rv.get_json(), "Expected 'error' key when no questions exist."
+            
+
+    def test_add_three_questions_and_get_all_in_german(self, client):
+        """
+        Test adding three questions and verifying that all three are retrieved.
+        """
+        # Register and login
+        rv = register_user(client, "threeq_user", "threeq_user@email.com", "threepass")
+        assert rv.status_code == 200, f"Registration failed: Expected status code 200, got {rv.status_code}."
+        rv = login_user(client, "threeq_user", "threepass")
+        assert rv.status_code == 200, f"Login failed: Expected status code 200, got {rv.status_code}."
+        token = rv.get_json().get("token")
+        assert token, "Login failed: 'token' not found in response."
+
+        # Add three questions
+        questions = ["First question?", "Second question?", "Third question?"]
+        for idx, question in enumerate(questions, start=1):
+            rv = add_question(client, token, question, anon=False)
+            assert rv.status_code == 200, f"Adding question {idx} failed: {rv.get_data(as_text=True)}"
+            assert rv.get_json().get("success") is True, f"Adding question {idx} failed: 'success' flag is not True."
+
+        time.sleep(4)
+        # Retrieve all three questions
+        rv = client.get("/api/questions", query_string={"offset": "0", "language_id": "de"})
+        assert rv.status_code == 200, f"Retrieving questions failed: {rv.get_data(as_text=True)}"
+        data = rv.get_json()
+        assert isinstance(data, list), f"Expected questions data to be a list, got {type(data)}."
+        assert len(data) >= 3, f"Expected at least 3 questions, found {len(data)}."
+
+        # Verify that all three questions have same translation as it is mocked
+        retrieved_question_contents = set(q["content"] for q in data[-3:])  # Assuming last three are the added ones
+        assert len(retrieved_question_contents) == 1, f"questions not all have same content. actaul: {retrieved_question_contents}"
+        assert retrieved_question_contents[0] == TestLMM.fixed_translation, "translated content not as expected"
+
 
 class TestAnswerScenarios:
     def test_add_and_get_answer(self, client):
@@ -278,9 +298,7 @@ class TestAnswerScenarios:
         assert rv.get_json().get("success") is True, "Adding question failed: 'success' flag is not True."
 
         # Fetch question ID
-        rv = client.get("/api/questions/0")
-        assert rv.status_code == 200, f"Retrieving questions failed: {rv.get_data(as_text=True)}"
-        data = rv.get_json()
+        data = get_all_questions(client)
         assert len(data) > 0, "No questions found after adding a question."
         question_id = data[-1].get("id")
         assert isinstance(question_id, int), f"Expected question_id to be int, got {type(question_id)}."

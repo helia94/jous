@@ -32,9 +32,7 @@ class TestActivityScenarios:
 
         # userA posts a question
         add_question(client, tokenA, "Activity check question?", anon=False)
-        rv = client.get("/api/questions/0")
-        assert rv.status_code == 200, "Failed to retrieve questions after posting."
-        questions = rv.get_json()
+        questions = get_all_questions(client)
         assert questions, "No questions found after posting."
         question_id = questions[-1]["id"]
         assert isinstance(question_id, int), f"Expected question_id to be int, got {type(question_id)}."

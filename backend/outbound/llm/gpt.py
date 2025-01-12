@@ -1,7 +1,7 @@
 from openai import OpenAI
 import os
 
-from backend.outbound.llm_interface import LLMInterface
+from backend.outbound.llm.llm_interface import LLMInterface
 
 model_list = [
     "chatgpt-4o-latest", 

@@ -46,9 +46,7 @@ class TestUserEndpoints:
         assert rv.get_json().get("success") is True, "Adding question failed: 'success' flag is not True."
 
         # Fetch question ID
-        rv = client.get("/api/questions/0")
-        assert rv.status_code == 200, f"Retrieving questions failed: Expected status code 200, got {rv.status_code}."
-        questions = rv.get_json()
+        questions = get_all_questions(client)
         assert len(questions) > 0, "No questions found after adding a question."
         question_id = questions[-1].get("id")
         assert isinstance(question_id, int), f"Expected 'id' to be int, got {type(question_id)}."

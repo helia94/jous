@@ -6,12 +6,13 @@ from flask_jwt_extended import (
     get_jwt_identity,
     get_jwt
 )
-from backend.domain.services.user_service import UserService
 from backend.api.models.InvalidToken import InvalidToken
 from backend.inbound.transaction_utils import transactional
+from backend.inbound.service_factory import user_service
 
 auth_api = Blueprint("auth_api", __name__)
-user_service = UserService()
+
+
 
 
 @auth_api.route("/login", methods=["POST"])

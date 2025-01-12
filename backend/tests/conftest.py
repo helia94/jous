@@ -9,6 +9,10 @@ import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from backend.app import create_app 
 from backend.api.models.base import db 
+from backend.service_registry import registry
+from backend.tests.test_llm import TestLMM
+from backend.app_factory import create_minimal_app
+from backend.outbound.queue.celery_config import make_celery
 
 @pytest.fixture(scope="session")
 def test_app():
@@ -20,10 +24,22 @@ def test_app():
         "SQLALCHEMY_TRACK_MODIFICATIONS": False,
         "SQLALCHEMY_DATABASE_URI": "postgresql://testusr:password@localhost/testdb",
         "JWT_SECRET_KEY": "test_jwt_secret_key",
-        "TESTING": True
+        "TESTING": True,
+        # Celery settings for tests: tasks run immediately in the same process.
+        "CELERY_BROKER_URL": "memory://",
+        "CELERY_RESULT_BACKEND": "cache",
+        "CELERY_CACHE_BACKEND": "memory",
+        "CELERY_TASK_ALWAYS_EAGER": True
     }
 
+    registry.register_llm(TestLMM())
     app, jwt = create_app(test_config=test_config)
+
+    celery_app = create_minimal_app()
+    app.config.update(test_config)
+
+    celery = make_celery(celery_app)
+    celery.conf.update(task_always_eager=True)
 
     with app.app_context():
         db.create_all()
@@ -180,3 +196,10 @@ def access_logout(client, token):
 def refresh_logout(client, token):
     headers = {"Authorization": f"Bearer {token}"}
     return client.post("/api/logout/refresh", headers=headers)
+
+def get_all_questions(client):
+    rv = client.get("/api/questions", query_string={"offset": "0"})
+    assert rv.status_code == 200, f"Retrieving questions failed: {rv.get_data(as_text=True)}"
+    data = rv.get_json()
+    assert isinstance(data, list), f"Expected questions data to be a list, got {type(data)}."
+    return data
