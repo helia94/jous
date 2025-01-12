@@ -54,7 +54,7 @@ class MainPage extends React.Component {
 
     fetchMoreData = () => {
         console.log("page", this.state.page)
-        Axios.get("/api/questions/" , {
+        Axios.get(`/api/questions` , {
             params: { offset: this.state.page } } ).then(res => {
             this.setState({
                 tweets: this.state.tweets.concat(res.data.reverse()),
