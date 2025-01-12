@@ -8,7 +8,16 @@ from backend.outbound.repositories.question_repository import QuestionRepository
 from backend.outbound.llm.gpt import GPT
 from backend.tests.test_llm import TestLMM
 
-@shared_task(name = "process_question_translation")
+import time
+
+from celery import Celery
+
+
+celery = Celery(__name__, )
+celery.conf.broker_url = os.environ.get("CELERY_BROKER_URL", "redis://localhost:6379")
+celery.conf.result_backend = os.environ.get("CELERY_RESULT_BACKEND", "redis://localhost:6379")
+
+@celery.task(name = "backend.outbound.queue.tasks.translation_task.process_question_translation")
 def process_question_translation(question_id, question_content):
     print("start of process_question_translation")
     env = os.environ.get("FLASK_ENV", "dev")

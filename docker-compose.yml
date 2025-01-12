@@ -40,18 +40,17 @@ services:
     entrypoint: ["/bin/bash", "/app/backend/scripts/docker_script.sh"]
 
   worker:
+    build: .
     container_name: celery_worker
-    build:
-      context: .
-      dockerfile: Dockerfile-dev
     environment:
       - FLASK_ENV=docker
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
       - CELERY_BROKER_URL=redis://redis:6379/0
       - CELERY_RESULT_BACKEND=redis://redis:6379/0
     depends_on:
       - app
       - redis
-    command: celery -A backend.outbound.queue.tasks.translation_task worker --loglevel=info
+    command: celery --app backend.outbound.queue.tasks.translation_task.celery worker --loglevel=info
 
 volumes:
   flask-app-db:

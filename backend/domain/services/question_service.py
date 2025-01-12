@@ -10,6 +10,7 @@ from backend.domain.supported_languages import is_supported_language
 from backend.outbound.llm.gpt import GPT
 from backend.outbound.queue.tasks.translation_task import process_question_translation
 from backend.api.core.logger import logger
+import backend
 
 class QuestionService:
     def __init__(self, question_repository=None, user_repository=None, llm = None):
