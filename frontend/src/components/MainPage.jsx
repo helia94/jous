@@ -20,7 +20,9 @@ class MainPage extends React.Component {
     }
 
     componentDidMount() {
-        Axios.get("/api/questions/0").then(res => {
+        const offset = 0; // Replace this with any logic to compute the offset dynamically if needed
+    Axios.get(`/api/questions`, {
+        params: { offset: offset } }).then(res => {
             this.setState({
                 tweets: res.data.reverse(),
                 page: this.state.page + 1
@@ -52,7 +54,8 @@ class MainPage extends React.Component {
 
     fetchMoreData = () => {
         console.log("page", this.state.page)
-        Axios.get("/api/questions/" + this.state.page).then(res => {
+        Axios.get("/api/questions/" , {
+            params: { offset: this.state.page } } ).then(res => {
             this.setState({
                 tweets: this.state.tweets.concat(res.data.reverse()),
                 page: this.state.page + 1
