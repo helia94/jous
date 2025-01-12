@@ -16,6 +16,7 @@ questions = [
    "In which context(s) can you keep a better discipline, e.g. diet, exercise, work-related, family-related?",
 ]
 
+"""
 for lang in supported_languages:
     for question in questions:
         translated_text = translator.translate(
@@ -25,3 +26,4 @@ for lang in supported_languages:
         )
         #print(f"Language: {lang.name}, Question: {question}")
         print(f"{translated_text}\n")
+"""

@@ -1,14 +1,12 @@
 # backend/tasks.py
 import os
 
-from celery import shared_task
 from backend.domain.supported_languages import supported_languages
 from backend.domain.translator import Translator
 from backend.outbound.repositories.question_repository import QuestionRepository
 from backend.outbound.llm.gpt import GPT
 from backend.tests.test_llm import TestLMM
-
-import time
+from backend.api.core.logger import logger
 
 from celery import Celery
 
@@ -19,17 +17,17 @@ celery.conf.result_backend = os.environ.get("CELERY_RESULT_BACKEND", "redis://lo
 
 @celery.task(name = "backend.outbound.queue.tasks.translation_task.process_question_translation")
 def process_question_translation(question_id, question_content):
-    print("start of process_question_translation")
+    logger.info("start of process_question_translation")
     env = os.environ.get("FLASK_ENV", "dev")
     if env == "test":
         translator = Translator(TestLMM())
-        print("using test llm")
+        logger.info("using test llm")
     else:
         translator = Translator(GPT())
-        print("using real llm")
+        logger.info("using real llm")
     question_repository = QuestionRepository()
-    print(f"process_question_translation: got the translator")
+    logger.info(f"process_question_translation: got the translator")
     for lang in supported_languages:
         translated_text = translator.translate(question_content, lang.name, lang.comment)
-        print(f"process_question_translation: got the translation")
+        logger.info(f"process_question_translation: got the translation")
         question_repository.add_question_translation(question_id, lang.iso2, translated_text)

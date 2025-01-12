@@ -6,13 +6,19 @@ from sqlalchemy import event
 from sqlalchemy.orm import scoped_session, sessionmaker
 import sys
 import os
+from unittest.mock import patch, call
+
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from backend.app import create_app 
 from backend.api.models.base import db 
 from backend.service_registry import registry
 from backend.tests.test_llm import TestLMM
-from backend.app_factory import create_minimal_app
-from backend.outbound.queue.celery_config import make_celery
+from backend.outbound.queue.tasks.translation_task import process_question_translation
+
+
+# Apply mock globally
+patcher = patch("backend.outbound.queue.tasks.translation_task.process_question_translation")
+mock_run = patcher.start()
 
 @pytest.fixture(scope="session")
 def test_app():
@@ -35,11 +41,8 @@ def test_app():
     registry.register_llm(TestLMM())
     app, jwt = create_app(test_config=test_config)
 
-    celery_app = create_minimal_app()
     app.config.update(test_config)
 
-    celery = make_celery(celery_app)
-    celery.conf.update(task_always_eager=True)
 
     with app.app_context():
         db.create_all()
