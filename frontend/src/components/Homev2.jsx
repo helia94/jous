@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { Modal, Button, Grid, Icon } from 'semantic-ui-react';
+import { useLanguage } from './LanguageContext';
 import 'semantic-ui-css/semantic.min.css';
 import './Homev2.css';
 
@@ -8,6 +9,7 @@ import './Homev2.css';
 function Homev2() {
 
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+    const { language, openLanguageModal } = useLanguage();
 
     const handleWindowSizeChange = () => {
         setWindowWidth(window.innerWidth);
@@ -73,7 +75,7 @@ function Homev2() {
                 <link rel="canonical" href="https://www.jous.app/" />
             </Helmet>
             <div style={backgroundStyle}>
-                <div className="ui center aligned inverted segment transparent-yellow">
+                <div className="ui center aligned inverted segment transparent-black">
                     <h1 className="huge-header" >Jous</h1>
                 </div>
                 <div style={gridButtonsPosition}>
@@ -128,12 +130,12 @@ function Homev2() {
                                 <div style={{ display: 'flex', justifyContent: 'center', margin: '1.5em 0' }}>
                                     <Button
                                         color="yellow"
-                                        onClick={() => (window.location = '/home')}
+                                        onClick={() => (window.location = `/home/?lang=${language}`)}
                                         style={{ marginRight: '1em' }}
                                     >
                                         All Questions
                                     </Button>
-                                    <Button color="yellow" onClick={() => (window.location = '/random')}>
+                                    <Button color="yellow" onClick={() => (window.location = `/random/?lang=${language}`)}>
                                         Random Question
                                     </Button>
                                 </div>

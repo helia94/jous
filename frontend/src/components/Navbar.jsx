@@ -73,20 +73,20 @@ function Navbar() {
   }
 
   function routeToUser() {
-    window.location.href = `/user/${user}`;
+    window.location.href = `/user/${user}?lang=${language}`;
   }
 
   function routeToRandom() {
-    window.location.href = "/random";
+    window.location.href = `/random?lang=${language}`;
   }
 
-  let a = { name: token ? "Settings" : "Login", link: token ? "/settings" : "/login" };
-  let b = { name: token ? "Logout" : "Register", link: token ? "/logout" : "/register" };
-  let c = { name: "Report bugs", link: "/bug" };
+  let a = { name: token ? "Settings" : "Login", link: token ? `/settings/?lang=${language}` : `/login/?lang=${language}` };
+  let b = { name: token ? "Logout" : "Register", link: token ? `/logout/?lang=${language}` : `/register/?lang=${language}` };
+  let c = { name: "Report bugs", link: `/bug/?lang=${language}` };
 
   return (
     <div className="ui menu yellow">
-      <a className="item ui basic button no-border" href="/">
+      <a className="item ui basic button no-border" href={`/?lang=${language}`}>
         Jous
       </a>
       <div className="right menu">
