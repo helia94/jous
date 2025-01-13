@@ -2,13 +2,20 @@ import React from "react";
 import Axios from "axios";
 import TweetItem2 from "./TweetItem2";
 import { Helmet } from 'react-helmet';
+import { LanguageContext } from "./LanguageContext"; 
 
 
 class Random extends React.Component {
-    state = { question: "" }
+    state = { question: "",
+        selectedLanguage: null
+    }
+    static contextType = LanguageContext;
 
     nextRandomQuestion = () => {
-        Axios.get("/api/question/random").then(res => {
+        Axios.get("/api/question/random", { params: 
+            {
+            language_id: this.state.selectedLanguage.backend_code
+         }}).then(res => {
             this.setState({
                 question: res.data.question,
             })
@@ -16,7 +23,20 @@ class Random extends React.Component {
     }
 
     componentDidMount() {
-        Axios.get("/api/question/random").then(res => {
+        const { availableLanguages = [], language } = this.context; // Provide a default value for availableLanguages
+        const selectedLanguage = availableLanguages.find(
+          (lang) => lang.frontend_code === language
+        );
+        console.log("language:", language);
+        console.log("Selected Language:", selectedLanguage);
+        this.setState({
+            selectedLanguage : selectedLanguage
+        })
+
+        Axios.get("/api/question/random", { params: 
+            {
+            language_id: selectedLanguage.backend_code
+         }}).then(res => {
             this.setState({
                 question: res.data.question,
             })

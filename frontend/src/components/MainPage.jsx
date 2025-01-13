@@ -6,7 +6,7 @@ import TweetItem2 from "./TweetItem2";
 import AddTweet from "./AddTweet";
 import { check } from "../login";
 import { Helmet } from 'react-helmet';
-import { LanguageContext } from "./LanguageContext"; // import the context object
+import { LanguageContext } from "./LanguageContext"; 
 
 
 class MainPage extends React.Component {
@@ -23,21 +23,14 @@ class MainPage extends React.Component {
     static contextType = LanguageContext;
 
     componentDidMount() {
-
         const { availableLanguages = [], language } = this.context; // Provide a default value for availableLanguages
         const selectedLanguage = availableLanguages.find(
           (lang) => lang.frontend_code === language
         );
-        this.setState({
-            language: selectedLanguage})
 
-        console.log("language:", language);
-        console.log("Selected Language:", selectedLanguage);
-      
-
-        const offset = 0; // Replace this with any logic to compute the offset dynamically if needed
     Axios.get(`/api/questions`, {
-        params: { offset: offset,
+        params: { 
+            offset: this.state.page,
             language_id: selectedLanguage.backend_code
          } }).then(res => {
             this.setState({

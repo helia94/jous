@@ -72,15 +72,31 @@ class QuestionService:
         return {"success": True}, 200
 
 
-    def get_random_question(self):
-        question = self.question_repository.get_random_question()
-        if not question:
-            return {"error": "No questions available"}
+    def get_random_question(self, language_id = "original", occasion = "all", level= "all"):
+        if language_id == "original":
+            question = self.question_repository.get_random_question()
+            if not question:
+                return {"error": "No questions available"}
+            answers = self.question_repository.get_public_answers_for_question(question.id)
+            json_question = {
+                "question": self._serialize_question(question),
+                "answers": self._apply_to_list(answers, self._serialize_answer)
+            }
+            return json_question
+        
+        if not is_supported_language(language_id):
+            return {"error": "Invalid language"}, 400
+        
+        translated_question = self.question_repository.get_random_question_in_language(language_id)
+        question = self.question_repository.get_question_by_id(translated_question.question_id)
         answers = self.question_repository.get_public_answers_for_question(question.id)
-        return {
-            "question": self._serialize_question(question),
-            "answers": self._apply_to_list(answers, self._serialize_answer)
-        }
+        json_question = {
+                "question": self._serialize_question(question),
+                "answers": self._apply_to_list(answers, self._serialize_answer)
+            }
+        json_question["question"]["content"] = translated_question.translated_content
+        return json_question
+
 
     def like_question(self, question_id):
         updated = self.question_repository.like_question(question_id)

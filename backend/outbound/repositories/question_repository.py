@@ -66,6 +66,21 @@ class QuestionRepository:
         except Exception as e:
             logger.error(e)
             return None
+        
+    def get_random_question_in_language(self, language_id):
+        try:
+            question_count = QuestionTranslation.query\
+                .filter_by(language_id=language_id)\
+                .count()
+            if question_count == 0:
+                return None
+            rand_offset = random.randint(0, question_count - 1)
+            return QuestionTranslation.query\
+                .filter_by(language_id=language_id)\
+                .offset(rand_offset).first()
+        except Exception as e:
+            logger.error(e)
+            return None
 
     def like_question(self, question_id):
         question = Question.query.get(question_id)

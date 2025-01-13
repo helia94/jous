@@ -30,7 +30,16 @@ def get_question(question_id):
 
 @question_api.route("/question/random", methods=["GET"])
 def get_random_question():
-    random_question = question_service.get_random_question()
+    
+    query_params = {
+        'language_id': request.args.get('language_id', type=str, default=None),
+        'occasion': request.args.get('occasion', type=str, default=None),
+        'level': request.args.get('level', type=int, default=None)
+    }
+    
+    query_params = to_lower_list(filter_none(query_params))
+
+    random_question = question_service.get_random_question(**query_params)
     if "error" in random_question:
         return jsonify(random_question), 404
     return jsonify(random_question), 200
