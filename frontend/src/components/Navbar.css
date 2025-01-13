@@ -1,4 +1,11 @@
+/* Navbar.css */
 .no-border {
     border: none !important;
     box-shadow: none !important;
 }
+
+
+.modal-btn i {
+margin-right: 0 !important;
+}
+  

@@ -1,8 +1,10 @@
+// Navbar.js
 import React, { useState, useEffect } from "react";
-import { getCurrentUser } from "../login";
 import { Button, Modal } from 'semantic-ui-react';
+import { getCurrentUser } from "../login";
 import Axios from "axios";
 import moment from 'moment';
+import { useLanguage } from './LanguageContext';
 import './Navbar.css';
 
 const activityMessage = {
@@ -26,20 +28,17 @@ function Navbar() {
   const [open, setOpen] = useState(false);
   const [notify, setNotify] = useState(false);
 
+  // We no longer handle language modal here; we just trigger it
+  const { language, openLanguageModal } = useLanguage();
+
   // Grab the token from localStorage (if any).
   const token = localStorage.getItem("token");
 
-  /**
-   * Fetch current user on mount (only if token exists).
-   */
   useEffect(() => {
     if (!token) return;
     getCurrentUser().then((r) => setUser(r)).catch((e) => console.error(e));
   }, [token]);
 
-  /**
-   * Fetch user activities once if token exists.
-   */
   useEffect(() => {
     if (!token || checkedForActivities) return;
 
@@ -51,7 +50,6 @@ function Navbar() {
       .then((res) => {
         setActivities(res.data);
         setCheckedForActivities(true);
-        // If there's at least one unread activity, set notify = true
         const hasUnread = res.data.some((item) => item.read === false);
         setNotify(hasUnread);
       })
@@ -60,9 +58,6 @@ function Navbar() {
       });
   }, [token, checkedForActivities]);
 
-  /**
-   * Mark activities as read in the backend (if we have any).
-   */
   function setActivitiesToRead() {
     if (activities.length > 0) {
       Axios.get(`/api/readuseractivity/${activities[0].id}`, {
@@ -77,21 +72,14 @@ function Navbar() {
     }
   }
 
-  /**
-   * Redirect user to /user/<username>.
-   */
   function routeToUser() {
     window.location.href = `/user/${user}`;
   }
 
-  /**
-   * Redirect user to /random.
-   */
   function routeToRandom() {
     window.location.href = "/random";
   }
 
-  // Decide which links to show based on token presence
   let a = { name: token ? "Settings" : "Login", link: token ? "/settings" : "/login" };
   let b = { name: token ? "Logout" : "Register", link: token ? "/logout" : "/register" };
   let c = { name: "Report bugs", link: "/bug" };
@@ -111,7 +99,6 @@ function Navbar() {
             trigger={
               <div className="ui basic button">
                 <span className="modal-btn">
-                  {/* If notify = true, show a filled icon (or color) */}
                   <i className={`lemon ${notify ? "yellow" : "outline"} icon`} />
                 </span>
               </div>
@@ -188,6 +175,14 @@ function Navbar() {
           <a className="ui basic button" href={c.link}>
             {c.name}
           </a>
+
+          {/* Language Selector (now just a button) */}
+          <Button
+            className="ui basic button"
+            onClick={() => openLanguageModal()}
+          >
+            Language: {language}
+          </Button>
         </div>
       </div>
     </div>

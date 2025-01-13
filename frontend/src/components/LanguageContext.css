@@ -1,0 +1,43 @@
+/* LanguageContext.css */
+.lang-modal-container {
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+  max-width: 600px; /* Optional: Limit width for better responsiveness */
+  margin: auto; /* Center horizontally */
+
+  text-align: center;
+  font-family: 'Playfair Display'
+}
+
+.long {
+  aspect-ratio: 4 / 1;
+}
+
+.other-langs-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 0;
+}
+
+.lang-button {
+  margin: 0.0 !important;
+  border-radius: 0 !important;
+  font-size: clamp(15px, 4vw, 30px) !important;
+  font-family: inherit !important;
+}
+
+.fat {
+  aspect-ratio: 2 / 1;
+}
+
+.active-lang {
+  background-color: #ffd800 !important;
+  color: black !important;
+}
+
+.yellow-button {
+  background-color: #ffd800 !important;
+  color: black !important;
+}
