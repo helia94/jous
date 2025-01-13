@@ -3,7 +3,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Modal, Button } from 'semantic-ui-react';
 import './LanguageContext.css';
 
-const LanguageContext = createContext();
+export const LanguageContext = createContext();
 
 export const useLanguage = () => useContext(LanguageContext);
 
@@ -32,6 +32,8 @@ export const LanguageProvider = ({ children }) => {
     const urlParams = new URLSearchParams(window.location.search);
     urlParams.set('lang', newLang);
     window.history.replaceState({}, '', `${window.location.pathname}?${urlParams}`);
+
+    window.location.reload();
   };
 
   useEffect(() => {
@@ -120,3 +122,5 @@ export const LanguageProvider = ({ children }) => {
     </LanguageContext.Provider>
   );
 };
+
+
