@@ -19,6 +19,7 @@ class MainPage extends React.Component {
         width: 500, 
         height: 600, 
         showAddQuestion: false,
+        language_id: null
     }
     static contextType = LanguageContext;
 
@@ -35,7 +36,8 @@ class MainPage extends React.Component {
          } }).then(res => {
             this.setState({
                 tweets: res.data.reverse(),
-                page: this.state.page + 1
+                page: this.state.page + 1,
+                language_id: selectedLanguage.backend_code
             })
         });
         setTimeout(() => {
@@ -65,7 +67,9 @@ class MainPage extends React.Component {
     fetchMoreData = () => {
         console.log("page", this.state.page)
         Axios.get(`/api/questions` , {
-            params: { offset: this.state.page } } ).then(res => {
+            params: { offset: this.state.page,
+                language_id: this.state.language_id
+             } } ).then(res => {
             this.setState({
                 tweets: this.state.tweets.concat(res.data.reverse()),
                 page: this.state.page + 1
