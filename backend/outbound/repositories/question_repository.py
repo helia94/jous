@@ -6,6 +6,7 @@ from backend.api.core.logger import logger
 import random
 
 class QuestionRepository:
+
     def get_all_questions(self, offset, limit=20):
         pageSize = 20
         questions = Question.query.order_by(Question.id.desc()) \
@@ -17,6 +18,12 @@ class QuestionRepository:
         QuestionTranslation.question_id.in_(question_ids),
         QuestionTranslation.language_id == language_id).all()
         return {t.question_id: t.translated_content for t in translations}
+    
+    def has_translation(self, question_id, language_id):
+        translations = QuestionTranslation.query.filter(
+        QuestionTranslation.question_id == question_id,
+        QuestionTranslation.language_id == language_id).all()
+        return len(translations) != 0
 
     def get_question_by_id(self, question_id):
         return Question.query.get(question_id)

@@ -2,10 +2,6 @@
 # tests/test_question_scenarios.py
 # =========================================
 from conftest import *
-from test_llm import TestLMM
-import pytest
-import time
-from backend.outbound.queue.tasks.translation_task import process_question_translation
 
 class TestQuestionScenarios:
     def test_add_and_get_question(self, client):

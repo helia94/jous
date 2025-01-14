@@ -40,13 +40,18 @@ services:
     entrypoint: ["/bin/bash", "/app/backend/scripts/docker_script.sh"]
 
   worker:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile-dev
     container_name: celery_worker
+    restart: always
     environment:
       - FLASK_ENV=docker
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - CELERY_BROKER_URL=redis://redis:6379/0
       - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    volumes:
+      - .:/app
     depends_on:
       - app
       - redis

@@ -3,6 +3,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from backend.inbound.transaction_utils import transactional
 from .utils import to_lower, to_lower_list, filter_none
 from backend.inbound.service_factory import question_service, answer_service
+from backend.outbound.queue.tasks.translation_task import translate_all_questions
 
 question_api = Blueprint("question_api", __name__)
 
@@ -94,3 +95,9 @@ def delete_answer(tid):
     uid = get_jwt_identity()
     response, status_code = answer_service.delete_answer(tid, uid)
     return jsonify(response), status_code
+
+
+@question_api.route("/question/translate/all", methods=["GET"])
+def translate():
+    translate_all_questions.delay()
+    return {"success": "true"}, 200
