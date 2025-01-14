@@ -35,25 +35,25 @@ class QuestionRepository:
         db.session.flush()
         return q.id
     
-    def add_question_translation(self, question_id, languse_iso2, translated_text):
-        try:
-            stmt = insert(QuestionTranslation).values(
-                question_id=question_id,
-                language_id=languse_iso2,
-                translated_content=translated_text
-            ).on_conflict_do_update(
-                index_elements=['question_id'],
-                set_={
-                    'language_id': languse_iso2,
-                    'translated_content': translated_text
-                }
-            )
-            db.session.execute(stmt)
-            db.session.commit()
-            logger.info("add_question_translation: translation upserted into db")
-        except Exception as e:
-            logger.error("adding translation failed", e)
-            db.session.rollback()
+def add_question_translation(self, question_id, languse_iso2, translated_text):
+    try:
+        stmt = insert(QuestionTranslation).values(
+            question_id=question_id,
+            language_id=languse_iso2,
+            translated_content=translated_text
+        ).on_conflict_constraint(
+            'uq_question_translation_question_id',
+            set_={
+                'language_id': languse_iso2,
+                'translated_content': translated_text
+            }
+        )
+        db.session.execute(stmt)
+        db.session.commit()
+        logger.info("add_question_translation: translation upserted into db")
+    except Exception as e:
+        logger.error("adding translation failed", e)
+        db.session.rollback()
 
     def delete_question(self, question_id):
         PublicAnswer.query.filter_by(question=question_id).delete()
