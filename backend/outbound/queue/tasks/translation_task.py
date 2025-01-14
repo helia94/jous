@@ -66,6 +66,7 @@ def translate_all_questions():
 
 @shared_task(name = "backend.outbound.queue.tasks.translation_task.process_question_translation")
 def process_question_translation(question_id, question_content):
+    logger.info("Start process_question_translation")
     with app.app_context():
         env = os.environ.get("FLASK_ENV", "dev")
         if env == "test":
@@ -76,6 +77,7 @@ def process_question_translation(question_id, question_content):
         for lang in supported_languages:
             translated_text = translator.translate(question_content, lang.name, lang.comment)
             question_repository.add_question_translation(question_id, lang.iso2, translated_text)
+            logger.info(f"Added translation for question: {question_id} language: {lang.iso2}.")
 
 
 # Check that both tasks are indeed imported when starting the worker.
