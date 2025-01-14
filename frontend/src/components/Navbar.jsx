@@ -80,9 +80,9 @@ function Navbar() {
     window.location.href = `/random?lang=${language}`;
   }
 
-  let a = { name: token ? "Settings" : "Login", link: token ? `/settings/?lang=${language}` : `/login/?lang=${language}` };
-  let b = { name: token ? "Logout" : "Register", link: token ? `/logout/?lang=${language}` : `/register/?lang=${language}` };
-  let c = { name: "Report bugs", link: `/bug/?lang=${language}` };
+  let a = { name: token ? "Settings" : "Login", link: token ? `/settings?lang=${language}` : `/login?lang=${language}` };
+  let b = { name: token ? "Logout" : "Register", link: token ? `/logout?lang=${language}` : `/register?lang=${language}` };
+  let c = { name: "Report bugs", link: `/bug?lang=${language}` };
 
   return (
     <div className="ui menu yellow">
