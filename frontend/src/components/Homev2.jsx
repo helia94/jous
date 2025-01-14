@@ -130,12 +130,12 @@ function Homev2() {
                                 <div style={{ display: 'flex', justifyContent: 'center', margin: '1.5em 0' }}>
                                     <Button
                                         color="yellow"
-                                        onClick={() => (window.location = `/home/?lang=${language}`)}
+                                        onClick={() => (window.location = `/home?lang=${language}`)}
                                         style={{ marginRight: '1em' }}
                                     >
                                         All Questions
                                     </Button>
-                                    <Button color="yellow" onClick={() => (window.location = `/random/?lang=${language}`)}>
+                                    <Button color="yellow" onClick={() => (window.location = `/random?lang=${language}`)}>
                                         Random Question
                                     </Button>
                                 </div>
