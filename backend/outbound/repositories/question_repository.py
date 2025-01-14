@@ -55,11 +55,11 @@ class QuestionRepository:
             logger.error("adding translation failed", e)
             db.session.rollback()
 
-        def delete_question(self, question_id):
-            PublicAnswer.query.filter_by(question=question_id).delete()
-            question = Question.query.get(question_id)
-            if question:
-                db.session.delete(question)
+    def delete_question(self, question_id):
+        PublicAnswer.query.filter_by(question=question_id).delete()
+        question = Question.query.get(question_id)
+        if question:
+            db.session.delete(question)
 
     def get_public_answers_for_question(self, question_id):
         answers = PublicAnswer.query \
