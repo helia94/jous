@@ -119,7 +119,7 @@ function Homev2() {
 
                                 <h3 style={{ marginTop: '1.5em' }}>Transform Small Talk into Genuine Interactions</h3>
                                 <p style={{ lineHeight: '1.6' }}>
-                                    Jous isn't just an app; it's your invitation to deeper, more engaging discussions. Consider it a gentle nudge away from awkward silences and toward discussions that matter. No sign-ups or passwords needed. Just jump in.
+                                    Jous isn't just an app; it's your invitation to deeper, more engaging discussions. Consider it a gentle nudge away from awkward silences and toward discussions that matter. No sign-ups or passwords needed. Just jump in. As of 2025, the questions are also available in Persian, German, Spanish, and AI enhanced English.
                                 </p>
                                 <h3 style={{ marginTop: '1.5em' }}>Choose Your Path</h3>
                                 <p style={{ lineHeight: '1.6', textAlign: 'center' }}>
