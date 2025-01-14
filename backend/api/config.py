@@ -23,8 +23,8 @@ class ProductionConfig(Config):
     if uri and uri.startswith("postgres://"):
         uri = uri.replace("postgres://", "postgresql://", 1)
     SQLALCHEMY_DATABASE_URI = uri
-    CELERY_BROKER_URL = os.getenv("REDIS_URL") + "?ssl_cert_reqs=CERT_NONE"
-    CELERY_RESULT_BACKEND = os.getenv("REDIS_URL") + "?ssl_cert_reqs=CERT_NONE"
+    CELERY_BROKER_URL = os.getenv("REDIS_URL", "redis://localhost:6379") + "?ssl_cert_reqs=CERT_NONE"
+    CELERY_RESULT_BACKEND = os.getenv("REDIS_URL", "redis://localhost:6379") + "?ssl_cert_reqs=CERT_NONE"
     DEBUG = False
 
 
