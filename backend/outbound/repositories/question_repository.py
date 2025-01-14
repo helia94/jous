@@ -1,4 +1,5 @@
 from backend.api.models.base import db
+from sqlalchemy.dialects.postgresql import insert
 from backend.api.models.Question import Question
 from backend.api.models.QuestionTranslation import QuestionTranslation
 from backend.api.models.PublicAnswer import PublicAnswer
@@ -34,26 +35,31 @@ class QuestionRepository:
         db.session.flush()
         return q.id
     
-    def add_question_translation(self, question_id, languse_iso2 , translated_text):
+    def add_question_translation(self, question_id, languse_iso2, translated_text):
         try:
-            t = QuestionTranslation(
-                        question_id=question_id,
-                        language_id=languse_iso2,
-                        translated_content=translated_text
-                    )
-            db.session.add(t)
+            stmt = insert(QuestionTranslation).values(
+                question_id=question_id,
+                language_id=languse_iso2,
+                translated_content=translated_text
+            ).on_conflict_do_update(
+                index_elements=['question_id'],
+                set_={
+                    'language_id': languse_iso2,
+                    'translated_content': translated_text
+                }
+            )
+            db.session.execute(stmt)
             db.session.commit()
-            logger.info(f"add_question_translation: added translation to db")
-
+            logger.info("add_question_translation: translation upserted into db")
         except Exception as e:
             logger.error("adding translation failed", e)
             db.session.rollback()
 
-    def delete_question(self, question_id):
-        PublicAnswer.query.filter_by(question=question_id).delete()
-        question = Question.query.get(question_id)
-        if question:
-            db.session.delete(question)
+        def delete_question(self, question_id):
+            PublicAnswer.query.filter_by(question=question_id).delete()
+            question = Question.query.get(question_id)
+            if question:
+                db.session.delete(question)
 
     def get_public_answers_for_question(self, question_id):
         answers = PublicAnswer.query \
