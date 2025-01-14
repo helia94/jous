@@ -51,6 +51,7 @@ class QuestionRepository:
 
     def delete_question(self, question_id):
         PublicAnswer.query.filter_by(question=question_id).delete()
+        QuestionTranslation.query.filter_by(question_id=question_id).delete()
         question = Question.query.get(question_id)
         if question:
             db.session.delete(question)
