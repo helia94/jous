@@ -47,10 +47,15 @@ def create_app() -> Flask:
 app = create_app()
 celery = app.extensions["celery"]
 
+env = os.environ.get("FLASK_ENV", "dev")
+if env == "test":
+    translator = Translator(TestLMM())
+else:
+    translator = Translator(GPT())
+
 @shared_task(name = "backend.outbound.queue.tasks.translation_task.translate_all_questions")
 def translate_all_questions():
     with app.app_context():
-        translator = Translator(GPT())
         question_repository = QuestionRepository()
         offset = 0
         limit=20
@@ -68,11 +73,6 @@ def translate_all_questions():
 def process_question_translation(question_id, question_content):
     logger.info("Start process_question_translation")
     with app.app_context():
-        env = os.environ.get("FLASK_ENV", "dev")
-        if env == "test":
-            translator = Translator(TestLMM())
-        else:
-            translator = Translator(GPT())
         question_repository = QuestionRepository()
         for lang in supported_languages:
             translated_text = translator.translate(question_content, lang.name, lang.comment)
