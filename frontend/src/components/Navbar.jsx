@@ -1,177 +1,297 @@
 // Navbar.js
 import React, { useState, useEffect } from "react";
-import { Button, Modal } from 'semantic-ui-react';
+import { Button, Modal } from "semantic-ui-react";
 import Axios from "axios";
-import moment from 'moment';
+import moment from "moment";
 import { getCurrentUser } from "../login";
-import { useLanguage } from './LanguageContext';
-import './Navbar.css';
+import { useLanguage } from "./LanguageContext";
+import "./Navbar.css"; // Make sure this file contains the updated styles shown below
 
 const activityMessage = {
   answer: "answered your question",
   newGroup: "You are added to ",
   questionInGroup: " posted a question to ",
-  answerInGroup: " answered a question in "
+  answerInGroup: " answered a question in ",
 };
 
 const activityLink = {
   answer: "question",
   newGroup: "group",
   questionInGroup: "group",
-  answerInGroup: "group"
+  answerInGroup: "group",
 };
 
 function Navbar() {
   const [user, setUser] = useState("noUser");
   const [activities, setActivities] = useState([]);
   const [checkedForActivities, setCheckedForActivities] = useState(false);
-  const [open, setOpen] = useState(false);
+  const [openActivities, setOpenActivities] = useState(false);
   const [notify, setNotify] = useState(false);
+
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [openMenu, setOpenMenu] = useState(false);
 
   const { language, openLanguageModal } = useLanguage();
   const token = localStorage.getItem("token");
 
-  // Get current user
   useEffect(() => {
     if (!token) return;
     getCurrentUser()
-      .then(r => setUser(r))
-      .catch(e => console.error(e));
+      .then((r) => setUser(r))
+      .catch((e) => console.error(e));
   }, [token]);
 
-  // Fetch user activities
   useEffect(() => {
     if (!token || checkedForActivities) return;
     Axios.get("/api/useractivities", {
-      headers: { Authorization: `Bearer ${token}` }
+      headers: { Authorization: `Bearer ${token}` },
     })
-      .then(res => {
+      .then((res) => {
         setActivities(res.data);
         setCheckedForActivities(true);
-        setNotify(res.data.some(item => !item.read));
+        setNotify(res.data.some((item) => !item.read));
       })
-      .catch(error => console.error(error));
+      .catch((error) => console.error(error));
   }, [token, checkedForActivities]);
 
   function setActivitiesToRead() {
     if (activities.length > 0) {
       Axios.get(`/api/readuseractivity/${activities[0].id}`, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       })
         .then(() => setNotify(false))
-        .catch(error => console.error(error));
+        .catch((error) => console.error(error));
     }
   }
 
-  // Generic router with lang
   function route(path) {
     window.location.href = `/${path}?lang=${language}`;
   }
 
-  return (
-    <div className="ui menu yellow">
-      <a className="item ui basic button no-border" href={`/?lang=${language}`}>
-        Jous
-      </a>
-      <div className="right menu">
-        <div className="ui buttons">
+  const checkCollapse = () => {
+    if (window.innerWidth < 700) {
+      setIsCollapsed(true);
+    } else {
+      setIsCollapsed(false);
+      setOpenMenu(false);
+    }
+  };
 
-          {/* Random */}
-          <button className="ui basic button" title="random questions" onClick={() => route("random")}>
-            <i className="random icon" />
-          </button>
+  useEffect(() => {
+    checkCollapse();
+    window.addEventListener("resize", checkCollapse);
+    return () => window.removeEventListener("resize", checkCollapse);
+  }, []);
 
-          {/* Activities */}
-          <Modal
-            onClose={() => setOpen(false)}
-            onOpen={() => setOpen(true)}
-            open={open}
-            trigger={
-              <div className="ui basic button" title="notifications" >
-                <span className="modal-btn">
-                  <i className={`lemon ${notify ? "yellow" : "outline"} icon`} />
-                </span>
-              </div>
-            }
-          >
-            <Modal.Content>
-              <Modal.Description>
-                {activities.length === 0 ? (
-                  <div>No activities to show</div>
-                ) : (
-                  <div className="ui feed">
-                    {activities.map(item => (
-                      <div key={item.id} className="summary">
-                        <a
-                          className="user"
-                          href={`/${activityLink[item.type]}/${item.what}`}
-                        >
-                          {item.fromUid}
-                        </a>{" "}
-                        {activityMessage[item.type]}
-                        {item.type !== "answer" && (
-                          <span className="group">{item.what}</span>
-                        )}
-                        {!item.read && (
-                          <div style={{ color: "#ffc107" }}>•</div>
-                        )}
-                        <div className="date">
-                          {moment.utc(item.time).fromNow()}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </Modal.Description>
-            </Modal.Content>
-            <Modal.Actions>
-              <Button
-                color="black"
-                onClick={() => {
-                  setOpen(false);
-                  setActivitiesToRead();
-                }}
-              >
-                OK
-              </Button>
-            </Modal.Actions>
-          </Modal>
-
-          {/* User Profile (only if logged in) */}
-          {token && (
-            <button className="ui basic button" title="profile" onClick={() => route(`user/${user}`)}>
-              <i className="user outline icon" />
-            </button>
-          )}
-
-          {/* Language */}
-          <Button className="ui basic button" onClick={openLanguageModal}>
-            Language: {language}
-          </Button>
-
-          {/* If not logged in -> show Login & Register, else -> Logout */}
-          {!token ? (
-            <>
-              <button className="ui basic button" onClick={() => route("login")}>
-                Login
-              </button>
-            </>
+  const ActivitiesModal = () => (
+    <Modal
+      onClose={() => setOpenActivities(false)}
+      onOpen={() => setOpenActivities(true)}
+      open={openActivities}
+    >
+      <Modal.Content>
+        <Modal.Description>
+          {activities.length === 0 ? (
+            <div>No activities to show</div>
           ) : (
-            <button className="ui basic button" onClick={() => route("logout")}>
-              Logout
-            </button>
+            <div className="ui feed">
+              {activities.map((item) => (
+                <div key={item.id} className="summary">
+                  <a
+                    className="user"
+                    href={`/${activityLink[item.type]}/${item.what}`}
+                  >
+                    {item.fromUid}
+                  </a>{" "}
+                  {activityMessage[item.type]}
+                  {item.type !== "answer" && (
+                    <span className="group">{item.what}</span>
+                  )}
+                  {!item.read && <div style={{ color: "#ffc107" }}>•</div>}
+                  <div className="date">{moment.utc(item.time).fromNow()}</div>
+                </div>
+              ))}
+            </div>
+          )}
+        </Modal.Description>
+      </Modal.Content>
+      <Modal.Actions>
+        <Button
+          color="black"
+          onClick={() => {
+            setOpenActivities(false);
+            setActivitiesToRead();
+          }}
+        >
+          OK
+        </Button>
+      </Modal.Actions>
+    </Modal>
+  );
+
+  // Collapsed menu content in a vertical stack
+  const CollapsedMenu = () => {
+    const menuContainerStyle = {
+      backgroundColor: "#fff",
+      padding: "1rem",
+      fontFamily: "Helvetica, Arial, sans-serif",
+    };
+
+    const menuItemStyle = {
+      margin: "0.5rem 0",
+      fontSize: "1em",
+      fontWeight: "600",
+      color: "#333",
+      cursor: "pointer",
+      borderBottom: "1px solid #ddd",
+      paddingBottom: "0.5rem",
+    };
+
+    return (
+      <Modal open={openMenu} onClose={() => setOpenMenu(false)} size="tiny">
+        <Modal.Content style={menuContainerStyle}>
+          <div
+            style={menuItemStyle}
+            onClick={() => {
+              setOpenActivities(true);
+              setOpenMenu(false);
+            }}
+          >
+            Notifications{notify ? " (NEW)" : ""}
+          </div>
+
+          {token && (
+            <div
+              style={menuItemStyle}
+              onClick={() => {
+                route(`user/${user}`);
+                setOpenMenu(false);
+              }}
+            >
+              Profile
+            </div>
           )}
 
-          {/* Report Bug (use icon with hover) */}
-          <button
-            className="ui basic button"
-            onClick={() => route("bug")}
-            title="report bug"
+          <div
+            style={menuItemStyle}
+            onClick={() => {
+              openLanguageModal();
+              setOpenMenu(false);
+            }}
           >
-            <i className="bug icon" />
-          </button>
-        </div>
+            Language: {language}
+          </div>
+
+          {!token ? (
+            <div
+              style={menuItemStyle}
+              onClick={() => {
+                route("login");
+                setOpenMenu(false);
+              }}
+            >
+              Login
+            </div>
+          ) : (
+            <div
+              style={menuItemStyle}
+              onClick={() => {
+                route("logout");
+                setOpenMenu(false);
+              }}
+            >
+              Logout
+            </div>
+          )}
+
+          <div
+            style={menuItemStyle}
+            onClick={() => {
+              route("bug");
+              setOpenMenu(false);
+            }}
+            title="report a bug"
+          >
+            Report Bug
+          </div>
+        </Modal.Content>
+      </Modal>
+    );
+  };
+
+  const navbarItems = (
+    <>
+      <Button
+        className="nav-button"
+        title="notifications"
+        onClick={() => setOpenActivities(true)}
+      >
+        <i className={`lemon ${notify ? "yellow" : "outline"} icon`} />
+      </Button>
+
+      {token && (
+        <Button
+          className="nav-button"
+          title="profile"
+          onClick={() => route(`user/${user}`)}
+        >
+          <i className="user outline icon" />
+        </Button>
+      )}
+
+      <Button className="nav-button" onClick={openLanguageModal}>
+        Language: {language}
+      </Button>
+
+      {!token ? (
+        <Button className="nav-button" onClick={() => route("login")}>
+          Login
+        </Button>
+      ) : (
+        <Button className="nav-button" onClick={() => route("logout")}>
+          Logout
+        </Button>
+      )}
+
+      <Button className="nav-button" onClick={() => route("bug")}>
+        <i className="bug icon" />
+      </Button>
+    </>
+  );
+
+  return (
+    <div className="navbar">
+      {/* Left-aligned brand */}
+      <div className="brand" onClick={() => route("")}>
+        Jous
       </div>
+
+      {/* Right-aligned items (collapsed or expanded) */}
+      <div className="menu-items">
+        {/* Always visible random button */}
+        <Button
+          className="nav-button"
+          onClick={() => route("random")}
+          title="random questions"
+        >
+          <i className="random icon" />
+        </Button>
+
+        {isCollapsed ? (
+          <Button
+            className="nav-button"
+            title="menu"
+            onClick={() => setOpenMenu(true)}
+          >
+            <i className="bars icon" />
+          </Button>
+        ) : (
+          navbarItems
+        )}
+      </div>
+
+      <ActivitiesModal />
+      <CollapsedMenu />
     </div>
   );
 }
