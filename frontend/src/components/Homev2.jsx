@@ -4,6 +4,8 @@ import { Modal, Button, Grid, Icon } from 'semantic-ui-react';
 import { useLanguage } from './LanguageContext';
 import 'semantic-ui-css/semantic.min.css';
 import './Homev2.css';
+import ProductHuntBadge from './ProductHuntBadge';
+
 
 
 function Homev2() {
@@ -160,18 +162,16 @@ function Homev2() {
                                 <h3 style={{ marginTop: '1.5em' }}>Let's Stay Connected</h3>
                                 <p style={{ lineHeight: '1.6' }}>
                                     Got feedback, a question, or whatever? Feel free to reach out at{' '}
-                                    <a href="mailto:helia.jm@gmail.com">
+                                    <a href="mailto:info@jous.app" style={{ color: 'black', textDecoration: 'none' }}>
                                         <strong>info@jous.app</strong>
                                     </a>. I promise I'm friendly!
                                 </p>
                             </section>
                         </Modal.Description>
                     </Modal.Content>
+                    <ProductHuntBadge/>
+                    <br/>
                 </Modal>
-
-
-
-
             </div>
         </React.Fragment>
     );

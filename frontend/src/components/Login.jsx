@@ -6,6 +6,7 @@ import { Helmet } from 'react-helmet';
 import { Form, Button, Segment, Container } from 'semantic-ui-react';
 import 'semantic-ui-css/semantic.min.css';
 import './Auth.css'; // Ensure this file exists with the provided styles
+import ProductHuntBadge from './ProductHuntBadge';
 
 class Login extends Component {
     state = {
@@ -100,6 +101,8 @@ class Login extends Component {
                             Don't have an account? <a href="/register">Register here</a>
                         </div>
                     </Segment>
+                    <br/>
+                    <ProductHuntBadge/>
                 </Container>
             </div>
         );
