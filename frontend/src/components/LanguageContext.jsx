@@ -1,4 +1,3 @@
-// LanguageContext.js
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Modal, Button } from 'semantic-ui-react';
 import './LanguageContext.css';
@@ -17,6 +16,14 @@ const availableLanguages = [
 
 export const LanguageProvider = ({ children }) => {
   const [language, setLanguage] = useState(() => {
+    // Check URL param first
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlLang = urlParams.get('lang');
+    if (urlLang) {
+      localStorage.setItem('lang', urlLang);
+      return urlLang;
+    }
+    // Fallback to localStorage or default
     return localStorage.getItem('lang') || 'original';
   });
 
@@ -36,6 +43,7 @@ export const LanguageProvider = ({ children }) => {
     window.location.reload();
   };
 
+  // Keep localStorage in sync if user changes language from the modal
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const urlLang = urlParams.get('lang') || 'original';
@@ -51,7 +59,7 @@ export const LanguageProvider = ({ children }) => {
         language,
         changeLanguage,
         availableLanguages,
-        openLanguageModal
+        openLanguageModal,
       }}
     >
       {children}
@@ -60,22 +68,18 @@ export const LanguageProvider = ({ children }) => {
         <Modal.Header>Select Language</Modal.Header>
         <Modal.Content>
           <div className="lang-modal-container">
-            {/* Original alone on top */}
-            {/*<div className="original-row"> */}
-              <Button
-                className={`lang-button long ${language === 'original' ? 'active-lang' : ''}`}
-                onClick={() => {
-                  changeLanguage('original');
-                  closeLanguageModal();
-                }}
-              >
-                Original
-              </Button>
-            {/*</div> */}
-            {/* 2x2 grid for remaining languages */}
+            <Button
+              className={`lang-button long ${language === 'original' ? 'active-lang' : ''}`}
+              onClick={() => {
+                changeLanguage('original');
+                closeLanguageModal();
+              }}
+            >
+              Original
+            </Button>
             <div className="other-langs-grid">
               <Button
-                className={`lang-button fat${language === 'en' ? 'active-lang' : ''}`}
+                className={`lang-button fat ${language === 'en' ? 'active-lang' : ''}`}
                 onClick={() => {
                   changeLanguage('en');
                   closeLanguageModal();
@@ -122,5 +126,3 @@ export const LanguageProvider = ({ children }) => {
     </LanguageContext.Provider>
   );
 };
-
-
