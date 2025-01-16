@@ -33,7 +33,6 @@ class MainPage extends React.Component {
   }
 
   componentDidMount() {
-    console.log("componentDidMount lang:", this.state.selectedLanguageBackendCode);
 
     Axios.get(`/api/questions`, {
       params: {
@@ -72,7 +71,6 @@ class MainPage extends React.Component {
   }
 
   fetchMoreData = () => {
-    console.log("page", this.state.page);
     Axios.get(`/api/questions`, {
       params: {
         offset: this.state.page,
@@ -87,7 +85,6 @@ class MainPage extends React.Component {
         this.setState({ hasMore: false });
       }
     });
-    console.log("fetchMoreData lang:", this.state.selectedLanguageBackendCode);
   }
 
   updateDimensions = () => {

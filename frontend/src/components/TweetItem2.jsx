@@ -21,7 +21,6 @@ class TweetItem2 extends React.Component {
     
 
   componentDidMount() {
-    console.log("componentDidMount tweet item: "+this.props.selectedLanguageFrontendCode)
     if (window.innerWidth < 450) {
       this.setState({ mobile: true, minHeight: 414 });
     }
