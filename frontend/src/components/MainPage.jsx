@@ -29,6 +29,10 @@ class MainPage extends React.Component {
           (lang) => lang.frontend_code === language
         );
 
+        this.setState({
+            language_id: selectedLanguage.backend_code
+        })
+
     Axios.get(`/api/questions`, {
         params: { 
             offset: this.state.page,
@@ -37,7 +41,6 @@ class MainPage extends React.Component {
             this.setState({
                 tweets: res.data.reverse(),
                 page: this.state.page + 1,
-                language_id: selectedLanguage.backend_code
             })
         });
         setTimeout(() => {
@@ -147,6 +150,7 @@ class MainPage extends React.Component {
                                         answers={item.answer_number}
                                         isOwner={this.state.currentUser.username === item.username}
                                         isLoggedIn={this.state.login}
+                                        language_id={this.state.language_id}
                                     />
                                 </div>
                             ))}

@@ -17,6 +17,7 @@ class TweetItem2 extends React.Component {
       likes: Number(props.likes) || 0,
       mobile: false,
       minHeight: 200,
+      language_id: props.language_id
     };
   }
   
@@ -27,15 +28,6 @@ class TweetItem2 extends React.Component {
     if (window.innerWidth < 450) {
       this.setState({ mobile: true, minHeight: 414 });
     }
-
-    const { availableLanguages = [], language } = this.context; // Provide a default value for availableLanguages
-    const selectedLanguage = availableLanguages.find(
-      (lang) => lang.frontend_code === language
-    );
-
-    this.setState({
-      language_id: selectedLanguage.backend_code
-  })
   }
 
   componentDidUpdate(prevProps) {
