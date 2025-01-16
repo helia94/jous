@@ -6,40 +6,46 @@ import TweetItem2 from "./TweetItem2";
 import AddTweet from "./AddTweet";
 import { check } from "../login";
 import { Helmet } from 'react-helmet';
-import { LanguageContext } from "./LanguageContext"; 
+import { LanguageContext } from "./LanguageContext";
 
 
 class MainPage extends React.Component {
-    state = { 
-        tweets: [], 
-        currentUser: { username: "" }, 
-        login: false, 
-        hasMore: true, 
-        page: 0, 
-        width: 500, 
-        height: 600, 
+    state = {
+        tweets: [],
+        currentUser: { username: "" },
+        login: false,
+        hasMore: true,
+        page: 0,
+        width: 500,
+        height: 600,
         showAddQuestion: false,
         selectedLanguageFrontendCode: "original",
-        selectedLanguageBackendendCode: null
+        selectedLanguageBackendCode: null
     }
     static contextType = LanguageContext;
 
     componentDidMount() {
         const { availableLanguages = [], language } = this.context; // Provide a default value for availableLanguages
         const selectedLanguage = availableLanguages.find(
-          (lang) => lang.frontend_code === language
+            (lang) => lang.frontend_code === language
         );
 
-    Axios.get(`/api/questions`, {
-        params: { 
-            offset: this.state.page,
-            language_id: selectedLanguage.backend_code
-         } }).then(res => {
+        this.setState({
+            selectedLanguageFrontendCode: selectedLanguage.frontend_code,
+            selectedLanguageBackendCode: selectedLanguage.backend_code
+        })
+
+        console.log("componentDidMount lang: "+ this.state.selectedLanguageBackendCode)
+
+        Axios.get(`/api/questions`, {
+            params: {
+                offset: this.state.page,
+                language_id: selectedLanguage.backend_code
+            }
+        }).then(res => {
             this.setState({
                 tweets: res.data.reverse(),
                 page: this.state.page + 1,
-                selectedLanguageFrontendCode: selectedLanguage.frontend_code,
-                selectedLanguageBackendendCode: selectedLanguage.backend_code
             })
         });
         setTimeout(() => {
@@ -68,10 +74,12 @@ class MainPage extends React.Component {
 
     fetchMoreData = () => {
         console.log("page", this.state.page)
-        Axios.get(`/api/questions` , {
-            params: { offset: this.state.page,
+        Axios.get(`/api/questions`, {
+            params: {
+                offset: this.state.page,
                 language_id: this.state.selectedLanguageBackendCode
-             } } ).then(res => {
+            }
+        }).then(res => {
             this.setState({
                 tweets: this.state.tweets.concat(res.data.reverse()),
                 page: this.state.page + 1
@@ -80,6 +88,8 @@ class MainPage extends React.Component {
                 this.setState({ hasMore: false })
             }
         });
+        console.log("fetchMoreData lang: "+ this.state.selectedLanguageBackendCode)
+
     }
 
     updateDimensions = () => {
@@ -108,6 +118,7 @@ class MainPage extends React.Component {
     }
 
     render() {
+        
         return (
             <React.Fragment>
                 <Helmet>

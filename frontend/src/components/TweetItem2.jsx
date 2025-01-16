@@ -21,6 +21,7 @@ class TweetItem2 extends React.Component {
     
 
   componentDidMount() {
+    console.log("componentDidMount tweet item: "+this.props.selectedLanguageFrontendCode)
     if (window.innerWidth < 450) {
       this.setState({ mobile: true, minHeight: 414 });
     }
@@ -57,14 +58,14 @@ class TweetItem2 extends React.Component {
   };
 
   routeToQuestion = () => {
-    const path = `/question/${this.props.id}?lang=${this.state.selectedLanguageFrontendCode}`;
+    const path = `/question/${this.props.id}?lang=${this.props.selectedLanguageFrontendCode}`;
     window.location.href = path;
   };
 
   copyQuestionAddressToKeyboard = (e) => {
     e.stopPropagation();
     const host = window.location.host;
-    const path = `https://${host}/question/${this.props.id}?lang=${this.state.selectedLanguageFrontendCode}`;
+    const path = `https://${host}/question/${this.props.id}?lang=${this.props.selectedLanguageFrontendCode}`;
     navigator.clipboard.writeText(path);
     alert("Copied to clipboard");
   };
