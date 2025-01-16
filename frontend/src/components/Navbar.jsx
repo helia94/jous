@@ -175,6 +175,26 @@ function Navbar() {
           <div
             style={menuItemStyle}
             onClick={() => {
+              route("random");
+              setOpenMenu(false);
+            }}
+          >
+            Random Question
+          </div>
+
+          <div
+            style={menuItemStyle}
+            onClick={() => {
+              route("home");
+              setOpenMenu(false);
+            }}
+          >
+            All Questions
+          </div>
+
+          <div
+            style={menuItemStyle}
+            onClick={() => {
               openLanguageModal();
               setOpenMenu(false);
             }}
