@@ -7,14 +7,15 @@ import { LanguageContext } from "./LanguageContext";
 
 class Random extends React.Component {
     state = { question: "",
-        selectedLanguageFrontendCode: "original"
+        selectedLanguageFrontendCode: "original",
+        selectedLanguageBackendCode: null
     }
     static contextType = LanguageContext;
 
     nextRandomQuestion = () => {
         Axios.get("/api/question/random", { params: 
             {
-            language_id: this.state.selectedLanguage.backend_code
+            language_id: this.state.selectedLanguageBackendCode
          }}).then(res => {
             this.setState({
                 question: res.data.question,
@@ -29,7 +30,8 @@ class Random extends React.Component {
         );
 
         this.setState({
-            selectedLanguageFrontendCode: selectedLanguage.frontend_code
+            selectedLanguageFrontendCode: selectedLanguage.frontend_code,
+            selectedLanguageBackendCode: selectedLanguage.backend_code
         })
 
         Axios.get("/api/question/random", { params: 

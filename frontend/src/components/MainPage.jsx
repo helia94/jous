@@ -8,168 +8,164 @@ import { check } from "../login";
 import { Helmet } from 'react-helmet';
 import { LanguageContext } from "./LanguageContext";
 
-
 class MainPage extends React.Component {
-    state = {
-        tweets: [],
-        currentUser: { username: "" },
-        login: false,
-        hasMore: true,
-        page: 0,
-        width: 500,
-        height: 600,
-        showAddQuestion: false,
-        selectedLanguageFrontendCode: "original",
-        selectedLanguageBackendCode: null
-    }
-    static contextType = LanguageContext;
+  static contextType = LanguageContext;
 
-    componentDidMount() {
-        const { availableLanguages = [], language } = this.context; // Provide a default value for availableLanguages
-        const selectedLanguage = availableLanguages.find(
-            (lang) => lang.frontend_code === language
-        );
+  constructor(props, context) {
+    super(props, context);
+    const { availableLanguages = [], language } = context;
+    const selectedLanguage = availableLanguages.find(
+      (lang) => lang.frontend_code === language
+    ) || { frontend_code: "original", backend_code: null };
 
-        this.setState({
-            selectedLanguageFrontendCode: selectedLanguage.frontend_code,
-            selectedLanguageBackendCode: selectedLanguage.backend_code
-        })
-
-        console.log("componentDidMount lang: "+ this.state.selectedLanguageBackendCode)
-
-        Axios.get(`/api/questions`, {
-            params: {
-                offset: this.state.page,
-                language_id: selectedLanguage.backend_code
-            }
-        }).then(res => {
-            this.setState({
-                tweets: res.data.reverse(),
-                page: this.state.page + 1,
-            })
-        });
-        setTimeout(() => {
-            if (this.state.login) {
-                Axios.get("/api/getcurrentuser", {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("token")}`
-                    }
-                }).then(res => {
-                    if (res.status === 200) {
-                        this.setState({ currentUser: res.data });
-                    } else {
-                        console.log("could not get current user");
-                    }
-                }).catch(error => {
-                    console.error("Error fetching current user:", error);
-                });
-            }
-        }, 500);
-
-        check().then(r => this.setState({ login: r }));
-
-        window.addEventListener('resize', this.updateDimensions);
-        this.setState({ width: window.innerWidth, height: window.innerHeight });
-    }
-
-    fetchMoreData = () => {
-        console.log("page", this.state.page)
-        Axios.get(`/api/questions`, {
-            params: {
-                offset: this.state.page,
-                language_id: this.state.selectedLanguageBackendCode
-            }
-        }).then(res => {
-            this.setState({
-                tweets: this.state.tweets.concat(res.data.reverse()),
-                page: this.state.page + 1
-            });
-            if (res.data.length === 0) {
-                this.setState({ hasMore: false })
-            }
-        });
-        console.log("fetchMoreData lang: "+ this.state.selectedLanguageBackendCode)
-
-    }
-
-    updateDimensions = () => {
-        this.setState({ width: window.innerWidth, height: window.innerHeight });
+    this.state = {
+      tweets: [],
+      currentUser: { username: "" },
+      login: false,
+      hasMore: true,
+      page: 0,
+      width: 500,
+      height: 600,
+      showAddQuestion: false,
+      selectedLanguageFrontendCode: selectedLanguage.frontend_code,
+      selectedLanguageBackendCode: selectedLanguage.backend_code
     };
+  }
 
-    componentWillUnmount() {
-        window.removeEventListener('resize', this.updateDimensions);
-    }
+  componentDidMount() {
+    console.log("componentDidMount lang:", this.state.selectedLanguageBackendCode);
 
-    toggleShowAddQuestion = () => this.setState({ showAddQuestion: !this.state.showAddQuestion });
+    Axios.get(`/api/questions`, {
+      params: {
+        offset: this.state.page,
+        language_id: this.state.selectedLanguageBackendCode
+      }
+    }).then(res => {
+      this.setState({
+        tweets: res.data.reverse(),
+        page: this.state.page + 1,
+      });
+    });
 
-    addNewTweet = (content, anon) => {
-        const newTweet = {
-            id: Date.now(),
-            content: content,
-            username: 'you',
-            time: new Date().toUTCString(),
-            like_number: 0,
-            answer_number: 0
-        };
-        this.setState(prevState => ({
-            tweets: [newTweet, ...prevState.tweets],
-            showAddQuestion: false
-        }));
-    }
+    setTimeout(() => {
+      if (this.state.login) {
+        Axios.get("/api/getcurrentuser", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`
+          }
+        }).then(res => {
+          if (res.status === 200) {
+            this.setState({ currentUser: res.data });
+          } else {
+            console.log("could not get current user");
+          }
+        }).catch(error => {
+          console.error("Error fetching current user:", error);
+        });
+      }
+    }, 500);
 
-    render() {
-        
-        return (
-            <React.Fragment>
-                <Helmet>
-                    <title>Home</title>
-                    <link rel="canonical" href="https://jous.app/home" />
-                </Helmet>
-                <div className="ui basic segment" style={{ width: Math.min(this.state.width, 768) }}>
-                    <h1>Home</h1>
-                    {!this.state.showAddQuestion &&
-                        <div className="ui tiny black button"
-                            onClick={this.toggleShowAddQuestion}>
-                            Add a question
-                        </div>}
+    check().then(r => this.setState({ login: r }));
 
-                    {this.state.showAddQuestion && <AddTweet onClose={this.toggleShowAddQuestion} onAdd={this.addNewTweet} />}
-                    <div className="ui hidden divider"></div>
-                    {
-                        <InfiniteScroll
-                            dataLength={this.state.tweets.length}
-                            next={this.fetchMoreData}
-                            hasMore={this.state.hasMore}
-                            loader={<h4>Loading...</h4>}
-                            endMessage={
-                                <p style={{ textAlign: 'center' }}>
-                                    <b>The end.</b>
-                                </p>
-                            }
-                            useWindow={false}
-                            height={Math.max(this.state.height - 200, 300)}
-                        >
-                            {this.state.tweets.map((item, index) => (
-                                <div className="event" key={item.id || index}>
-                                    <TweetItem2
-                                        id={item.id}
-                                        content={item.content}
-                                        author={item.username}
-                                        time={item.time}
-                                        likes={item.like_number}
-                                        answers={item.answer_number}
-                                        isOwner={this.state.currentUser.username === item.username}
-                                        isLoggedIn={this.state.login}
-                                        selectedLanguage={this.state.selectedLanguageFrontendCode}
-                                    />
-                                </div>
-                            ))}
-                        </InfiniteScroll>
-                    }
+    window.addEventListener('resize', this.updateDimensions);
+    this.setState({ width: window.innerWidth, height: window.innerHeight });
+  }
+
+  fetchMoreData = () => {
+    console.log("page", this.state.page);
+    Axios.get(`/api/questions`, {
+      params: {
+        offset: this.state.page,
+        language_id: this.state.selectedLanguageBackendCode
+      }
+    }).then(res => {
+      this.setState({
+        tweets: this.state.tweets.concat(res.data.reverse()),
+        page: this.state.page + 1
+      });
+      if (res.data.length === 0) {
+        this.setState({ hasMore: false });
+      }
+    });
+    console.log("fetchMoreData lang:", this.state.selectedLanguageBackendCode);
+  }
+
+  updateDimensions = () => {
+    this.setState({ width: window.innerWidth, height: window.innerHeight });
+  };
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.updateDimensions);
+  }
+
+  toggleShowAddQuestion = () => this.setState({ showAddQuestion: !this.state.showAddQuestion });
+
+  addNewTweet = (content, anon) => {
+    const newTweet = {
+      id: Date.now(),
+      content: content,
+      username: 'you',
+      time: new Date().toUTCString(),
+      like_number: 0,
+      answer_number: 0
+    };
+    this.setState(prevState => ({
+      tweets: [newTweet, ...prevState.tweets],
+      showAddQuestion: false
+    }));
+  }
+
+  render() {
+    return (
+      <React.Fragment>
+        <Helmet>
+          <title>Home</title>
+          <link rel="canonical" href="https://jous.app/home" />
+        </Helmet>
+        <div className="ui basic segment" style={{ width: Math.min(this.state.width, 768) }}>
+          <h1>Home</h1>
+          {!this.state.showAddQuestion &&
+            <div className="ui tiny black button"
+              onClick={this.toggleShowAddQuestion}>
+              Add a question
+            </div>}
+          {this.state.showAddQuestion && <AddTweet onClose={this.toggleShowAddQuestion} onAdd={this.addNewTweet} />}
+          <div className="ui hidden divider"></div>
+          {
+            <InfiniteScroll
+              dataLength={this.state.tweets.length}
+              next={this.fetchMoreData}
+              hasMore={this.state.hasMore}
+              loader={<h4>Loading...</h4>}
+              endMessage={
+                <p style={{ textAlign: 'center' }}>
+                  <b>The end.</b>
+                </p>
+              }
+              useWindow={false}
+              height={Math.max(this.state.height - 200, 300)}
+            >
+              {this.state.tweets.map((item, index) => (
+                <div className="event" key={item.id || index}>
+                  <TweetItem2
+                    id={item.id}
+                    content={item.content}
+                    author={item.username}
+                    time={item.time}
+                    likes={item.like_number}
+                    answers={item.answer_number}
+                    isOwner={this.state.currentUser.username === item.username}
+                    isLoggedIn={this.state.login}
+                    selectedLanguageFrontendCode={this.state.selectedLanguageFrontendCode}
+                  />
                 </div>
-            </React.Fragment>
-        );
-    }
+              ))}
+            </InfiniteScroll>
+          }
+        </div>
+      </React.Fragment>
+    );
+  }
 }
 
 export default MainPage;
