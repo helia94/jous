@@ -29,13 +29,13 @@ class TweetDetailPage extends React.Component {
           (lang) => lang.frontend_code === language
         );
 
-        this.setState({ selectedLanguageFrontendCode: selectedLanguage.frontend_code });
-
         Axios.get("/api/question/" + this.props.match.params.question, {
             params: { 
                 language_id: selectedLanguage.backend_code
              } }).then(res => {
-            this.setState({ question: res.data.question, answers: res.data.answers });
+            this.setState({ 
+                question: res.data.question, answers: res.data.answers,
+                selectedLanguageFrontendCode: selectedLanguage.frontend_code});
         });
         
         setTimeout(() => {

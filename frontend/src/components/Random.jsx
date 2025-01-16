@@ -28,16 +28,13 @@ class Random extends React.Component {
           (lang) => lang.frontend_code === language
         );
 
-        this.setState({
-            selectedLanguageFrontendCode: selectedLanguage.frontend_code
-        })
-
         Axios.get("/api/question/random", { params: 
             {
             language_id: selectedLanguage.backend_code
          }}).then(res => {
             this.setState({
                 question: res.data.question,
+                selectedLanguageFrontendCode: selectedLanguage.frontend_code
             })
         });
     }
