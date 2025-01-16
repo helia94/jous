@@ -19,7 +19,8 @@ class MainPage extends React.Component {
         width: 500, 
         height: 600, 
         showAddQuestion: false,
-        language_id: null
+        selectedLanguageFrontendCode: "original",
+        selectedLanguageBackendendCode: null
     }
     static contextType = LanguageContext;
 
@@ -30,7 +31,8 @@ class MainPage extends React.Component {
         );
 
         this.setState({
-            language_id: selectedLanguage.backend_code
+            selectedLanguageFrontendCode: selectedLanguage.frontend_code,
+            selectedLanguageBackendendCode: selectedLanguage.backend_code
         })
 
     Axios.get(`/api/questions`, {
@@ -71,7 +73,7 @@ class MainPage extends React.Component {
         console.log("page", this.state.page)
         Axios.get(`/api/questions` , {
             params: { offset: this.state.page,
-                language_id: this.state.language_id
+                language_id: this.state.selectedLanguageBackendCode
              } } ).then(res => {
             this.setState({
                 tweets: this.state.tweets.concat(res.data.reverse()),
@@ -150,7 +152,7 @@ class MainPage extends React.Component {
                                         answers={item.answer_number}
                                         isOwner={this.state.currentUser.username === item.username}
                                         isLoggedIn={this.state.login}
-                                        language_id={this.state.language_id}
+                                        selectedLanguage={this.state.selectedLanguageFrontendCode}
                                     />
                                 </div>
                             ))}

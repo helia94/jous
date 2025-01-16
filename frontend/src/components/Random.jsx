@@ -7,7 +7,7 @@ import { LanguageContext } from "./LanguageContext";
 
 class Random extends React.Component {
     state = { question: "",
-        selectedLanguage: null
+        selectedLanguageFrontendCode: "original"
     }
     static contextType = LanguageContext;
 
@@ -27,10 +27,9 @@ class Random extends React.Component {
         const selectedLanguage = availableLanguages.find(
           (lang) => lang.frontend_code === language
         );
-        console.log("language:", language);
-        console.log("Selected Language:", selectedLanguage);
+
         this.setState({
-            selectedLanguage : selectedLanguage
+            selectedLanguageFrontendCode: selectedLanguage.frontend_code
         })
 
         Axios.get("/api/question/random", { params: 
@@ -64,7 +63,8 @@ class Random extends React.Component {
                             answers={this.state.question.answer_number}
                             isOwner={false}
                             key={0}
-                        />
+                            selectedLanguageFrontendCode={this.state.selectedLanguageFrontendCode}
+                            />
                     </div>
                     <div className="ui yellow button"
                         onClick={this.nextRandomQuestion}>

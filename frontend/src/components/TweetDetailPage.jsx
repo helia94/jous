@@ -17,17 +17,19 @@ class TweetDetailPage extends React.Component {
             anon: "False",
             width: 500,
             height: 500,
-            language_id: props.language_id
+            selectedLanguageFrontendCode: "original"
         };
     }
 
     static contextType = LanguageContext;
     
     componentDidMount() {
-        const { availableLanguages = [], language } = this.context; // Provide a default value for availableLanguages
+        const { availableLanguages = [], language } = this.context; 
         const selectedLanguage = availableLanguages.find(
           (lang) => lang.frontend_code === language
         );
+
+        this.setState({ selectedLanguageFrontendCode: selectedLanguage.frontend_code });
 
         Axios.get("/api/question/" + this.props.match.params.question, {
             params: { 
@@ -112,6 +114,7 @@ class TweetDetailPage extends React.Component {
                         answers={item.answer_number}
                         isOwner={this.state.currentUser.username === item.username}
                         isLoggedIn={this.state.login}
+                        selectedLanguageFrontendCode={this.state.selectedLanguageFrontendCode}
                     />
             )
         );
