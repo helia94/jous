@@ -3,6 +3,7 @@ import Axios from "axios";
 import moment from 'moment';
 import TweetItem2 from "./TweetItem2";
 import { Helmet } from 'react-helmet';
+import { LanguageContext } from "./LanguageContext"; 
 
 class TweetDetailPage extends React.Component {
     constructor(props) {
@@ -15,12 +16,23 @@ class TweetDetailPage extends React.Component {
             newAnswer: "",
             anon: "False",
             width: 500,
-            height: 500
+            height: 500,
+            language_id: props.language_id
         };
     }
 
+    static contextType = LanguageContext;
+    
     componentDidMount() {
-        Axios.get("/api/question/" + this.props.match.params.question).then(res => {
+        const { availableLanguages = [], language } = this.context; // Provide a default value for availableLanguages
+        const selectedLanguage = availableLanguages.find(
+          (lang) => lang.frontend_code === language
+        );
+
+        Axios.get("/api/question/" + this.props.match.params.question, {
+            params: { 
+                language_id: selectedLanguage.backend_code
+             } }).then(res => {
             this.setState({ question: res.data.question, answers: res.data.answers });
         });
         

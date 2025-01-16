@@ -20,6 +20,14 @@ class QuestionRepository:
         QuestionTranslation.language_id == language_id).all()
         return {t.question_id: t.translated_content for t in translations}
     
+    def get_translation(self, question_id, language_id):
+        translation = QuestionTranslation.query.filter(
+        QuestionTranslation.question_id == question_id,
+        QuestionTranslation.language_id == language_id).all()
+        if translation:
+            return translation[0].translated_content
+        return None
+    
     def has_translation(self, question_id, language_id):
         translations = QuestionTranslation.query.filter(
         QuestionTranslation.question_id == question_id,

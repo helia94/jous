@@ -11,16 +11,19 @@ from backend.outbound.llm.gpt import GPT
 from backend.outbound.queue.tasks.translation_task import process_question_translation
 from backend.api.core.logger import logger
 
+
+DEFAULT_LANGUSGE_ID = "original"
+
 class QuestionService:
     def __init__(self, question_repository=None, user_repository=None, llm = None):
         self.question_repository = question_repository or QuestionRepository()
         self.user_repository = user_repository or UserRepository()
         self.llm = llm or GPT()
 
-    def get_questions(self, offset=0, limit=20, language_id = "original", occasion = "all", level= "all"):
+    def get_questions(self, offset=0, limit=20, language_id = DEFAULT_LANGUSGE_ID, occasion = "all", level= "all"):
         questions = self.question_repository.get_all_questions(offset, limit)
         json_questions =[self._serialize_question(q) for q in questions] 
-        if language_id == "original":
+        if language_id == DEFAULT_LANGUSGE_ID:
             return json_questions
         
         if not is_supported_language(language_id):
@@ -28,15 +31,25 @@ class QuestionService:
         
         return self._apply_translations(json_questions, language_id)
 
-    def get_question_by_id(self, question_id):
+    def get_question_by_id(self, question_id, language_id = DEFAULT_LANGUSGE_ID):
         question = self.question_repository.get_question_by_id(question_id)
         if not question:
             return {"error": "Question not found"}
         answers = self.question_repository.get_public_answers_for_question(question_id)
-        return {
+        json_question = {
             "question": self._serialize_question(question),
             "answers": self._apply_to_list(answers, self._serialize_answer)
         }
+
+        if language_id == DEFAULT_LANGUSGE_ID:
+            return json_question
+        
+        if not is_supported_language(language_id):
+            return {"error": "Invalid language"}, 400
+        
+        translated_content = self.question_repository.get_translation(question_id, language_id)
+        json_question["question"]["content"] =  translated_content or "Not avilable in the selected language"
+        return json_question
 
     def create_question(self, content, anon, current_uid):
         if not content:
@@ -71,8 +84,8 @@ class QuestionService:
         return {"success": True}, 200
 
 
-    def get_random_question(self, language_id = "original", occasion = "all", level= "all"):
-        if language_id == "original":
+    def get_random_question(self, language_id = DEFAULT_LANGUSGE_ID, occasion = "all", level= "all"):
+        if language_id == DEFAULT_LANGUSGE_ID:
             question = self.question_repository.get_random_question()
             if not question:
                 return {"error": "No questions available"}

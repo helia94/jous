@@ -16,7 +16,6 @@ def get_questions():
         'level': request.args.get('level', type=int, default=None)
     }
     
-    # Remove keys with None values
     query_params = to_lower_list(filter_none(query_params))
     questions = question_service.get_questions(**query_params)
     
@@ -24,7 +23,12 @@ def get_questions():
 
 @question_api.route("/question/<int:question_id>", methods=["GET"])
 def get_question(question_id):
-    data = question_service.get_question_by_id(question_id)
+    query_params = {
+        'language_id': request.args.get('language_id', type=str, default=None),
+    }
+
+    query_params = to_lower_list(filter_none(query_params))
+    data = question_service.get_question_by_id(question_id, **query_params)
     if "error" in data:
         return jsonify(data), 404
     return jsonify(data), 200

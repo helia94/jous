@@ -3,6 +3,7 @@ import React from "react";
 import Axios from "axios";
 import moment from "moment";
 import "./TweetItem2.css";
+import { LanguageContext } from "./LanguageContext"; 
 
 // Simple helper to detect Persian characters
 function isPersian(text) {
@@ -15,14 +16,26 @@ class TweetItem2 extends React.Component {
     this.state = {
       likes: Number(props.likes) || 0,
       mobile: false,
-      minHeight: 200
+      minHeight: 200,
     };
   }
+  
+  static contextType = LanguageContext;
+  
 
   componentDidMount() {
     if (window.innerWidth < 450) {
       this.setState({ mobile: true, minHeight: 414 });
     }
+
+    const { availableLanguages = [], language } = this.context; // Provide a default value for availableLanguages
+    const selectedLanguage = availableLanguages.find(
+      (lang) => lang.frontend_code === language
+    );
+
+    this.setState({
+      language_id: selectedLanguage.backend_code
+  })
   }
 
   componentDidUpdate(prevProps) {
@@ -56,14 +69,14 @@ class TweetItem2 extends React.Component {
   };
 
   routeToQuestion = () => {
-    const path = "/question/" + this.props.id;
+    const path = `/question/${this.props.id}?lang=${this.state.language_id}`;
     window.location.href = path;
   };
 
   copyQuestionAddressToKeyboard = (e) => {
     e.stopPropagation();
     const host = window.location.host;
-    const path = "https://" + host + "/question/" + this.props.id;
+    const path = `https://${host}/question/${this.props.id}?lang=${this.state.language_id}`;
     navigator.clipboard.writeText(path);
     alert("Copied to clipboard");
   };
