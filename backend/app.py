@@ -50,12 +50,16 @@ def create_app(test_config=None):
     from backend.inbound.user_controller import user_api
     from backend.inbound.question_controller import question_api
     from backend.inbound.activity_controller import activity_api
-    
+    from backend.inbound.feature_controller import feature_api
+    from backend.inbound.migration_controller import migration_api
+
     # Register Blueprints
     app.register_blueprint(auth_api, url_prefix="/api")
     app.register_blueprint(user_api, url_prefix="/api")
     app.register_blueprint(question_api, url_prefix="/api")
     app.register_blueprint(activity_api, url_prefix="/api")
+    app.register_blueprint(feature_api, url_prefix="/api")
+    app.register_blueprint(migration_api, url_prefix="/api")
     
 
     # Setup logging (simplified)
