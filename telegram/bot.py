@@ -6,7 +6,7 @@ import os
 from uuid import uuid4
 
 TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN')
-LANG_API_URL = 'http://127.0.0.1:5000/api/languages'
+LANG_API_URL = 'https://jous.app/api/languages'
 QUESTION_API_URL = 'https://jous.app/api/question/random'
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
