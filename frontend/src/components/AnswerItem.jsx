@@ -1,6 +1,7 @@
 import React from "react";
 import Axios from "axios";
 import moment from 'moment'
+import { getFontForCards } from './FontUtils';
 
 
 function deleteAnswer(e, tid) {
@@ -30,6 +31,8 @@ export function getQuestion(questionId) {
   }
 
 function AnswerItem(props) {
+    const contentFont = getFontForCards(props.content);
+    
 
     let [showQuestion, setShowQuestion] = React.useState(false);
     let [questionContent, setQuestionContent] = React.useState("");
@@ -40,7 +43,12 @@ function AnswerItem(props) {
                 <div class="right floated meta">{moment(props.time, 'ddd, DD MMM YYYY h:mm:ss').format('DD MMM')}</div>
                 <div class="left floated meta" onClick={(e) => routeToAuthor(e, props.author)}>{props.author}</div>
                 <div className="description">
-                    <p>{props.content}</p>
+                    <p style={{ 
+                        fontFamily: contentFont,
+                        flexGrow: 1,
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",}}>{props.content}</p>
                 </div>
             </div>
             <div className="extra content">

@@ -10,7 +10,7 @@ const availableLanguages = [
   { display_name: 'Original', backend_code: null, frontend_code: 'original' },
   { display_name: 'Enhanced English', backend_code: 'en', frontend_code: 'en' },
   { display_name: 'German', backend_code: 'de', frontend_code: 'de' },
-  { display_name: 'Farsi', backend_code: 'fa', frontend_code: 'fa' },
+  { display_name: 'Persian', backend_code: 'fa', frontend_code: 'fa' },
   { display_name: 'Spanish', backend_code: 'es', frontend_code: 'es' },
 ];
 
@@ -42,6 +42,7 @@ export const LanguageProvider = ({ children }) => {
 
     window.location.reload();
   };
+
 
   // Keep localStorage in sync if user changes language from the modal
   useEffect(() => {

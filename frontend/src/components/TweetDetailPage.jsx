@@ -4,7 +4,8 @@ import Axios from "axios";
 import moment from 'moment';
 import TweetItem2 from "./TweetItem2";
 import { Helmet } from 'react-helmet';
-import { LanguageContext } from "./LanguageContext"; 
+import { LanguageContext } from "./LanguageContext";
+import { getFontForCards } from './FontUtils';
 
 class TweetDetailPage extends React.Component {
   static contextType = LanguageContext;
@@ -146,9 +147,7 @@ class TweetDetailPage extends React.Component {
                         {moment(item.time, 'ddd, DD MMM YYYY h:mm:ss').format('DD MMM')}
                       </span>
                     </div>
-                    <div className="text">
-                      {item.content}
-                    </div>
+                    <p style={{fontFamily: getFontForCards(item.content)}}>{item.content}</p>
                   </div>
                 </div>
               );
@@ -156,7 +155,7 @@ class TweetDetailPage extends React.Component {
           </div>
           <form className="ui reply form" onSubmit={this.handleFormSubmit} id="submit-form">
             <div className="field" value={this.state.newAnswer} onChange={this.handleInputChange}>
-              <textarea value={this.state.newAnswer} />
+              <textarea style={{fontFamily: getFontForCards(this.state.newAnswer)}} value={this.state.newAnswer} />
             </div>
             <div className="ui buttons">
               {this.state.isLoggedIn && (

@@ -3,11 +3,8 @@ import React from "react";
 import Axios from "axios";
 import moment from "moment";
 import "./TweetItem2.css";
+import { getFontForCards } from './FontUtils';
 
-// Simple helper to detect Persian characters
-function isPersian(text) {
-  return /[\u0600-\u06FF]/.test(text);
-}
 
 class TweetItem2 extends React.Component {
   constructor(props) {
@@ -76,8 +73,7 @@ class TweetItem2 extends React.Component {
   };
 
   render() {
-    // Choose fonts conditionally
-    const contentFont = isPersian(this.props.content) ? "Vazirmatn RD" : "Montserrat";
+    const contentFont = getFontForCards(this.props.content)
 
     const cardStyle = {
       minHeight: this.state.minHeight,
