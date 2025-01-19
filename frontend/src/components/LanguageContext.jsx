@@ -104,7 +104,7 @@ export const LanguageProvider = ({ children }) => {
                   closeLanguageModal();
                 }}
               >
-                Farsi
+                Persian
               </Button>
               <Button
                 className={`lang-button fat ${language === 'es' ? 'active-lang' : ''}`}
