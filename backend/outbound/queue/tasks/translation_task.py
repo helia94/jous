@@ -4,10 +4,12 @@ import os
 from backend.domain.supported_languages import supported_languages
 from backend.domain.translator import Translator
 from backend.outbound.repositories.question_repository import QuestionRepository
+from backend.outbound.repositories.filter_repository import FilterRepository
 from backend.outbound.llm.gpt import GPT
 from backend.tests.test_llm import TestLMM
 from backend.api.core.logger import logger
 from backend.api.config import configs
+from backend.domain.filters.filters import get_filter_values
 
 env = os.environ.get("FLASK_ENV", "dev")
 config = configs[env]
@@ -53,10 +55,13 @@ if env == "test":
 else:
     translator = Translator(GPT())
 
+question_repository = QuestionRepository()
+filter_repository = FilterRepository()
+
+
 @shared_task(name = "backend.outbound.queue.tasks.translation_task.translate_all_questions")
 def translate_all_questions():
     with app.app_context():
-        question_repository = QuestionRepository()
         offset = 0
         limit=20
         questions = question_repository.get_all_questions(offset, limit=limit)
@@ -73,11 +78,20 @@ def translate_all_questions():
 def process_question_translation(question_id, question_content):
     logger.info("Start process_question_translation")
     with app.app_context():
-        question_repository = QuestionRepository()
         for lang in supported_languages:
             translated_text = translator.translate(question_content, lang.name, lang.comment)
             question_repository.add_question_translation(question_id, lang.iso2, translated_text)
             logger.info(f"Added translation for question: {question_id} language: {lang.iso2}.")
+
+
+@shared_task(name = "backend.outbound.queue.tasks.translation_task.process_question_filters")
+def process_question_filters(question_id, question_content):
+    logger.info("Start process_question_filters")
+    filter_values = get_filter_values(question_content)
+    with app.app_context():
+        filter_repository.add_filter_values(question_id= question_id, 
+                                            filter_values= filter_values)
+        logger.info(f"added filter values")
 
 
 # Check that both tasks are indeed imported when starting the worker.
