@@ -5,7 +5,9 @@ import Axios from "axios";
 import moment from "moment";
 import { getCurrentUser } from "../login";
 import { useLanguage } from "./LanguageContext";
-import "./Navbar.css"; // Make sure this file contains the updated styles shown below
+import "./Navbar.css";
+import { useFilter } from "./FilterContext"; 
+import FilterModal from "./FilterModal";
 
 const activityMessage = {
   answer: "answered your question",
@@ -33,6 +35,8 @@ function Navbar() {
 
   const { language, openLanguageModal } = useLanguage();
   const token = localStorage.getItem("token");
+  const { chosenFilters } = useFilter();
+  const [openFilterModal, setOpenFilterModal] = useState(false);
 
   useEffect(() => {
     if (!token) return;
@@ -262,6 +266,16 @@ function Navbar() {
       <Button className="nav-button" onClick={openLanguageModal}>
         Language: {language}
       </Button>
+
+      <Button className="nav-button" onClick={() => setOpenFilterModal(true)} title="Filters">
+        <i className="filter icon" />
+      </Button>
+
+      <FilterModal
+          open={openFilterModal}
+          onClose={() => setOpenFilterModal(false)}
+          languageId={language}
+        />
 
       {!token ? (
         <Button className="nav-button" onClick={() => route("login")}>

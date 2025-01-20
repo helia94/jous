@@ -3,7 +3,8 @@ import React from "react";
 import Axios from "axios";
 import TweetItem2 from "./TweetItem2";
 import { Helmet } from 'react-helmet';
-import { LanguageContext } from "./LanguageContext"; 
+import { LanguageContext } from "./LanguageContext";
+import { FilterContext } from "./FilterContext";
 
 class Random extends React.Component {
   static contextType = LanguageContext;
@@ -23,9 +24,12 @@ class Random extends React.Component {
   }
 
   componentDidMount() {
+    const { chosenFilters } = this.props.filterContext;
+
     Axios.get("/api/question/random", {
       params: {
-        language_id: this.state.selectedLanguageBackendCode
+        language_id: this.state.selectedLanguageBackendCode,
+        ...chosenFilters
       }
     }).then(res => {
       this.setState({
@@ -82,4 +86,8 @@ class Random extends React.Component {
   }
 }
 
-export default Random;
+export default (props) => (
+  <FilterContext.Consumer>
+    {filterCtx => <Random {...props} filterContext={filterCtx} />}
+  </FilterContext.Consumer>
+);

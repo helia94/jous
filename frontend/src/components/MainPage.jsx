@@ -1,4 +1,3 @@
-// MainPage.jsx
 import React from "react";
 import Axios from "axios";
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -7,6 +6,7 @@ import AddTweet from "./AddTweet";
 import { check } from "../login";
 import { Helmet } from 'react-helmet';
 import { LanguageContext } from "./LanguageContext";
+import { FilterContext } from "./FilterContext";
 
 class MainPage extends React.Component {
   static contextType = LanguageContext;
@@ -33,69 +33,56 @@ class MainPage extends React.Component {
   }
 
   componentDidMount() {
-
-    Axios.get(`/api/questions`, {
-      params: {
-        offset: this.state.page,
-        language_id: this.state.selectedLanguageBackendCode
-      }
-    }).then(res => {
-      this.setState({
-        tweets: res.data.reverse(),
-        page: this.state.page + 1,
-      });
-    });
-
-    setTimeout(() => {
-      if (this.state.login) {
-        Axios.get("/api/getcurrentuser", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`
-          }
-        }).then(res => {
-          if (res.status === 200) {
-            this.setState({ currentUser: res.data });
-          } else {
-            console.log("could not get current user");
-          }
-        }).catch(error => {
-          console.error("Error fetching current user:", error);
-        });
-      }
-    }, 500);
-
     check().then(r => this.setState({ login: r }));
-
     window.addEventListener('resize', this.updateDimensions);
     this.setState({ width: window.innerWidth, height: window.innerHeight });
+    this.fetchQuestions(true); // initial fetch
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.updateDimensions);
+  }
+
+  componentDidUpdate(prevProps) {
+    // if chosen filters changed, refetch from scratch
+    const { chosenFilters } = this.props.filterContext;
+    const oldFilters = prevProps.filterContext.chosenFilters;
+    if (JSON.stringify(chosenFilters) !== JSON.stringify(oldFilters)) {
+      this.setState({ page: 0, tweets: [], hasMore: true }, () => {
+        this.fetchQuestions(true);
+      });
+    }
+  }
+
+  fetchQuestions = (reset = false) => {
+    const { chosenFilters } = this.props.filterContext;
+    Axios.get(`/api/questions`, {
+      params: {
+        offset: reset ? 0 : this.state.page,
+        language_id: this.state.selectedLanguageBackendCode,
+        ...chosenFilters
+      }
+    }).then(res => {
+      const newTweets = res.data.reverse();
+      this.setState((prevState) => ({
+        tweets: reset ? newTweets : prevState.tweets.concat(newTweets),
+        page: (reset ? 1 : prevState.page + 1),
+        hasMore: newTweets.length > 0
+      }));
+    }).catch(err => console.error(err));
   }
 
   fetchMoreData = () => {
-    Axios.get(`/api/questions`, {
-      params: {
-        offset: this.state.page,
-        language_id: this.state.selectedLanguageBackendCode
-      }
-    }).then(res => {
-      this.setState({
-        tweets: this.state.tweets.concat(res.data.reverse()),
-        page: this.state.page + 1
-      });
-      if (res.data.length === 0) {
-        this.setState({ hasMore: false });
-      }
-    });
+    this.fetchQuestions(false);
   }
 
   updateDimensions = () => {
     this.setState({ width: window.innerWidth, height: window.innerHeight });
   };
 
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.updateDimensions);
-  }
-
-  toggleShowAddQuestion = () => this.setState({ showAddQuestion: !this.state.showAddQuestion });
+  toggleShowAddQuestion = () => {
+    this.setState({ showAddQuestion: !this.state.showAddQuestion });
+  };
 
   addNewTweet = (content, anon) => {
     const newTweet = {
@@ -123,46 +110,49 @@ class MainPage extends React.Component {
           <h1>Home</h1>
           {!this.state.showAddQuestion &&
             <div className="ui tiny black button"
-              onClick={this.toggleShowAddQuestion}>
+                 onClick={this.toggleShowAddQuestion}>
               Add a question
             </div>}
           {this.state.showAddQuestion && <AddTweet onClose={this.toggleShowAddQuestion} onAdd={this.addNewTweet} />}
           <div className="ui hidden divider"></div>
-          {
-            <InfiniteScroll
-              dataLength={this.state.tweets.length}
-              next={this.fetchMoreData}
-              hasMore={this.state.hasMore}
-              loader={<h4>Loading...</h4>}
-              endMessage={
-                <p style={{ textAlign: 'center' }}>
-                  <b>The end.</b>
-                </p>
-              }
-              useWindow={false}
-              height={Math.max(this.state.height - 200, 300)}
-            >
-              {this.state.tweets.map((item, index) => (
-                <div className="event" key={item.id || index}>
-                  <TweetItem2
-                    id={item.id}
-                    content={item.content}
-                    author={item.username}
-                    time={item.time}
-                    likes={item.like_number}
-                    answers={item.answer_number}
-                    isOwner={this.state.currentUser.username === item.username}
-                    isLoggedIn={this.state.login}
-                    selectedLanguageFrontendCode={this.state.selectedLanguageFrontendCode}
-                  />
-                </div>
-              ))}
-            </InfiniteScroll>
-          }
+          <InfiniteScroll
+            dataLength={this.state.tweets.length}
+            next={this.fetchMoreData}
+            hasMore={this.state.hasMore}
+            loader={<h4>Loading...</h4>}
+            endMessage={
+              <p style={{ textAlign: 'center' }}>
+                <b>The end.</b>
+              </p>
+            }
+            useWindow={false}
+            height={Math.max(this.state.height - 200, 300)}
+          >
+            {this.state.tweets.map((item, index) => (
+              <div className="event" key={item.id || index}>
+                <TweetItem2
+                  id={item.id}
+                  content={item.content}
+                  author={item.username}
+                  time={item.time}
+                  likes={item.like_number}
+                  answers={item.answer_number}
+                  isOwner={this.state.currentUser.username === item.username}
+                  isLoggedIn={this.state.login}
+                  selectedLanguageFrontendCode={this.state.selectedLanguageFrontendCode}
+                />
+              </div>
+            ))}
+          </InfiniteScroll>
         </div>
       </React.Fragment>
     );
   }
 }
 
-export default MainPage;
+// Wrap MainPage with FilterContext so it has access to filter props
+export default (props) => (
+  <FilterContext.Consumer>
+    {filterCtx => <MainPage {...props} filterContext={filterCtx} />}
+  </FilterContext.Consumer>
+);
