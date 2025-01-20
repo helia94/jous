@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from backend.inbound.transaction_utils import transactional
-from .utils import to_lower, to_lower_list, filter_none
+from backend.inbound.utils import to_lower, to_lower_list, filter_none
 from backend.inbound.service_factory import question_service, answer_service
 from backend.outbound.queue.tasks.translation_task import translate_all_questions
 
@@ -12,7 +12,7 @@ def get_questions():
     query_params = {
         'offset': request.args.get('offset', type=int, default=None),
         'language_id': request.args.get('language_id', type=str, default=None),
-        'occasion': request.args.get('occasion', type=str, default=None),
+        'occasion': request.args.get('occasion', type=int, default=None),
         'level': request.args.get('level', type=int, default=None)
     }
     
@@ -38,7 +38,7 @@ def get_random_question():
     
     query_params = {
         'language_id': request.args.get('language_id', type=str, default=None),
-        'occasion': request.args.get('occasion', type=str, default=None),
+        'occasion': request.args.get('occasion', type=int, default=None),
         'level': request.args.get('level', type=int, default=None)
     }
     

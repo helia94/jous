@@ -12,7 +12,7 @@ class LevelEvaluator(EvaluatorInterface):
         self.llm = llm
 
 
-    def evaluate_single_option(self, question: str, options: List[str]) -> int:
+    def evaluate_single_option(self, question, options):
         options_dic = {idx : v for idx, v in enumerate(options)}
 
         prompt = f"""
@@ -51,3 +51,6 @@ class LevelEvaluator(EvaluatorInterface):
             return response_json[KEY]
         except Exception:
             return "Error: Invalid JSON response from the LLM."
+        
+    def evaluate_many_option(self, question: str, options: List[str]) -> List[int]:
+        pass

@@ -11,7 +11,7 @@ filter_to_model = {
 
 class FilterRepository:
     def add_filter_values(self, question_id, filter_values):
-        for key, value in filter_values:
+        for key, value in filter_values.items():
             try:
                 filter_model = (filter_to_model[key](question_id, value))
                 db.session.add(filter_model)

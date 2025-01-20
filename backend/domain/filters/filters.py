@@ -1,15 +1,25 @@
 from dataclasses import dataclass
 from typing import Dict, List
+import os
 
 from backend.domain.filters.evaluator_interface import EvaluatorInterface
 from backend.domain.filters.level import levels, level_names
 from backend.domain.filters.occasion import occasions, occasion_names
 from backend.domain.filters.level_evaluator import LevelEvaluator
 from backend.domain.filters.occasion_evaluator import OccasionEvaluator
+from backend.outbound.llm.gpt import GPT
+from backend.tests.test_llm import TestLMM
+
+env = os.environ.get("FLASK_ENV", "dev")
+if env == "test":
+    llm = TestLMM()
+else:
+    llm = GPT()
 
 @dataclass
 class Filter:
     id: int
+    name: str
     names: Dict[str, str]
     options: dict
     mutually_exclusive: bool
@@ -22,7 +32,7 @@ filters = [
         names = level_names,
         options=levels,
         mutually_exclusive=True,
-        evaluator=LevelEvaluator
+        evaluator=LevelEvaluator(llm)
     ),
     Filter(
         id = 1,
@@ -30,7 +40,7 @@ filters = [
         names = occasion_names,
         options=occasions,
         mutually_exclusive=False,
-        evaluator=OccasionEvaluator       
+        evaluator=OccasionEvaluator(llm)    
     )
 ]
 
@@ -42,12 +52,12 @@ def get_filter_by_language(language: str) -> List[Dict[str, str]]:
     for f in filters:
         filter_data = {
             "name": f.names.get(language, f.names["original"]),
-            "options": [],
+            "options": {},
             "mutually_exclusive": str(f.mutually_exclusive)
         }
-        for option in f.options:
+        for idx, option in enumerate(f.options):
             option_name = option.translations.get(language, option.name)
-            filter_data["options"].append(option_name)
+            filter_data["options"][idx] = option_name
         result.append(filter_data)
     return result
 
@@ -56,10 +66,11 @@ def get_filter_values(question):
     values = {}
     for f in filters:
         if f.mutually_exclusive:
-            values[f.name] = f.evaluator.evaluate_single_option(question)
+            values[f.name] = f.evaluator.evaluate_single_option(question, f.options)
         else:
-            values[f.name] = f.evaluator.evaluate_many_option(question)
-        return values
+            values[f.name] = f.evaluator.evaluate_many_option(question, f.options)
+    print(values)
+    return values
 
 
 

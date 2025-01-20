@@ -1,68 +1,96 @@
 from backend.api.models.base import db
-from sqlalchemy.dialects.postgresql import insert
 from backend.api.models.Question import Question
 from backend.api.models.QuestionTranslation import QuestionTranslation
+from backend.api.models.QuestionLevel import QuestionLevel
+from backend.api.models.QuestionOccasions import QuestionOccasions
 from backend.api.models.PublicAnswer import PublicAnswer
 from backend.api.core.logger import logger
 import random
 
 class QuestionRepository:
 
-    def get_all_questions(self, offset, limit=20):
-        pageSize = 20
-        questions = Question.query.order_by(Question.id.desc()) \
-            .offset(pageSize * int(offset)).limit(limit).all()
-        return list(reversed(questions))
-    
-    def get_translations(self, question_ids, language_id):
-        translations = QuestionTranslation.query.filter(
-        QuestionTranslation.question_id.in_(question_ids),
-        QuestionTranslation.language_id == language_id).all()
-        return {t.question_id: t.translated_content for t in translations}
-    
-    def get_translation(self, question_id, language_id):
-        translation = QuestionTranslation.query.filter(
-        QuestionTranslation.question_id == question_id,
-        QuestionTranslation.language_id == language_id).all()
-        if translation:
-            return translation[0].translated_content
-        return None
-    
-    def has_translation(self, question_id, language_id):
-        translations = QuestionTranslation.query.filter(
-        QuestionTranslation.question_id == question_id,
-        QuestionTranslation.language_id == language_id).all()
-        return len(translations) != 0
-
-    def get_question_by_id(self, question_id):
-        return Question.query.get(question_id)
-
     def create_question(self, uid, content):
         q = Question(uid, content, [])
         db.session.add(q)
         db.session.flush()
         return q.id
-    
-    def add_question_translation(self, question_id, languse_iso2, translated_text):
+
+    def get_all_questions(self, offset, occasion, level):
+        pageSize = 20
+        limit = 20
+        query = db.session.query(Question)
+
+        if occasion:
+            query = query.join(QuestionOccasions, Question.id == QuestionOccasions.question_id)
+            query = query.filter(occasion == QuestionOccasions.occasion_ids.any_())
+        if level:
+            query = query.join(QuestionLevel, Question.id == QuestionLevel.question_id)
+            query = query.filter(QuestionLevel.level_id == level)
+
+        questions = (query
+                     .order_by(Question.id.desc())
+                     .offset(pageSize * int(offset))
+                     .limit(limit)
+                     .all())
+        return list(reversed(questions))
+
+    def get_random_question(self, occasion, level):
         try:
-            t = QuestionTranslation(
-                        question_id=question_id,
-                        language_id=languse_iso2,
-                        translated_content=translated_text
-                    )
-            db.session.add(t)
-            db.session.commit()
-            logger.info("add_question_translation: translation upserted into db")
+            query = db.session.query(Question)
+            if occasion:
+                query = query.join(QuestionOccasions, Question.id == QuestionOccasions.question_id)
+                query = query.filter(occasion == QuestionOccasions.occasion_ids.any_())
+            if level:
+                query = query.join(QuestionLevel, Question.id == QuestionLevel.question_id)
+                query = query.filter(QuestionLevel.level_id == level)
+
+            question_count = query.count()
+            if question_count == 0:
+                return None
+
+            rand_offset = random.randint(0, question_count - 1)
+            return query.offset(rand_offset).first()
         except Exception as e:
-            logger.error("adding translation failed", e)
-            db.session.rollback()
+            logger.error(e)
+            return None
+
+    def get_random_question_in_language(self, language_id, occasion, level):
+        try:
+            query = db.session.query(QuestionTranslation).join(
+                Question,
+                QuestionTranslation.question_id == Question.id
+            )
+            if occasion:
+                query = query.join(QuestionOccasions, Question.id == QuestionOccasions.question_id)
+                query = query.filter(occasion == QuestionOccasions.occasion_ids.any_())
+            if level:
+                query = query.join(QuestionLevel, Question.id == QuestionLevel.question_id)
+                query = query.filter(QuestionLevel.level_id == level)
+
+            query = query.filter_by(language_id=language_id)
+            question_count = query.count()
+            if question_count == 0:
+                return None
+
+            rand_offset = random.randint(0, question_count - 1)
+            return query.offset(rand_offset).first()
+        except Exception as e:
+            logger.error(e)
+            return None
 
     def delete_question(self, question_id):
         PublicAnswer.query.filter_by(question=question_id).delete()
-        QuestionTranslation.query.filter_by(question_id=question_id).delete()
+
         question = Question.query.get(question_id)
         if question:
             db.session.delete(question)
+        db.session.commit()
+
+
+
+    def get_question_by_id(self, question_id):
+        return Question.query.get(question_id)
+    
 
     def get_public_answers_for_question(self, question_id):
         answers = PublicAnswer.query \
@@ -71,32 +99,6 @@ class QuestionRepository:
             .limit(20).all()
         answers = list(reversed(answers))
         return answers
-    
-    def get_random_question(self):
-        try:
-            question_count = Question.query.count()
-            if question_count == 0:
-                return None
-            rand_offset = random.randint(0, question_count - 1)
-            return Question.query.offset(rand_offset).first()
-        except Exception as e:
-            logger.error(e)
-            return None
-        
-    def get_random_question_in_language(self, language_id):
-        try:
-            question_count = QuestionTranslation.query\
-                .filter_by(language_id=language_id)\
-                .count()
-            if question_count == 0:
-                return None
-            rand_offset = random.randint(0, question_count - 1)
-            return QuestionTranslation.query\
-                .filter_by(language_id=language_id)\
-                .offset(rand_offset).first()
-        except Exception as e:
-            logger.error(e)
-            return None
 
     def like_question(self, question_id):
         question = Question.query.get(question_id)
@@ -118,4 +120,37 @@ class QuestionRepository:
             question.public_answer = question.public_answer + [answer_id]
         db.session.flush()
         return True
-
+    
+    def add_question_translation(self, question_id, languse_iso2, translated_text):
+        try:
+            t = QuestionTranslation(
+                        question_id=question_id,
+                        language_id=languse_iso2,
+                        translated_content=translated_text
+                    )
+            db.session.add(t)
+            db.session.commit()
+            logger.info("add_question_translation: translation upserted into db")
+        except Exception as e:
+            logger.error("adding translation failed", e)
+            db.session.rollback()
+    
+    def get_translations(self, question_ids, language_id):
+        translations = QuestionTranslation.query.filter(
+        QuestionTranslation.question_id.in_(question_ids),
+        QuestionTranslation.language_id == language_id).all()
+        return {t.question_id: t.translated_content for t in translations}
+    
+    def get_translation(self, question_id, language_id):
+        translation = QuestionTranslation.query.filter(
+        QuestionTranslation.question_id == question_id,
+        QuestionTranslation.language_id == language_id).all()
+        if translation:
+            return translation[0].translated_content
+        return None
+    
+    def has_translation(self, question_id, language_id):
+        translations = QuestionTranslation.query.filter(
+        QuestionTranslation.question_id == question_id,
+        QuestionTranslation.language_id == language_id).all()
+        return len(translations) != 0

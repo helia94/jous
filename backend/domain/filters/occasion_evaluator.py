@@ -45,3 +45,6 @@ class OccasionEvaluator(EvaluatorInterface):
             return response_json[KEY]
         except Exception:
             return "Error: Invalid JSON response from the LLM."
+        
+    def evaluate_single_option(self, question, options):
+        pass

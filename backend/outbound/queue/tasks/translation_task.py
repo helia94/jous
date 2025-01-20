@@ -88,10 +88,25 @@ def process_question_translation(question_id, question_content):
 def process_question_filters(question_id, question_content):
     logger.info("Start process_question_filters")
     filter_values = get_filter_values(question_content)
+    print(filter_values)
     with app.app_context():
-        filter_repository.add_filter_values(question_id= question_id, 
-                                            filter_values= filter_values)
+        filter_repository.add_filter_values(question_id, filter_values)
         logger.info(f"added filter values")
+
+
+@shared_task(name="backend.outbound.queue.tasks.translation_task.add_all_filters")
+def add_all_filters():
+    with app.app_context():
+        offset = 0
+        limit = 20
+        questions = question_repository.get_all_questions(offset, limit=limit)
+        while questions:
+            for question in questions:
+                filter_values = get_filter_values(question.content)
+                filter_repository.add_filter_values(question.id, filter_values)
+            offset += 1
+            questions = question_repository.get_all_questions(offset, limit=limit)
+
 
 
 # Check that both tasks are indeed imported when starting the worker.
