@@ -67,6 +67,9 @@ class QuestionService:
             return {"error": "Invalid language"}, 400
         
         translated_question = self.question_repository.get_random_question_in_language(language_id , occasion, level)
+        if not translated_question:
+            return {"error": "No questions available"}
+        
         question = self.question_repository.get_question_by_id(translated_question.question_id)
         answers = self.question_repository.get_public_answers_for_question(question.id)
         json_question = {
