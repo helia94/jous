@@ -10,6 +10,8 @@ from backend.domain.filters.occasion_evaluator import OccasionEvaluator
 from backend.outbound.llm.gpt import GPT
 from backend.tests.test_llm import TestLMM
 
+
+
 env = os.environ.get("FLASK_ENV", "dev")
 if env == "test":
     llm = TestLMM()
@@ -28,7 +30,7 @@ class Filter:
 filters = [
     Filter(
         id = 0,
-        name = "Intensity",
+        name = "level",
         names = level_names,
         options=levels,
         mutually_exclusive=True,
@@ -36,7 +38,7 @@ filters = [
     ),
     Filter(
         id = 1,
-        name = "Occasion",
+        name = "occasion",
         names = occasion_names,
         options=occasions,
         mutually_exclusive=False,
@@ -51,7 +53,8 @@ def get_filter_by_language(language: str) -> List[Dict[str, str]]:
     result = []
     for f in filters:
         filter_data = {
-            "name": f.names.get(language, f.names["original"]),
+            "query_name": f.name,
+            "display_name": f.names.get(language, f.names["original"]),
             "options": {},
             "mutually_exclusive": str(f.mutually_exclusive)
         }

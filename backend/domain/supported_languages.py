@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 
+DEFAULT_LANGUSGE_ID = "original"
+
 @dataclass
 class SupportedLanguage:
     id: int
