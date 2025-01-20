@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
+
 import Axios from "axios";
 
 export const FilterContext = createContext();
@@ -19,15 +20,24 @@ export const FilterProvider = ({ children }) => {
     }
   };
 
+  useEffect(() => {
+    const storedFilters = JSON.parse(sessionStorage.getItem("chosenFilters"));
+    if (storedFilters) {
+      setChosenFilters(storedFilters);
+    }
+  }, []);
+  
   const chooseFilterOption = (queryName, optionKey) => {
-    setChosenFilters((prev) => ({
-      ...prev,
-      [queryName]: optionKey,
-    }));
+    setChosenFilters((prev) => {
+      const updatedFilters = { ...prev, [queryName]: optionKey };
+      sessionStorage.setItem("chosenFilters", JSON.stringify(updatedFilters));
+      return updatedFilters;
+    });
   };
 
   const clearFilters = () => {
     setChosenFilters({});
+    sessionStorage.removeItem("chosenFilters");
   };
 
   return (

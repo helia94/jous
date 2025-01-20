@@ -1,10 +1,10 @@
-// Random.jsx
 import React from "react";
 import Axios from "axios";
 import TweetItem2 from "./TweetItem2";
 import { Helmet } from 'react-helmet';
 import { LanguageContext } from "./LanguageContext";
 import { FilterContext } from "./FilterContext";
+import { getFontForCards } from './FontUtils';
 
 class Random extends React.Component {
   static contextType = LanguageContext;
@@ -17,42 +17,69 @@ class Random extends React.Component {
     ) || { frontend_code: "original", backend_code: null };
 
     this.state = {
-      question: "",
+      question: null,
       selectedLanguageFrontendCode: selectedLanguage.frontend_code,
-      selectedLanguageBackendCode: selectedLanguage.backend_code
+      selectedLanguageBackendCode: selectedLanguage.backend_code,
+      minHeight: 200
     };
   }
 
-  componentDidMount() {
+  fetchRandomQuestion = () => {
     const { chosenFilters } = this.props.filterContext;
+    const filtersToUse = chosenFilters || {};  // Ensure no undefined filters
 
     Axios.get("/api/question/random", {
       params: {
         language_id: this.state.selectedLanguageBackendCode,
-        ...chosenFilters
+        ...filtersToUse
       }
-    }).then(res => {
-      this.setState({
-        question: res.data.question
-      });
+    })
+    .then((res) => {
+      if (res.data.error === "No questions available") {
+        this.setState({ question: null });
+      } else {
+        this.setState({ question: res.data.question });
+      }
+    })
+    .catch(() => {
+      this.setState({ question: null });
     });
+  };
+
+  componentDidMount() {
+    const { chosenFilters } = this.props.filterContext;
+
+    if (Object.keys(chosenFilters).length === 0) {
+      // Poll until filters are available
+      const interval = setInterval(() => {
+        if (Object.keys(this.props.filterContext.chosenFilters).length > 0) {
+          clearInterval(interval);
+          this.fetchRandomQuestion();
+        }
+      }, 100);
+    } else {
+      this.fetchRandomQuestion();
+    }
   }
 
-  nextRandomQuestion = () => {
-    Axios.get("/api/question/random", {
-      params: {
-        language_id: this.state.selectedLanguageBackendCode
-      }
-    }).then(res => {
-      this.setState({
-        question: res.data.question
-      });
-    });
+  componentDidUpdate(prevProps) {
+    if (
+      JSON.stringify(prevProps.filterContext.chosenFilters) !== 
+      JSON.stringify(this.props.filterContext.chosenFilters)
+    ) {
+      this.fetchRandomQuestion();
+    }
   }
 
   render() {
+    const contentFont = getFontForCards(this.props.content);
+
+    const cardStyle = {
+      minHeight: this.state.minHeight,
+    };
+
     return (
-      <React.Fragment>
+      <>
         <Helmet>
           <title>Random</title>
           <link rel="canonical" href="https://jous.app/random" />
@@ -62,26 +89,46 @@ class Random extends React.Component {
         </div>
         <div className="ui container">
           <div className="event">
-            <TweetItem2
-              id={this.state.question.id}
-              content={this.state.question.content}
-              author={this.state.question.username}
-              time={this.state.question.time}
-              likes={this.state.question.like_number}
-              answers={this.state.question.answer_number}
-              isOwner={false}
-              key={0}
-              selectedLanguageFrontendCode={this.state.selectedLanguageFrontendCode}
-            />
+            {this.state.question ? (
+              <TweetItem2
+                id={this.state.question.id}
+                content={this.state.question.content}
+                author={this.state.question.username}
+                time={this.state.question.time}
+                likes={this.state.question.like_number}
+                answers={this.state.question.answer_number}
+                isOwner={false}
+                key={0}
+                selectedLanguageFrontendCode={this.state.selectedLanguageFrontendCode}
+              />
+            ) : (
+              <div className="ui fluid card" id={0} style={cardStyle}>
+                <div
+                  className="content"
+                  style={{ display: "flex", flexDirection: "column", height: "100%" }}
+                >
+                  <div
+                    className="center aligned description"
+                    style={{
+                      flexGrow: 1,
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <p style={{ fontFamily: contentFont }}>
+                      {"No question left after filters, try something else."}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
-          <div
-            className="ui yellow button"
-            onClick={this.nextRandomQuestion}
-          >
+          <button className="ui yellow button" onClick={this.fetchRandomQuestion}>
             Next
-          </div>
+          </button>
         </div>
-      </React.Fragment>
+      </>
     );
   }
 }
