@@ -16,6 +16,7 @@ class QuestionRepository:
         return q.id
 
     def get_all_questions(self, offset, occasion, level):
+        logger.info(f"get_all_questions( occasion {occasion}, level {level})")
         pageSize = 20
         limit = 20
         query = db.session.query(Question)
@@ -23,7 +24,7 @@ class QuestionRepository:
         if occasion:
             query = query.join(QuestionOccasions, Question.id == QuestionOccasions.question_id)
             query = query.filter(occasion == QuestionOccasions.occasion_ids.any_())
-        if level:
+        if level is not None:
             query = query.join(QuestionLevel, Question.id == QuestionLevel.question_id)
             query = query.filter(QuestionLevel.level_id == level)
 
@@ -40,7 +41,7 @@ class QuestionRepository:
             if occasion:
                 query = query.join(QuestionOccasions, Question.id == QuestionOccasions.question_id)
                 query = query.filter(occasion == QuestionOccasions.occasion_ids.any_())
-            if level:
+            if level is not None:
                 query = query.join(QuestionLevel, Question.id == QuestionLevel.question_id)
                 query = query.filter(QuestionLevel.level_id == level)
 
@@ -63,7 +64,7 @@ class QuestionRepository:
             if occasion:
                 query = query.join(QuestionOccasions, Question.id == QuestionOccasions.question_id)
                 query = query.filter(occasion == QuestionOccasions.occasion_ids.any_())
-            if level:
+            if level is not None:
                 query = query.join(QuestionLevel, Question.id == QuestionLevel.question_id)
                 query = query.filter(QuestionLevel.level_id == level)
 
