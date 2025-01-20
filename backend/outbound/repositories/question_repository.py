@@ -63,12 +63,12 @@ class QuestionRepository:
             )
             if occasion:
                 query = query.join(QuestionOccasions, Question.id == QuestionOccasions.question_id)
-                query = query.filter(occasion == QuestionOccasions.occasion_ids.any_())
+                query = query.filter(QuestionOccasions.occasion_ids.any_() == occasion)
             if level is not None:
                 query = query.join(QuestionLevel, Question.id == QuestionLevel.question_id)
                 query = query.filter(QuestionLevel.level_id == level)
 
-            query = query.filter_by(language_id=language_id)
+            query = query.filter(QuestionTranslation.language_id == language_id)
             question_count = query.count()
             if question_count == 0:
                 return None
