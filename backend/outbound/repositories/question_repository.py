@@ -16,7 +16,6 @@ class QuestionRepository:
         return q.id
 
     def get_all_questions(self, offset, occasion, level):
-        logger.info(f"get_all_questions( occasion {occasion}, level {level})")
         pageSize = 20
         limit = 20
         query = db.session.query(Question)

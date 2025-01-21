@@ -59,7 +59,7 @@ def get_filter_by_language(language: str) -> List[Dict[str, str]]:
             "mutually_exclusive": str(f.mutually_exclusive)
         }
         for idx, option in enumerate(f.options):
-            option_name = option.translations.get(language, option.name)
+            option_name = option.names.get(language, option.name)
             filter_data["options"][idx] = option_name
         result.append(filter_data)
     return result
@@ -68,10 +68,11 @@ def get_filter_by_language(language: str) -> List[Dict[str, str]]:
 def get_filter_values(question):
     values = {}
     for f in filters:
+        options_names = [option.name for option in f.options]
         if f.mutually_exclusive:
-            values[f.name] = f.evaluator.evaluate_single_option(question, f.options)
+            values[f.name] = f.evaluator.evaluate_single_option(question, options_names)
         else:
-            values[f.name] = f.evaluator.evaluate_many_option(question, f.options)
+            values[f.name] = f.evaluator.evaluate_many_option(question, options_names)
     print(values)
     return values
 

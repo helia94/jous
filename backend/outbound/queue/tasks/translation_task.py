@@ -69,8 +69,11 @@ def translate_all_questions():
             for question in questions:
                 for lang in supported_languages:
                     if not question_repository.has_translation(question.id, lang.iso2):
-                        translated_text = translator.translate(question.content, lang.name, lang.comment)
-                        question_repository.add_question_translation(question.id, lang.iso2, translated_text)
+                        try:
+                            translated_text = translator.translate(question.content, lang.name, lang.comment)
+                            question_repository.add_question_translation(question.id, lang.iso2, translated_text)
+                        except Exception as e:
+                            logger.warning("adding translation for question {question.id} in languge {lang.iso2} to db failed", e)
             offset += 1
             questions = question_repository.get_all_questions(offset, limit=limit)
 
@@ -98,20 +101,20 @@ def process_question_filters(question_id, question_content):
 def add_all_filters():
     with app.app_context():
         offset = 0
-        limit = 20
-        questions = question_repository.get_all_questions(offset, limit=limit)
+        questions = question_repository.get_all_questions(offset, None, None)
         while questions:
             for question in questions:
                 filter_values = get_filter_values(question.content)
-                filter_repository.add_filter_values(question.id, filter_values)
+                try:
+                    filter_repository.add_filter_values(question.id, filter_values)
+                except Exception as e:
+                    logger.warning("adding fitlers to db failed", e)
             offset += 1
-            questions = question_repository.get_all_questions(offset, limit=limit)
+            questions = question_repository.get_all_questions(offset, None, None)
 
 
 
 # Check that both tasks are indeed imported when starting the worker.
 # For example, add these lines at the end of the file:
 if __name__ == "__main__":
-    print("Registered tasks:")
-    for t in celery.tasks:
-        print(t)
+    add_all_filters()
