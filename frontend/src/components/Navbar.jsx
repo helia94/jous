@@ -265,15 +265,15 @@ function Navbar() {
           <i className="user outline icon" />
         </Button>
       )}
-      <Button className="nav-button" onClick={openLanguageModal}>
-        Language: {language}
-      </Button>
       <Button
         className="nav-button"
         onClick={() => setOpenFilterModal(true)}
         title="Filters"
       >
         <i className="filter icon" />
+      </Button>
+      <Button className="nav-button" onClick={openLanguageModal}>
+        Language: {language}
       </Button>
       {!token ? (
         <Button className="nav-button" onClick={() => route("login")}>
