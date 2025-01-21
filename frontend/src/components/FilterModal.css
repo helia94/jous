@@ -16,3 +16,6 @@
     font-weight: bold !important;
   }
   
+  .filter-modal .ui.modal {
+    z-index: 5000 !important;
+  }

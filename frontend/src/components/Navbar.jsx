@@ -1,3 +1,4 @@
+// Move FilterModal out of navbarItems so it's always rendered.
 // Navbar.js
 import React, { useState, useEffect } from "react";
 import { Button, Modal } from "semantic-ui-react";
@@ -133,7 +134,6 @@ function Navbar() {
     </Modal>
   );
 
-  // Collapsed menu content in a vertical stack
   const CollapsedMenu = () => {
     const menuContainerStyle = {
       backgroundColor: "#fff",
@@ -163,7 +163,6 @@ function Navbar() {
           >
             Notifications{notify ? " (NEW)" : ""}
           </div>
-
           {token && (
             <div
               style={menuItemStyle}
@@ -175,7 +174,6 @@ function Navbar() {
               Profile
             </div>
           )}
-
           <div
             style={menuItemStyle}
             onClick={() => {
@@ -185,7 +183,6 @@ function Navbar() {
           >
             Random Question
           </div>
-
           <div
             style={menuItemStyle}
             onClick={() => {
@@ -195,7 +192,15 @@ function Navbar() {
           >
             All Questions
           </div>
-
+          <div
+            style={menuItemStyle}
+            onClick={() => {
+              setOpenMenu(false);
+              setTimeout(() => setOpenFilterModal(true), 0);
+            }}
+          >
+            Filter Questions
+          </div>
           <div
             style={menuItemStyle}
             onClick={() => {
@@ -205,7 +210,6 @@ function Navbar() {
           >
             Language: {language}
           </div>
-
           {!token ? (
             <div
               style={menuItemStyle}
@@ -227,7 +231,6 @@ function Navbar() {
               Logout
             </div>
           )}
-
           <div
             style={menuItemStyle}
             onClick={() => {
@@ -243,6 +246,7 @@ function Navbar() {
     );
   };
 
+  // Only for wide screens
   const navbarItems = (
     <>
       <Button
@@ -252,7 +256,6 @@ function Navbar() {
       >
         <i className={`lemon ${notify ? "yellow" : "outline"} icon`} />
       </Button>
-
       {token && (
         <Button
           className="nav-button"
@@ -262,21 +265,16 @@ function Navbar() {
           <i className="user outline icon" />
         </Button>
       )}
-
       <Button className="nav-button" onClick={openLanguageModal}>
         Language: {language}
       </Button>
-
-      <Button className="nav-button" onClick={() => setOpenFilterModal(true)} title="Filters">
+      <Button
+        className="nav-button"
+        onClick={() => setOpenFilterModal(true)}
+        title="Filters"
+      >
         <i className="filter icon" />
       </Button>
-
-      <FilterModal
-          open={openFilterModal}
-          onClose={() => setOpenFilterModal(false)}
-          languageId={language}
-        />
-
       {!token ? (
         <Button className="nav-button" onClick={() => route("login")}>
           Login
@@ -286,7 +284,6 @@ function Navbar() {
           Logout
         </Button>
       )}
-
       <Button className="nav-button" onClick={() => route("bug")}>
         <i className="bug icon" />
       </Button>
@@ -295,14 +292,10 @@ function Navbar() {
 
   return (
     <div className="navbar">
-      {/* Left-aligned brand */}
       <div className="brand" onClick={() => route("")}>
         Jous
       </div>
-
-      {/* Right-aligned items (collapsed or expanded) */}
       <div className="menu-items">
-        {/* Always visible random button */}
         <Button
           className="nav-button"
           onClick={() => route("random")}
@@ -310,7 +303,6 @@ function Navbar() {
         >
           <i className="random icon" />
         </Button>
-
         {isCollapsed ? (
           <Button
             className="nav-button"
@@ -326,6 +318,13 @@ function Navbar() {
 
       <ActivitiesModal />
       <CollapsedMenu />
+
+      {/* Render FilterModal here so it shows on both small and large screens */}
+      <FilterModal
+        open={openFilterModal}
+        onClose={() => setOpenFilterModal(false)}
+        languageId={language}
+      />
     </div>
   );
 }
