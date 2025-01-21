@@ -26,7 +26,7 @@ class Random extends React.Component {
 
   fetchRandomQuestion = () => {
     const { chosenFilters } = this.props.filterContext;
-    const filtersToUse = chosenFilters || {};  // Ensure no undefined filters
+    const filtersToUse = chosenFilters || {};
 
     Axios.get("/api/question/random", {
       params: {
@@ -47,19 +47,7 @@ class Random extends React.Component {
   };
 
   componentDidMount() {
-    const { chosenFilters } = this.props.filterContext;
-
-    if (Object.keys(chosenFilters).length === 0) {
-      // Poll until filters are available
-      const interval = setInterval(() => {
-        if (Object.keys(this.props.filterContext.chosenFilters).length > 0) {
-          clearInterval(interval);
-          this.fetchRandomQuestion();
-        }
-      }, 100);
-    } else {
-      this.fetchRandomQuestion();
-    }
+    this.fetchRandomQuestion(); // Immediately attempt to fetch a question on mount
   }
 
   componentDidUpdate(prevProps) {
