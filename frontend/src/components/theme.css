@@ -22,3 +22,17 @@ body.dark button.w3-pink {
     background-color: #512da8 !important;
     color: #fff !important;
 }
+
+.impressum-footer {
+    position: fixed;
+    bottom: 5px;
+    width: 100%;
+    text-align: center;
+    font-size: 12px;
+    opacity: 0.3;
+    transition: opacity 0.3s;
+}
+
+.impressum-footer:hover {
+    opacity: 1;
+}

@@ -16,6 +16,7 @@ import GroupHome from "./GroupHome";
 import TweetDetailPage from "./TweetDetailPage";
 import { LanguageProvider } from "./LanguageContext";
 import { FilterProvider } from "./FilterContext";
+import Imprint from "./Imprint";
 
 import "./theme.css";
 import ReactGA from 'react-ga4';
@@ -31,7 +32,7 @@ function App() {
     check().then(r => setLogin(r));
 
     return (
-        <LanguageProvider> {/* Wrap with LanguageProvider */}
+        <LanguageProvider>
             <FilterProvider>
                 <React.Fragment>
                     <Navbar />
@@ -49,11 +50,16 @@ function App() {
                             <Route path="/register" exact component={Register} />
                             <Route path="/logout" exact component={Logout} />
                             <Route path="/bug" exact component={Bug} />
+                            <Route path="/impressum" exact component={Imprint} />
                             <Route component={NotFound} />
                         </Switch>
                     </Router>
+
+                    <footer className="impressum-footer">
+                        <a href="/impressum">Impressum</a>
+                    </footer>
                 </React.Fragment>
-            </FilterProvider >
+            </FilterProvider>
         </LanguageProvider>
     );
 }
