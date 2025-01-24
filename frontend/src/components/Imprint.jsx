@@ -11,8 +11,10 @@ function Imprint() {
             <div className="imprint-container">
                 <h2>Impressum</h2>
                 <p><strong>Angaben gemäß § 5 TMG:</strong></p>
-                <p>Helia Jamshidi<br />
-                Adresse: Coming Soon</p>
+                <p>Helia Jamshidi<br/>
+                c/o Impressumservice Dein-Impressum<br/>
+                Stettiner Straße 41<br/>
+                35410 Hungen</p>
 
                 <p><strong>Kontakt:</strong></p>
                 <p>E-Mail: <a href="mailto:info@jous.app">info@jous.app</a></p>
