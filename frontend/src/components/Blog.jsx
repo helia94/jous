@@ -8,6 +8,22 @@ import "./Blog.css";
 
 export default function Blog() {
 
+  const asciiArts = [
+    { title: "", art: "(-(-_(-_-)_-)-)" },
+    { title: "", art: "(╯°□°）╯︵ ┻━┻" },
+    { title: "", art: "(ಠ_ಠ)" },
+    { title: "", art: "(ง •̀_•́)ง" },
+    { title: "", art: "ヽ༼ ʘ̚ل͜ʘ̚༼◕_◕༽◉_◔ ༽ﾉ" },
+    { title: "", art: "¯\_(ツ)_/¯ " },
+    { title: "", art: "\(^-^)/" },
+    { title: "", art: " ̿ ̿' ̿'\̵͇̿̿\з=(•̪●)=ε/̵͇̿̿/'̿''̿ ̿" },
+    { title: "", art: "( -_-)旦~" },
+    { title: "", art: "" },
+    { title: "", art: "" },
+    { title: "", art: "" },
+    { title: "", art: "" },
+  ];
+
   const [isMobile, setIsMobile] = useState(false);
 
   const articleRefs = useRef([]);
@@ -222,6 +238,9 @@ export default function Blog() {
               <a href="#toc-block">Back to Contents</a>
             </div>
           )}
+          <div  className="ascii-art-item">
+            {"( -_-)旦~"}
+          </div>
         </article>
 
 
@@ -258,6 +277,11 @@ export default function Blog() {
               <a href="#toc-block">Back to Contents</a>
             </div>
           )}
+          
+
+        <div  className="ascii-art-item">
+          {"\\(^-^)/"}
+        </div>
         </article>
 
         <article
@@ -328,6 +352,9 @@ export default function Blog() {
           <p className="mag-paragraph">
             If you coordinate events, consider weaving a short Jous segment into the schedule. It can be as simple as saying, “Pick a random question, and discuss it with someone new.” It’s a subtle shift, but one that might leave participants feeling genuinely more connected when they head home.
           </p>
+          <div  className="ascii-art-item">
+          {"ヽ༼ ʘ̚ل͜ʘ̚༼◕_◕༽◉_◔ ༽ﾉ"}
+        </div>
         </article>
 
 
@@ -398,6 +425,10 @@ export default function Blog() {
               <a href="#toc-block">Back to Contents</a>
             </div>
           )}
+        <div className="ascii-art-item">
+          {" ̿ ̿' ̿'\\̵͇̿̿\\з=(•̪●)=ε/̵͇̿̿/'̿''̿ ̿"}
+        </div>
+
         </article>
 
         <article
@@ -450,11 +481,12 @@ export default function Blog() {
         <p className="mag-paragraph">
           Let’s take the weight of expectations off, one guy at a time, and reduce the resistance to conversations that demand showing our deeper selves. Let’s make it normal to use any tool, offline or online, to have better talks.
         </p>
+
+        <div  className="ascii-art-item">
+          {"(╯°□°）╯︵ ┻━┻"}
+        </div>
+
       </article>
-
-
-
-
       </div>
     </div>
   );

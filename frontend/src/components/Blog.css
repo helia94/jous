@@ -219,3 +219,14 @@
   font-weight: bold;
 }
 
+
+
+.ascii-art-item {
+  display: flex;
+  margin: 1.2rem 0;
+  justify-content: center;
+  margin-top: 10rem;
+  font-family: monospace;
+  color: #333;
+  font-size: 1.4rem;
+}
