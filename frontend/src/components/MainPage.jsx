@@ -117,7 +117,18 @@ class MainPage extends React.Component {
               "author": {
                 "@type": "Person",
                 "name": tweet.username
-              }
+              },
+              "answerCount": tweet.answer_number,
+              "upvoteCount": tweet.like_number,
+              "acceptedAnswer": tweet.answer_number > 0 ? {
+                "@type": "Answer",
+                "text": "This question has answers, view them on the site.",
+                "dateCreated": tweet.time,
+                "author": {
+                  "@type": "Person",
+                  "name": "Various Users"
+                }
+              } : undefined
             }))
           })}
         </script>
