@@ -73,7 +73,10 @@ export default function Blog() {
             <a href="#families">Jous for Families</a>
           </li>
           <li>
-            <a href="#small-talk-kills">Small Talk Kills / Change Culture</a>
+            <a href="#small-talk-kills">Small Talk Kills</a>
+          </li>
+          <li>
+            <a href="#change-culture">Change the Culture</a>
           </li>
         </ul>
       </nav>
@@ -90,41 +93,86 @@ export default function Blog() {
           className="blog-article"
           ref={(el) => (articleRefs.current[0] = el)}
         >
-          <h1 className="mag-title">Why Use <strong>Jous</strong></h1>
+          <h1 className="mag-title">Why Use Jous</h1>
+          
           <p className="mag-paragraph">
-            I have to be <em>honest</em>, there are not many people that I know who use Jous regularly...
+            I have to be <em>honest</em>, there are not many people that I know of except for me who use Jous regularly. I use it any chance I get, which means anytime I feel people will likely not reject my proposal of asking them weird questions.
           </p>
+          
           <p className="mag-paragraph">
-            My mom is a big fan, so is my 10-year-old sister, but they don’t use Jous when I’m not around...
+            My mom is a big fan, she cannot have enough of me asking her questions, and so is my 10-year-old sister, whose answers are really to the point, even to the questions that I suspect are too abstract for her age. But even these people do not use Jous when I am not with them. What I have heard ten times is: “We enjoy it only with you!”.
           </p>
+          
           <p className="mag-paragraph">
-            Everyday surface conversations often make me feel time is wasted, while Jous creates deeper, more authentic connections...
+            How come they get so much out of this, have a unique experience, have a sparkle in their eye, and feel much closer to each other, and yet not want to repeat it until 6 months later when I am back? I cannot know for sure, but I remember four years ago when I started Jous, I was also more shy to propose it. Even now I linger enough for someone else to mention it first, but inside I would be waiting for it all along.
+          </p>
+          
+          <p className="mag-paragraph">
+            So let me try to describe what I get out of having conversations with Jous or any other Conversation Cards for that matter. Everyday surface conversations, at work or with family most of all give me a feeling of time being wasted drop by drop. I like the social picture, eating, and drinking together, but the sheer lack of interest in the conversation going on pushed me to eat alone, with a podcast or a movie. After a year of having the same conversations with slightly different flavors, it was almost always ignorable how much this pile of invested time contributed to me getting to know anyone better.
+          </p>
+          
+          <p className="mag-paragraph">
+            Instead, I was ready for more intimacy, for more juice, and for showing how imperfect I really was, and in return receive the other people, as detailed, as unique, and as vulnerable as they really were. Not the well-packaged, labeled, I have no needs versions of them. After just one hour of talking with the help of such prompts compared to one (or ten) hours of the standard program, I felt without exception, that my connection with the other persons deepened at an astonishing speed. My view of them changed in unexpected ways; the people predictable to me were now surprising me. I was also acting and feeling different myself; I was not repeating myself as usual, I was not feeling lonely, but connected. The part of my brain responsible for judging others was shutting up, and instead, curiosity was at its peak. I no longer would find anyone boring, even people near me whom I had not paid real attention to for the past ten years. Hearing how everyone struggles with their inner desire and voice made me go soft on my inner conflicts. I felt okay not being okay when I saw no one else really was either.
+          </p>
+          
+          <p className="mag-paragraph">
+            Jous offers prompts that ask us to share what we normally hesitate to mention. Each question is a subtle invitation to see one another anew and find relief in discovering the individuality in each other. It should not be storming the walls of someone’s privacy, but helping us knock gently on the door. It aspires to open a space for authenticity without demanding it.
           </p>
         </article>
+
+
 
         <article
           id="how-to-use-jous"
           className="blog-article"
           ref={(el) => (articleRefs.current[1] = el)}
         >
-          <h1 className="mag-title">How to Use <strong>Jous</strong></h1>
+          <h1 className="mag-title">
+            How to Use Jous
+          </h1>
+          
           <p className="mag-paragraph">
-            <strong>Step One</strong>: Admit you often feel lonely and want to connect more deeply...
+            <strong>Step One</strong>: Admit to yourself that you in fact often feel lonely and that you like connecting with more people on a deeper level.
           </p>
+          
           <p className="mag-paragraph">
-            <strong>Step Two</strong>: Be brave. People might reject or laugh. It’s not personal...
+            <strong>Step Two</strong>: Be brave. Once you suggest these questions, others might reject you, laugh at it, or say who needs that. Try not to take this personally, it’s not you, and it's not them. There is a system in place and it persists for a reason. Small talk is so ingrained in our culture, that everyone expects it, and the predictability is kind of comfortable. It takes energy and tension to break the norm and set a new one. But it has gotten somewhat easier for me in the past four years.
           </p>
+          
           <p className="mag-paragraph">
-            <strong>Step Three</strong>: Pick your audience, assess openness, then suggest using prompts...
+            <strong>Step Three</strong>: Pick your audience, assess if they might be open to it, and then suggest using some prompts for a different conversation. I have done it by starting with just two people and up to eight. However, with eight people I take more the role of a host than a participant, to help the conversation flow, and give everyone time. My favorite moments have been, at night while traveling with a group, as pillow talk with my partner, and at dinner with family.
           </p>
+          
+          <p className="mag-paragraph">
+            <strong>Step Four</strong>: Use the random page first, and try the questions without any filters—you can adjust them later. Read the question out loud; if it fits well with the group, each person can take turns adding their answer. If the question does not fit, skip it without any fuss. It’s not about forcing confessions; it’s about creating a safe atmosphere where people feel free to speak or remain silent.
+          </p>
+          
+          <section className="mag-tips">
+            <h2 className="mag-subtitle">Tips</h2>
+            <ul className="mag-list">
+              <li>
+                If the question takes you to a completely different topic, let it happen. The questions are just to help in a moment of silence, not to set any rules.
+              </li>
+              <li>
+                Do not press anyone into answering, unless you know their boundaries well and you can do it with humor.
+              </li>
+              <li>
+                Know when to stop. In my experience, that is varied—anything from half an hour to more than three hours.
+              </li>
+              <li>
+                Offer some tea.
+              </li>
+            </ul>
+          </section>
         </article>
+
 
         <article
           id="alternatives-jous"
           className="blog-article"
           ref={(el) => (articleRefs.current[2] = el)}
         >
-          <h1 className="mag-title">Alternatives to <strong>Jous</strong></h1>
+          <h1 className="mag-title">Alternatives to Jous</h1>
           <p className="mag-paragraph">
             <em>Coming Soon...</em>
           </p>
@@ -135,12 +183,17 @@ export default function Blog() {
           className="blog-article"
           ref={(el) => (articleRefs.current[3] = el)}
         >
-          <h1 className="mag-title">How to Support <strong>Jous</strong></h1>
+          <h1 className="mag-title">
+            How to Support Jous
+          </h1>
           <p className="mag-paragraph">
-            The best and most direct support is using it with people you care about...
+            The best and most direct support for Jous is simply using it with people you care about. Other than that, you can share your honest feedback; even a small note about what worked (or didn’t) can help me understand better what you need and improve Jous in this way.
           </p>
           <p className="mag-paragraph">
-            Any feedback helps me understand what works and what doesn’t...
+            If you feel comfortable, you can introduce Jous to a wider circle by posting about it on social media. Or mention it to that friend who organizes group gatherings or is the creator of a casual conversation podcast. If you need pictures for a social media post, feel free to contact me.
+          </p>
+          <p className="mag-paragraph">
+            I’m grateful for all forms of support. Whether it's a message telling me how a certain question led to a memorable evening or you creating an artistic work inspired by Jous for Jous, every step—however subtle—contributes to making Jous the community it aspires to be.
           </p>
         </article>
 
@@ -149,62 +202,103 @@ export default function Blog() {
           className="blog-article"
           ref={(el) => (articleRefs.current[4] = el)}
         >
-          <h1 className="mag-title">Work with <strong>Jous</strong></h1>
+          <h1 className="mag-title">
+            Work with Jous
+          </h1>
           <p className="mag-paragraph">
-            Jous needs a social media manager. We also welcome creative drawings to make it visually pleasing...
+            Jous desperately needs a social media manager to reach more people. We aim to establish accounts on Instagram, Twitter, and TikTok. If you love Jous and have a passion for social media, maybe we can work together.
           </p>
           <p className="mag-paragraph">
-            Jous is nonprofit; I look for partners in crime, not employees...
+            As you have seen, Jous is quite plain. I would love to make it more visually pleasing with simple creative drawings. If you enjoy pouring your creativity into Jous, you are most welcome to contribute.
+          </p>
+          <p className="mag-paragraph">
+            Please understand that Jous is a hobby and nonprofit project. I’m looking for partners in crime who will work on this with me, not for me.
           </p>
         </article>
+
 
         <article
           id="podcasters"
           className="blog-article"
           ref={(el) => (articleRefs.current[5] = el)}
         >
-          <h1 className="mag-title"><strong>Jous</strong> for Podcasters</h1>
+          <h1 className="mag-title">
+            Jous for Podcasters
+          </h1>
           <p className="mag-paragraph">
-            I'm on a mission to change the culture around conversation. You, the podcaster, are part of that mission...
+            I am on a mission to change the culture around conversations because what we have is not good enough. For that, I need to create enough tension in the system. The tension comes from establishing that we need more, we need to get more out of the time we spend socializing. The tension is that we are lonely. Once tension is established, we can move forward to solutions to show that better conversations are possible and within reach.
           </p>
           <p className="mag-paragraph">
-            Many prompts can add twists to your flow, making episodes personal and engaging...
+            So I need you. You who are hosting a casual conversation podcast, because you are already in the business of changing the culture around talking. You set and influence the norms.
+          </p>
+          <p className="mag-paragraph">
+            You, on the other hand, probably do not “need” Jous, but odds are you might benefit from it anyway, and this might end up in a win-win. Many questions in Jous can easily add juicy twists to your flow and make your episodes more engaging, urgent, and personal for the audience. You can handpick questions beforehand or bravely use random questions live.
+          </p>
+          <p className="mag-paragraph">
+            If you decide to use Jous, then you can give a shout-out to it and include the link in the description. Alternatively, you can give an introduction to the whole category without mentioning Jous explicitly. The category includes all tools that help conversations flow into more meaningful directions, such as conversation cards, printed versions, and questions on blogs or apps. Basically, anything but small talk.
+          </p>
+          <p className="mag-paragraph">
+            Reach out at <a href="mailto:info@jous.app">info@jous.app</a>.
           </p>
         </article>
+
 
         <article
           id="events"
           className="blog-article"
           ref={(el) => (articleRefs.current[6] = el)}
         >
-          <h1 className="mag-title"><strong>Jous</strong> for Event Organisers</h1>
+          <h1 className="mag-title">
+            Jous for Event Organisers
+          </h1>
           <p className="mag-paragraph">
-            Polite intros and safe questions can get stale. Jous invites participants to share more than
-            surface-level anecdotes...
+            Be it work gatherings, hiking meetups, or speed dating—a recurring pattern persists: the group resorts to polite introductions and safe, standard questions.
+          </p>
+          <p className="mag-paragraph">
+            Jous can offer something fresh. But the caveat is you have to ask your audience to be daring and risk more than they are usually comfortable with. Thoughtful questions invite participants to share a sea of details that they ignore about themselves rather than just what they did last weekend. It’s not about prying; it’s about creating a space where curiosity can breathe.
+          </p>
+          <p className="mag-paragraph">
+            If you coordinate events, consider weaving a short Jous segment into the schedule. It can be as simple as saying, “Pick a random question, and discuss it with someone new.” It’s a subtle shift, but one that might leave participants feeling genuinely more connected when they head home.
           </p>
         </article>
+
 
         <article
           id="other-apps"
           className="blog-article"
           ref={(el) => (articleRefs.current[7] = el)}
         >
-          <h1 className="mag-title">Use <strong>Jous</strong> in other Apps</h1>
+          <h1 className="mag-title">
+            Jous for Other Apps
+          </h1>
           <p className="mag-paragraph">
-            So many apps aim to bring people together but often lack deeper conversation. 
-            The Jous API can integrate and shuffle conversations...
+            So many apps out there aim to bring people together—dating, wellness, and even language learning. The conversations however can drain your energy instead of giving you some. Similar to Jous’s bot on Telegram, the Jous API could be integrated into these apps, to shuffle the conversations.
+          </p>
+          <p className="mag-paragraph">
+            Imagine a language-learning app, where you don’t talk about your home country, but talk about your life in ways that you have never thought about before. Or a well-being app that gently tricks you into considering how you truly feel, with a fresh question, you never heard before.
+          </p>
+          <p className="mag-paragraph">
+            If you develop or run an app, let us talk to see what collaboration might look like. Perhaps you’d tailor a set of questions for your community, or pick existing categories that align with your culture.
+          </p>
+          <p className="mag-paragraph">
+            Reach out at <a href="mailto:info@jous.app">info@jous.app</a>.
           </p>
         </article>
+
 
         <article
           id="families"
           className="blog-article"
           ref={(el) => (articleRefs.current[8] = el)}
         >
-          <h1 className="mag-title"><strong>Jous</strong> for Families</h1>
+          <h1 className="mag-title">
+            Jous for Families
+          </h1>
           <p className="mag-paragraph">
-            If I could pick only one place for Jous, it'd be family. We spend so much time together,
-            yet remain in loops...
+            If I could choose only one place where you try Jous, it is in your family. For you, this might be the spouse you think you already know everything about and expect no surprises there. Or it might mean the kid with whom you talk about food and school, but you have little clue of how much solid preferences they have developed, how seriously they take themselves and their feelings, and how much they are capable of reflecting. Or, family could mean your parents, in a lot of situations they are parties applying constraints to your life and have no remarkable individuality of their own.
+          </p>
+          <p className="mag-paragraph">
+            We spend a lot of time with our families and a lot of that time is spent in loops. The loop is sometimes from routineness, and sometimes from seeing something from opposing views. To use Jous in your family means to put your routine down and put your guard down, go on a date with a family member, and only take your curiosity with you.
           </p>
         </article>
 
@@ -213,14 +307,76 @@ export default function Blog() {
           className="blog-article"
           ref={(el) => (articleRefs.current[9] = el)}
         >
-          <h1 className="mag-title">Small Talk Kills / Change the Culture</h1>
+          <h1 className="mag-title">Small Talk Kills</h1>
+          
           <p className="mag-paragraph">
-            <strong>Small Talk</strong> can be a warm-up, but years of it leads to isolation. We need more depth...
+            Do not get me wrong—I am not against <strong>small talk</strong>. Small talk precedes big talk in the normal course of human affairs. The need to get comfortable with one another before jumping into a serious conversation is a sign of sanity and health. It is when we are stuck in small talk after four years of working together and twenty years of living together that it becomes alarming. But no one is activating the sirens, although it might be time we did so.
           </p>
+          
           <p className="mag-paragraph">
-            Be Guy #3: the person who joins and makes it safe for others to follow, changing the norm...
+            <em>Loneliness is detrimental to our health</em>, and isolation is known to shorten lives. Repeating facts about yesterday’s news and showing off weekend plans, hour after hour, is not making us any less lonely. We have built such narrow expectations of what to ask, what to answer, what to feel, what to be happy and sad for, and what to think. We go on believing everyone else is as normal as they sound at work, and then we start judging ourselves for having thoughts and feelings outside these norms.
+          </p>
+          
+          <p className="mag-paragraph">
+            Constant small talk makes me <strong>numb</strong>, makes me not care about the person talking to me, and makes me be somewhere else while I am eating here. There is no intimacy here, and there is no magic in the now—it is totally forgettable.
           </p>
         </article>
+
+        <article
+        id="change-culture"
+        className="blog-article"
+        ref={(el) => (articleRefs.current[10] = el)}
+      >
+        <h1 className="mag-title">10- Change the Culture with Me</h1>
+
+        <p className="mag-paragraph">
+          Have you heard the story about <strong>Guy #3</strong>? If not, here is how it goes:
+        </p>
+
+        <section className="story-section">
+          <p className="mag-story-paragraph">
+            <strong>Guy #1</strong> is the crazy dude who starts dancing alone at the outdoor concert. He’s on the hillside, doing his thing.
+          </p>
+          <p className="mag-story-paragraph">
+            <strong>Guy #2</strong> is brave and supportive. He joins in and starts dancing.
+          </p>
+          <p className="mag-story-paragraph">
+            But it’s <strong>Guy #3</strong> that changes the dynamic. His presence makes it safe for people <strong>4, 5, 6, and 7</strong> to join in.
+          </p>
+          <p className="mag-story-paragraph">
+            And now, sitting still is more socially risky than getting up.
+          </p>
+          <p className="mag-story-paragraph">
+            So people <strong>8 through 20</strong> arrive.
+          </p>
+          <p className="mag-story-paragraph">
+            And now it’s a movement.
+          </p>
+        </section>
+
+        <p className="mag-paragraph">
+          We spend a lot of time glorifying <strong>Guy #1</strong>. But the real work is to see time and to acknowledge that nothing happens all at once. My appeal to you is to be <strong>Guy #3</strong>.
+        </p>
+
+        <p className="mag-paragraph">
+          Jous is not everyone’s cup of tea. But you might just be <strong>Guy #3</strong> if you
+        had an extraordinary experience with it once, and if you felt a sudden powerful connection to someone by using it. 
+        If you would miss it if it were gone. If you felt the urge to tell the others.
+        </p>
+
+
+        <p className="mag-paragraph">
+          If you felt spoken to, then you might appreciate the mission to make talk with friction the default type of conversation. <strong>Small talk</strong> is smooth, acceptable, and expected everywhere, but it is no longer serving our needs. And creating tomorrow by repeating yesterday is not a useful way forward.
+          </p>
+
+        <p className="mag-paragraph">
+          Let’s take the weight of expectations off, one guy at a time, and reduce the resistance to conversations that demand showing our deeper selves. Let’s make it normal to use any tool, offline or online, to have better talks.
+        </p>
+      </article>
+
+
+
+
       </div>
     </div>
   );

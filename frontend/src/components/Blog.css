@@ -129,4 +129,81 @@
   .share-button:hover {
     background: rgba(0, 0, 0, 0.2);
   }
+
+
+  .mag-subtitle {
+    font-family: "Georgia", serif; /* Consistent with article font */
+    font-size: 1.8rem; /* Slightly smaller than mag-title */
+    margin-top: 3rem; /* Space above the subtitle */
+    margin-bottom: 1.5rem; /* Space below the subtitle */
+    color: #555; /* Slightly lighter than main text for distinction */
+    text-transform: uppercase; /* To match mag-title's emphasis */
+    letter-spacing: 1px; /* Adds readability and style */
+  }
+  
+  /* List Styling */
+  .mag-list {
+    list-style-type: disc; /* Standard bullet points */
+    padding-left: 2rem; /* Indent the list for better readability */
+    margin-bottom: 2rem; /* Space below the list */
+  }
+  
+  .mag-list li {
+    margin-bottom: 1rem; /* Space between list items */
+    font-size: 1.1rem; /* Slightly smaller than mag-paragraph for hierarchy */
+    line-height: 1.6; /* Improved readability */
+    color: #333; /* Consistent with main text color */
+    position: relative; /* For custom bullet styling if needed */
+  }
+  
+  /* Optional: Custom Bullet Styling */
+  .mag-list li::marker {
+    color: #000; /* Customize bullet color if desired */
+    font-size: 1.2rem; /* Make bullets slightly larger */
+  }
+  
+  /* Responsive Adjustments (if needed) */
+  @media (max-width: 1023px) {
+    .mag-subtitle {
+      font-size: 1.6rem;
+      margin-top: 2.5rem;
+      margin-bottom: 1.2rem;
+    }
+  
+    .mag-list {
+      padding-left: 1.5rem;
+    }
+  
+    .mag-list li {
+      font-size: 1rem;
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .mag-subtitle {
+      font-size: 1.8rem;
+      margin-top: 3rem;
+      margin-bottom: 1.5rem;
+    }
+  
+    .mag-list {
+      padding-left: 2rem;
+    }
+  
+    .mag-list li {
+      font-size: 1.1rem;
+    }
+  }
+
+
+
+/* Story Section Styling */
+.story-section {
+  background-color: #f9f9f9; /* Light background to differentiate the section */
+  padding: 1.5rem; /* Adequate padding for spacing */
+  border-left: 5px solid #e0a905; /* Colored border for visual emphasis */
+  font-size: 1.2rem;
+  max-width: 800px;
+}
+
   
