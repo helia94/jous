@@ -131,15 +131,6 @@
   }
 
 
-  .mag-subtitle {
-    font-family: "Georgia", serif; /* Consistent with article font */
-    font-size: 1.8rem; /* Slightly smaller than mag-title */
-    margin-top: 3rem; /* Space above the subtitle */
-    margin-bottom: 1.5rem; /* Space below the subtitle */
-    color: #555; /* Slightly lighter than main text for distinction */
-    text-transform: uppercase; /* To match mag-title's emphasis */
-    letter-spacing: 1px; /* Adds readability and style */
-  }
   
   /* List Styling */
   .mag-list {
@@ -161,11 +152,16 @@
     color: #000; /* Customize bullet color if desired */
     font-size: 1.2rem; /* Make bullets slightly larger */
   }
+
+  .mag-subtitle {
+    font-family: "Georgia", serif; /* Consistent with article font */
+    letter-spacing: 1px; /* Adds readability and style */
+  }
   
   /* Responsive Adjustments (if needed) */
   @media (max-width: 1023px) {
     .mag-subtitle {
-      font-size: 1.6rem;
+      font-size: 1.2rem;
       margin-top: 2.5rem;
       margin-bottom: 1.2rem;
     }
@@ -181,7 +177,7 @@
   
   @media (min-width: 1024px) {
     .mag-subtitle {
-      font-size: 1.8rem;
+      font-size: 1.4rem;
       margin-top: 3rem;
       margin-bottom: 1.5rem;
     }

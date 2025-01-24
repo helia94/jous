@@ -42,9 +42,44 @@ export default function Blog() {
 
   return (
     <div className="blog-page">
-      <Helmet>
-        <title>Jous Blog - Magazine Style</title>
-      </Helmet>
+    <Helmet>
+      <title>Jous Blogs – Full Guide to Conversations</title>
+      <meta
+        name="description"
+        content="Why Use Jous, How to Use Jous, Alternatives, Support, Collaboration, and bridging gaps through authentic talks."
+      />
+      <meta
+        name="keywords"
+        content="Jous, why use jous, how to use jous, small talk, events, families, deeper discussions, conversation prompts, culture shift"
+      />
+      <meta name="robots" content="index, follow" />
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BlogPosting",
+          headline: "Jous Blog – Full Guide",
+          keywords: [
+            "Jous",
+            "conversation prompts",
+            "why use jous",
+            "how to use jous",
+            "families",
+            "podcasters",
+            "events",
+            "culture",
+            "small talk kills"
+          ],
+          description:
+            "Comprehensive coverage of Jous, from usage tips to family bonding, event organization, cultural change, and more.",
+          url: "https://jous.app/blog",
+          author: {
+            "@type": "Person",
+            name: "Helia Jamshidi"
+          }
+        })}
+      </script>
+    </Helmet>
+
 
       {/* Table of Contents (moves to left on desktop, on top on phone) */}
       <nav className="toc-block">
@@ -153,7 +188,7 @@ export default function Blog() {
           </p>
           
           <section className="mag-tips">
-            <h2 className="mag-subtitle">Tips</h2>
+            <p className="mag-subtitle"><strong>Tips</strong></p>
             <ul className="mag-list">
               <li>
                 If the question takes you to a completely different topic, let it happen. The questions are just to help in a moment of silence, not to set any rules.
