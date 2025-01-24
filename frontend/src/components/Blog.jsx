@@ -1,6 +1,6 @@
 // Blog.jsx
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Helmet } from "react-helmet";
 import { Icon } from "semantic-ui-react";
 import "./Blog.css";
@@ -8,32 +8,37 @@ import "./Blog.css";
 export default function Blog() {
   const articleRefs = useRef([]);
 
-  // Intersection Observer to update the URL hash as you scroll
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const { id } = entry.target;
-            window.history.replaceState(null, "", `#${id}`);
-          }
-        });
-      },
-      { threshold: 0.6 }
-    );
+    const [currentSection, setCurrentSection] = useState("");
 
-    articleRefs.current.forEach((ref) => {
-      if (ref) observer.observe(ref);
-    });
 
-    return () => observer.disconnect();
-  }, []);
+    useEffect(() => {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              setCurrentSection(entry.target.id);
+              window.history.replaceState(null, "", `#${entry.target.id}`);
+            }
+          });
+        },
+        { threshold: 0.6 }
+      );
+      articleRefs.current.forEach((ref) => ref && observer.observe(ref));
+      return () => observer.disconnect();
+    }, []);
 
-  // Copy current URL to clipboard
-  const copyLink = () => {
-    navigator.clipboard.writeText(window.location.href);
-    alert("Link copied!");
-  };
+    const copyLink = () => {
+      const urlWithSection = `${window.location.origin}${window.location.pathname}#${currentSection}`;
+      navigator.clipboard.writeText(urlWithSection);
+      alert("Link copied!");
+    };
+
+    useEffect(() => {
+      if (window.location.hash) {
+        const target = document.getElementById(window.location.hash.slice(1));
+        if (target) target.scrollIntoView({ behavior: "smooth" });
+      }
+    }, []);
 
   return (
     <div className="blog-page">
