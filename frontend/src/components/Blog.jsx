@@ -8,22 +8,6 @@ import "./Blog.css";
 
 export default function Blog() {
 
-  const asciiArts = [
-    { title: "", art: "(-(-_(-_-)_-)-)" },
-    { title: "", art: "(╯°□°）╯︵ ┻━┻" },
-    { title: "", art: "(ಠ_ಠ)" },
-    { title: "", art: "(ง •̀_•́)ง" },
-    { title: "", art: "ヽ༼ ʘ̚ل͜ʘ̚༼◕_◕༽◉_◔ ༽ﾉ" },
-    { title: "", art: "¯\_(ツ)_/¯ " },
-    { title: "", art: "\(^-^)/" },
-    { title: "", art: " ̿ ̿' ̿'\̵͇̿̿\з=(•̪●)=ε/̵͇̿̿/'̿''̿ ̿" },
-    { title: "", art: "( -_-)旦~" },
-    { title: "", art: "" },
-    { title: "", art: "" },
-    { title: "", art: "" },
-    { title: "", art: "" },
-  ];
-
   const [isMobile, setIsMobile] = useState(false);
 
   const articleRefs = useRef([]);
@@ -130,16 +114,16 @@ export default function Blog() {
             <a href="#work-with-jous">Work with <i>Jous</i></a>
           </li>
           <li>
-            <a href="#podcasters">Jous for Podcasters</a>
+            <a href="#podcasters"><i>Jous</i> for Podcasters</a>
           </li>
           <li>
-            <a href="#events">Jous for Event Organisers</a>
+            <a href="#events"><i>Jous</i> for Event Organisers</a>
           </li>
           <li>
-            <a href="#other-apps">Use Jous in other Apps</a>
+            <a href="#other-apps">Use <i>Jous</i> in other Apps</a>
           </li>
           <li>
-            <a href="#families">Jous for Families</a>
+            <a href="#families"><i>Jous</i> for Families</a>
           </li>
           <li>
             <a href="#small-talk-kills">Small Talk Kills</a>
@@ -165,19 +149,19 @@ export default function Blog() {
           <h1 className="mag-title">Why Use Jous</h1>
           
           <p className="mag-paragraph">
-            I have to be <em>honest</em>, there are not many people that I know of except for me who use Jous regularly. I use it any chance I get, which means anytime I feel people will likely not reject my proposal of asking them weird questions.
+            I have to be <em>honest</em>, there are not many people that I know of except for me who use <i>Jous</i> regularly. I use it any chance I get, which means anytime I feel people will likely not reject my proposal of asking them weird questions.
           </p>
           
           <p className="mag-paragraph">
-            My mom is a big fan, she cannot have enough of me asking her questions, and so is my 10-year-old sister, whose answers are really to the point, even to the questions that I suspect are too abstract for her age. But even these people do not use Jous when I am not with them. What I have heard ten times is: “We enjoy it only with you!”.
+            My mom is a big fan, she cannot have enough of me asking her questions, and so is my 10-year-old sister, whose answers are really to the point, even to the questions that I suspect are too abstract for her age. But even these people do not use <i>Jous</i> when I am not with them. What I have heard ten times is: “We enjoy it only with you!”.
           </p>
           
           <p className="mag-paragraph">
-            How come they get so much out of this, have a unique experience, have a sparkle in their eye, and feel much closer to each other, and yet not want to repeat it until 6 months later when I am back? I cannot know for sure, but I remember four years ago when I started Jous, I was also more shy to propose it. Even now I linger enough for someone else to mention it first, but inside I would be waiting for it all along.
+            How come they get so much out of this, have a unique experience, have a sparkle in their eye, and feel much closer to each other, and yet not want to repeat it until 6 months later when I am back? I cannot know for sure, but I remember four years ago when I started <i>Jous</i>, I was also more shy to propose it. Even now I linger enough for someone else to mention it first, but inside I would be waiting for it all along.
           </p>
           
           <p className="mag-paragraph">
-            So let me try to describe what I get out of having conversations with Jous or any other Conversation Cards for that matter. Everyday surface conversations, at work or with family most of all give me a feeling of time being wasted drop by drop. I like the social picture, eating, and drinking together, but the sheer lack of interest in the conversation going on pushed me to eat alone, with a podcast or a movie. After a year of having the same conversations with slightly different flavors, it was almost always ignorable how much this pile of invested time contributed to me getting to know anyone better.
+            So let me try to describe what I get out of having conversations with <i>Jous</i> or any other Conversation Cards for that matter. Everyday surface conversations, at work or with family most of all give me a feeling of time being wasted drop by drop. I like the social picture, eating, and drinking together, but the sheer lack of interest in the conversation going on pushed me to eat alone, with a podcast or a movie. After a year of having the same conversations with slightly different flavors, it was almost always ignorable how much this pile of invested time contributed to me getting to know anyone better.
           </p>
           
           <p className="mag-paragraph">
@@ -185,7 +169,7 @@ export default function Blog() {
           </p>
           
           <p className="mag-paragraph">
-            Jous offers prompts that ask us to share what we normally hesitate to mention. Each question is a subtle invitation to see one another anew and find relief in discovering the individuality in each other. It should not be storming the walls of someone’s privacy, but helping us knock gently on the door. It aspires to open a space for authenticity without demanding it.
+            <i>Jous</i> offers prompts that ask us to share what we normally hesitate to mention. Each question is a subtle invitation to see one another anew and find relief in discovering the individuality in each other. It should not be storming the walls of someone’s privacy, but helping us knock gently on the door. It aspires to open a space for authenticity without demanding it.
           </p>
         </article>
 
@@ -264,13 +248,13 @@ export default function Blog() {
             How to Support Jous
           </h1>
           <p className="mag-paragraph">
-            The best and most direct support for Jous is simply using it with people you care about. Other than that, you can share your honest feedback; even a small note about what worked (or didn’t) can help me understand better what you need and improve Jous in this way.
+            The best and most direct support for <i>Jous</i> is simply using it with people you care about. Other than that, you can share your honest feedback; even a small note about what worked (or didn’t) can help me understand better what you need and improve <i>Jous</i> in this way.
           </p>
           <p className="mag-paragraph">
-            If you feel comfortable, you can introduce Jous to a wider circle by posting about it on social media. Or mention it to that friend who organizes group gatherings or is the creator of a casual conversation podcast. If you need pictures for a social media post, feel free to contact me.
+            If you feel comfortable, you can introduce <i>Jous</i> to a wider circle by posting about it on social media. Or mention it to that friend who organizes group gatherings or is the creator of a casual conversation podcast. If you need pictures for a social media post, feel free to contact me.
           </p>
           <p className="mag-paragraph">
-            I’m grateful for all forms of support. Whether it's a message telling me how a certain question led to a memorable evening or you creating an artistic work inspired by Jous for Jous, every step—however subtle—contributes to making Jous the community it aspires to be.
+            I’m grateful for all forms of support. Whether it's a message telling me how a certain question led to a memorable evening or you creating an artistic work inspired by <i>Jous</i> for <i>Jous</i>, every step—however subtle—contributes to making <i>Jous</i> the community it aspires to be.
           </p>
           {isMobile && (
             <div className="toc-mobile-button">
@@ -293,13 +277,13 @@ export default function Blog() {
             Work with Jous
           </h1>
           <p className="mag-paragraph">
-            Jous desperately needs a social media manager to reach more people. We aim to establish accounts on Instagram, Twitter, and TikTok. If you love Jous and have a passion for social media, maybe we can work together.
+            <i>Jous</i> desperately needs a social media manager to reach more people. We aim to establish accounts on Instagram, Twitter, and TikTok. If you love Jous and have a passion for social media, maybe we can work together.
           </p>
           <p className="mag-paragraph">
-            As you have seen, Jous is quite plain. I would love to make it more visually pleasing with simple creative drawings. If you enjoy pouring your creativity into Jous, you are most welcome to contribute.
+            As you have seen, <i>Jous</i> is quite plain. I would love to make it more visually pleasing with simple creative drawings. If you enjoy pouring your creativity into <i>Jous</i>, you are most welcome to contribute.
           </p>
           <p className="mag-paragraph">
-            Please understand that Jous is a hobby and nonprofit project. I’m looking for partners in crime who will work on this with me, not for me.
+            Please understand that <i>Jous</i> is a hobby and nonprofit project. I’m looking for partners in crime who will work on this with me, not for me.
           </p>
         </article>
 
@@ -310,7 +294,7 @@ export default function Blog() {
           ref={(el) => (articleRefs.current[5] = el)}
         >
           <h1 className="mag-title">
-            Jous for Podcasters
+            <i>Jous</i> for Podcasters
           </h1>
           <p className="mag-paragraph">
             I am on a mission to change the culture around conversations because what we have is not good enough. For that, I need to create enough tension in the system. The tension comes from establishing that we need more, we need to get more out of the time we spend socializing. The tension is that we are lonely. Once tension is established, we can move forward to solutions to show that better conversations are possible and within reach.
@@ -319,10 +303,10 @@ export default function Blog() {
             So I need you. You who are hosting a casual conversation podcast, because you are already in the business of changing the culture around talking. You set and influence the norms.
           </p>
           <p className="mag-paragraph">
-            You, on the other hand, probably do not “need” Jous, but odds are you might benefit from it anyway, and this might end up in a win-win. Many questions in Jous can easily add juicy twists to your flow and make your episodes more engaging, urgent, and personal for the audience. You can handpick questions beforehand or bravely use random questions live.
+            You, on the other hand, probably do not “need” <i>Jous</i>, but odds are you might benefit from it anyway, and this might end up in a win-win. Many questions in <i>Jous</i> can easily add juicy twists to your flow and make your episodes more engaging, urgent, and personal for the audience. You can handpick questions beforehand or bravely use random questions live.
           </p>
           <p className="mag-paragraph">
-            If you decide to use Jous, then you can give a shout-out to it and include the link in the description. Alternatively, you can give an introduction to the whole category without mentioning Jous explicitly. The category includes all tools that help conversations flow into more meaningful directions, such as conversation cards, printed versions, and questions on blogs or apps. Basically, anything but small talk.
+            If you decide to use <i>Jous</i>, then you can give a shout-out to it and include the link in the description. Alternatively, you can give an introduction to the whole category without mentioning <i>Jous</i> explicitly. The category includes all tools that help conversations flow into more meaningful directions, such as conversation cards, printed versions, and questions on blogs or apps. Basically, anything but small talk.
           </p>
           <p className="mag-paragraph">
             Reach out at <a href="mailto:info@jous.app">info@jous.app</a>.
@@ -347,10 +331,10 @@ export default function Blog() {
             Be it work gatherings, hiking meetups, or speed dating—a recurring pattern persists: the group resorts to polite introductions and safe, standard questions.
           </p>
           <p className="mag-paragraph">
-            Jous can offer something fresh. But the caveat is you have to ask your audience to be daring and risk more than they are usually comfortable with. Thoughtful questions invite participants to share a sea of details that they ignore about themselves rather than just what they did last weekend. It’s not about prying; it’s about creating a space where curiosity can breathe.
+            <i>Jous</i> can offer something fresh. But the caveat is you have to ask your audience to be daring and risk more than they are usually comfortable with. Thoughtful questions invite participants to share a sea of details that they ignore about themselves rather than just what they did last weekend. It’s not about prying; it’s about creating a space where curiosity can breathe.
           </p>
           <p className="mag-paragraph">
-            If you coordinate events, consider weaving a short Jous segment into the schedule. It can be as simple as saying, “Pick a random question, and discuss it with someone new.” It’s a subtle shift, but one that might leave participants feeling genuinely more connected when they head home.
+            If you coordinate events, consider weaving a short <i>Jous</i> segment into the schedule. It can be as simple as saying, “Pick a random question, and discuss it with someone new.” It’s a subtle shift, but one that might leave participants feeling genuinely more connected when they head home.
           </p>
           <div  className="ascii-art-item">
           {"ヽ༼ ʘ̚ل͜ʘ̚༼◕_◕༽◉_◔ ༽ﾉ"}
@@ -367,7 +351,7 @@ export default function Blog() {
             Jous for Other Apps
           </h1>
           <p className="mag-paragraph">
-            So many apps out there aim to bring people together—dating, wellness, and even language learning. The conversations however can drain your energy instead of giving you some. Similar to Jous’s bot on Telegram, the Jous API could be integrated into these apps, to shuffle the conversations.
+            So many apps out there aim to bring people together—dating, wellness, and even language learning. The conversations however can drain your energy instead of giving you some. Similar to <i>Jous</i>’s bot on Telegram, the <i>Jous</i> API could be integrated into these apps, to shuffle the conversations.
           </p>
           <p className="mag-paragraph">
             Imagine a language-learning app, where you don’t talk about your home country, but talk about your life in ways that you have never thought about before. Or a well-being app that gently tricks you into considering how you truly feel, with a fresh question, you never heard before.
@@ -395,10 +379,10 @@ export default function Blog() {
             Jous for Families
           </h1>
           <p className="mag-paragraph">
-            If I could choose only one place where you try Jous, it is in your family. For you, this might be the spouse you think you already know everything about and expect no surprises there. Or it might mean the kid with whom you talk about food and school, but you have little clue of how much solid preferences they have developed, how seriously they take themselves and their feelings, and how much they are capable of reflecting. Or, family could mean your parents, in a lot of situations they are parties applying constraints to your life and have no remarkable individuality of their own.
+            If I could choose only one place where you try <i>Jous</i>, it is in your family. For you, this might be the spouse you think you already know everything about and expect no surprises there. Or it might mean the kid with whom you talk about food and school, but you have little clue of how much solid preferences they have developed, how seriously they take themselves and their feelings, and how much they are capable of reflecting. Or, family could mean your parents, in a lot of situations they are parties applying constraints to your life and have no remarkable individuality of their own.
           </p>
           <p className="mag-paragraph">
-            We spend a lot of time with our families and a lot of that time is spent in loops. The loop is sometimes from routineness, and sometimes from seeing something from opposing views. To use Jous in your family means to put your routine down and put your guard down, go on a date with a family member, and only take your curiosity with you.
+            We spend a lot of time with our families and a lot of that time is spent in loops. The loop is sometimes from routineness, and sometimes from seeing something from opposing views. To use <i>Jous</i> in your family means to put your routine down and put your guard down, go on a date with a family member, and only take your curiosity with you.
           </p>
         </article>
 
@@ -468,7 +452,7 @@ export default function Blog() {
         </p>
 
         <p className="mag-paragraph">
-          Jous is not everyone’s cup of tea. But you might just be <strong>Guy #3</strong> if you
+          <i>Jous</i> is not everyone’s cup of tea. But you might just be <strong>Guy #3</strong> if you
         had an extraordinary experience with it once, and if you felt a sudden powerful connection to someone by using it. 
         If you would miss it if it were gone. If you felt the urge to tell the others.
         </p>
