@@ -109,31 +109,32 @@ class MainPage extends React.Component {
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "QAPage",
-            "mainEntity": this.state.tweets.map((tweet) => ({
-              "@type": "Question",
-              "name": tweet.content.substring(0, 100),  // Trim content for readability
-              "text": tweet.content,
-              "dateCreated": tweet.time,
-              "author": {
-                "@type": "Person",
-                "name": tweet.username
-              },
-              "answerCount": tweet.answer_number,
-              "upvoteCount": tweet.like_number,
-              "acceptedAnswer": tweet.answer_number > 0 ? {
-                "@type": "Answer",
-                "text": "This question has answers, view them on the site.",
+            "mainEntity": [
+              ...this.state.tweets.map((tweet) => ({
+                "@type": "Question",
+                "name": tweet.content.substring(0, 100),  // Trim content for readability
+                "text": tweet.content,
                 "dateCreated": tweet.time,
                 "author": {
                   "@type": "Person",
-                  "name": "Various Users"
-                }
-              } : undefined
-            }))
+                  "name": tweet.username
+                },
+                "answerCount": tweet.answer_number,
+                "upvoteCount": tweet.like_number,
+                "acceptedAnswer": tweet.answer_number > 0 ? {
+                  "@type": "Answer",
+                  "text": "This question has answers, view them on the site.",
+                  "dateCreated": tweet.time,
+                  "author": {
+                    "@type": "Person",
+                    "name": "Various Users"
+                  }
+                } : undefined
+              }))
+            ]
           })}
         </script>
-      </Helmet>
-
+      </Helmet> 
         <div className="ui basic segment" style={{ width: Math.min(this.state.width, 768) }}>
           <h1>Home</h1>
           {!this.state.showAddQuestion &&
