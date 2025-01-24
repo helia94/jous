@@ -124,6 +124,7 @@
     cursor: pointer;
     z-index: 10;
     border-radius: 50%;
+    margin-top: 2rem;
   }
   
   .share-button:hover {

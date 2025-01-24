@@ -1,4 +1,3 @@
-// Move FilterModal out of navbarItems so it's always rendered.
 // Navbar.js
 import React, { useState, useEffect } from "react";
 import { Button, Modal } from "semantic-ui-react";
@@ -30,10 +29,8 @@ function Navbar() {
   const [checkedForActivities, setCheckedForActivities] = useState(false);
   const [openActivities, setOpenActivities] = useState(false);
   const [notify, setNotify] = useState(false);
-
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [openMenu, setOpenMenu] = useState(false);
-
   const { language, openLanguageModal } = useLanguage();
   const token = localStorage.getItem("token");
   const { chosenFilters } = useFilter();
@@ -234,6 +231,15 @@ function Navbar() {
           <div
             style={menuItemStyle}
             onClick={() => {
+              route("blog");
+              setOpenMenu(false);
+            }}
+          >
+            Blog
+          </div>
+          <div
+            style={menuItemStyle}
+            onClick={() => {
               route("bug");
               setOpenMenu(false);
             }}
@@ -246,7 +252,6 @@ function Navbar() {
     );
   };
 
-  // Only for wide screens
   const navbarItems = (
     <>
       <Button
@@ -274,6 +279,9 @@ function Navbar() {
       </Button>
       <Button className="nav-button" onClick={openLanguageModal}>
         Language: {language}
+      </Button>
+      <Button className="nav-button" onClick={() => route("blog")}>
+        Blog
       </Button>
       {!token ? (
         <Button className="nav-button" onClick={() => route("login")}>
@@ -319,7 +327,6 @@ function Navbar() {
       <ActivitiesModal />
       <CollapsedMenu />
 
-      {/* Render FilterModal here so it shows on both small and large screens */}
       <FilterModal
         open={openFilterModal}
         onClose={() => setOpenFilterModal(false)}
