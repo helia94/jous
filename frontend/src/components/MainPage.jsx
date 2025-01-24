@@ -102,10 +102,27 @@ class MainPage extends React.Component {
   render() {
     return (
       <React.Fragment>
-        <Helmet>
-          <title>Home</title>
-          <link rel="canonical" href="https://jous.app/home" />
-        </Helmet>
+      <Helmet>
+        <title>Jous Home</title>
+        <link rel="canonical" href="https://jous.app/home" />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "QAPage",
+            "mainEntity": this.state.tweets.map((tweet) => ({
+              "@type": "Question",
+              "name": tweet.content.substring(0, 100),  // Trim content for readability
+              "text": tweet.content,
+              "dateCreated": tweet.time,
+              "author": {
+                "@type": "Person",
+                "name": tweet.username
+              }
+            }))
+          })}
+        </script>
+      </Helmet>
+
         <div className="ui basic segment" style={{ width: Math.min(this.state.width, 768) }}>
           <h1>Home</h1>
           {!this.state.showAddQuestion &&
