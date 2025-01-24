@@ -183,13 +183,13 @@ export default function Blog() {
           <h1 className="mag-title">
             How to Use Jous
           </h1>
-          
+
           <p className="mag-paragraph">
-            <strong>Step One</strong>: Admit to yourself that you in fact often feel lonely and that you like connecting with more people on a deeper level.
+            <strong>Step One</strong>: Let the small talk flow and help everyone relax.
           </p>
           
           <p className="mag-paragraph">
-            <strong>Step Two</strong>: Be brave. Once you suggest these questions, others might reject you, laugh at it, or say who needs that. Try not to take this personally, it’s not you, and it's not them. There is a system in place and it persists for a reason. Small talk is so ingrained in our culture, that everyone expects it, and the predictability is kind of comfortable. It takes energy and tension to break the norm and set a new one. But it has gotten somewhat easier for me in the past four years.
+            <strong>Step Two</strong>: Be brave. Once you suggest these questions, others might laugh at it. Try not to take this personally. It takes a bit of energy and friction to step outside the usual conversation. But it has gotten somewhat easier for me in the past four years.
           </p>
           
           <p className="mag-paragraph">
