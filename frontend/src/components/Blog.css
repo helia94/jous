@@ -1,0 +1,132 @@
+/* Blog.css */
+
+.blog-page {
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* On smaller screens, stack the TOC (on top) and the articles below */
+  @media (max-width: 1023px) {
+    .blog-page {
+      display: block;
+    }
+    .toc-block {
+      margin: 1rem auto;
+      padding: 1rem;
+      border: 2px solid #000;
+      background: rgba(255, 255, 255, 0.85);
+      max-width: 90%;
+    }
+    .articles-block {
+      height: 100vh;
+      overflow-y: scroll;
+      scroll-snap-type: y mandatory;
+    }
+    .blog-article {
+      scroll-snap-align: start;
+      min-height: 100vh;
+      box-sizing: border-box;
+      padding: 5vw;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+  }
+  
+  /* On larger screens, place TOC to the left and articles to the right */
+  @media (min-width: 1024px) {
+    .blog-page {
+      display: flex;
+      flex-direction: row;
+      height: 100vh;
+    }
+    .toc-block {
+      width: 300px;
+      overflow-y: auto;
+      margin: 0;
+      padding: 1rem;
+      border-right: 2px solid #000;
+      background: rgba(255, 255, 255, 0.85);
+    }
+    .articles-block {
+      flex: 1;
+      overflow-y: scroll;
+      scroll-snap-type: y mandatory;
+    }
+    .blog-article {
+      scroll-snap-align: start;
+      min-height: 100vh;
+      box-sizing: border-box;
+      padding: 5vw;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+  }
+  
+  /* Table of Contents styling */
+  .toc-heading {
+    font-family: "Trebuchet MS", sans-serif;
+    font-size: 1.4rem;
+    margin-top: 0;
+    margin-bottom: 1rem;
+    letter-spacing: 1px;
+  }
+  
+  .toc-block ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .toc-block li {
+    margin: 0.5rem 0;
+  }
+  
+  .toc-block a {
+    text-decoration: none;
+    color: #000;
+    font-weight: bold;
+  }
+  
+  .toc-block a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Article styling */
+  .blog-article {
+    font-family: "Georgia", serif;
+    background-color: #fefefe;
+    color: #333;
+  }
+  
+  .mag-title {
+    font-family: "Impact", sans-serif;
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    text-transform: uppercase;
+  }
+  
+  .mag-paragraph {
+    margin: 2rem 0;
+    font-size: 1.2rem;
+    line-height: 1.8;
+    max-width: 800px;
+  }
+  
+  /* Share button at top-right of the articles area */
+  .share-button {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(0, 0, 0, 0.1);
+    padding: 0.5rem;
+    cursor: pointer;
+    z-index: 10;
+    border-radius: 50%;
+  }
+  
+  .share-button:hover {
+    background: rgba(0, 0, 0, 0.2);
+  }
+  

@@ -17,6 +17,8 @@ import TweetDetailPage from "./TweetDetailPage";
 import { LanguageProvider } from "./LanguageContext";
 import { FilterProvider } from "./FilterContext";
 import Imprint from "./Imprint";
+import Blog from "./Blog";
+
 
 import "./theme.css";
 import ReactGA from 'react-ga4';
@@ -51,6 +53,7 @@ function App() {
                             <Route path="/logout" exact component={Logout} />
                             <Route path="/bug" exact component={Bug} />
                             <Route path="/impressum" exact component={Imprint} />
+                            <Route path="/blog" exact component={Blog} />
                             <Route component={NotFound} />
                         </Switch>
                     </Router>
