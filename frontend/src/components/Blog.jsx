@@ -171,6 +171,7 @@ export default function Blog() {
           <p className="mag-paragraph">
             <i>Jous</i> offers prompts that ask us to share what we normally hesitate to mention. Each question is a subtle invitation to see one another anew and find relief in discovering the individuality in each other. It should not be storming the walls of someone’s privacy, but helping us knock gently on the door. It aspires to open a space for authenticity without demanding it.
           </p>
+          <div className="empty-block"></div>
         </article>
 
 
@@ -285,6 +286,7 @@ export default function Blog() {
           <p className="mag-paragraph">
             Please understand that <i>Jous</i> is a hobby and nonprofit project. I’m looking for partners in crime who will work on this with me, not for me.
           </p>
+          <div className="empty-block"></div>
         </article>
 
 
@@ -294,7 +296,7 @@ export default function Blog() {
           ref={(el) => (articleRefs.current[5] = el)}
         >
           <h1 className="mag-title">
-            <i>Jous</i> for Podcasters
+            Jous for Podcasters
           </h1>
           <p className="mag-paragraph">
             I am on a mission to change the culture around conversations because what we have is not good enough. For that, I need to create enough tension in the system. The tension comes from establishing that we need more, we need to get more out of the time we spend socializing. The tension is that we are lonely. Once tension is established, we can move forward to solutions to show that better conversations are possible and within reach.
@@ -316,6 +318,7 @@ export default function Blog() {
               <a href="#toc-block">Back to Contents</a>
             </div>
           )}
+          <div className="empty-block"></div>
         </article>
 
 
@@ -367,6 +370,7 @@ export default function Blog() {
               <a href="#toc-block">Back to Contents</a>
             </div>
           )}
+          <div className="empty-block"></div>
         </article>
 
 
@@ -384,6 +388,7 @@ export default function Blog() {
           <p className="mag-paragraph">
             We spend a lot of time with our families and a lot of that time is spent in loops. The loop is sometimes from routineness, and sometimes from seeing something from opposing views. To use <i>Jous</i> in your family means to put your routine down and put your guard down, go on a date with a family member, and only take your curiosity with you.
           </p>
+          <div className="empty-block"></div>
         </article>
 
         <article
