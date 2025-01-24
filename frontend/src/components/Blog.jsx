@@ -1,17 +1,25 @@
 // Blog.jsx
 
 import React, { useEffect, useRef, useState } from "react";
+
 import { Helmet } from "react-helmet";
 import { Icon } from "semantic-ui-react";
 import "./Blog.css";
 
 export default function Blog() {
+
+  const [isMobile, setIsMobile] = useState(false);
+
   const articleRefs = useRef([]);
 
     const [currentSection, setCurrentSection] = useState("");
 
 
     useEffect(() => {
+      const checkIsMobile = () => setIsMobile(window.innerWidth <= 767);
+      window.addEventListener('resize', checkIsMobile);
+      checkIsMobile();
+    
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
@@ -23,8 +31,13 @@ export default function Blog() {
         },
         { threshold: 0.6 }
       );
+    
       articleRefs.current.forEach((ref) => ref && observer.observe(ref));
-      return () => observer.disconnect();
+    
+      return () => {
+        window.removeEventListener('resize', checkIsMobile);
+        observer.disconnect();
+      };
     }, []);
 
     const copyLink = () => {
@@ -43,7 +56,7 @@ export default function Blog() {
   return (
     <div className="blog-page">
     <Helmet>
-      <title>Jous Blogs – Full Guide to Conversations</title>
+      <title>Jous Blogs – Reasons for Better Conversations</title>
       <meta
         name="description"
         content="Why Use Jous, How to Use Jous, Alternatives, Support, Collaboration, and bridging gaps through authentic talks."
@@ -82,7 +95,7 @@ export default function Blog() {
 
 
       {/* Table of Contents (moves to left on desktop, on top on phone) */}
-      <nav className="toc-block">
+      <nav className="toc-block" id="toc-block">
         <h2 className="toc-heading">Contents</h2>
         <ul>
           <li>
@@ -204,6 +217,11 @@ export default function Blog() {
               </li>
             </ul>
           </section>
+          {isMobile && (
+            <div className="toc-mobile-button">
+              <a href="#toc-block">Back to Contents</a>
+            </div>
+          )}
         </article>
 
 
@@ -235,6 +253,11 @@ export default function Blog() {
           <p className="mag-paragraph">
             I’m grateful for all forms of support. Whether it's a message telling me how a certain question led to a memorable evening or you creating an artistic work inspired by Jous for Jous, every step—however subtle—contributes to making Jous the community it aspires to be.
           </p>
+          {isMobile && (
+            <div className="toc-mobile-button">
+              <a href="#toc-block">Back to Contents</a>
+            </div>
+          )}
         </article>
 
         <article
@@ -280,6 +303,11 @@ export default function Blog() {
           <p className="mag-paragraph">
             Reach out at <a href="mailto:info@jous.app">info@jous.app</a>.
           </p>
+          {isMobile && (
+            <div className="toc-mobile-button">
+              <a href="#toc-block">Back to Contents</a>
+            </div>
+          )}
         </article>
 
 
@@ -323,6 +351,11 @@ export default function Blog() {
           <p className="mag-paragraph">
             Reach out at <a href="mailto:info@jous.app">info@jous.app</a>.
           </p>
+          {isMobile && (
+            <div className="toc-mobile-button">
+              <a href="#toc-block">Back to Contents</a>
+            </div>
+          )}
         </article>
 
 
@@ -360,6 +393,11 @@ export default function Blog() {
           <p className="mag-paragraph">
             Constant small talk makes me <strong>numb</strong>, makes me not care about the person talking to me, and makes me be somewhere else while I am eating here. There is no intimacy here, and there is no magic in the now—it is totally forgettable.
           </p>
+          {isMobile && (
+            <div className="toc-mobile-button">
+              <a href="#toc-block">Back to Contents</a>
+            </div>
+          )}
         </article>
 
         <article
