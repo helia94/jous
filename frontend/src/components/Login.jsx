@@ -49,7 +49,7 @@ class Login extends Component {
 
     render() {
         const backgroundStyle = {
-            backgroundImage: `url(./jous-awkwart.jpg)`,
+            backgroundImage: `url(./jous-awkwart.webp)`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
