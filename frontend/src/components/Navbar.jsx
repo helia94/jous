@@ -6,7 +6,6 @@ import moment from "moment";
 import { getCurrentUser } from "../login";
 import { useLanguage } from "./LanguageContext";
 import "./Navbar.css";
-import { useFilter } from "./FilterContext"; 
 import FilterModal from "./FilterModal";
 
 const activityMessage = {
@@ -33,7 +32,6 @@ function Navbar() {
   const [openMenu, setOpenMenu] = useState(false);
   const { language, openLanguageModal } = useLanguage();
   const token = localStorage.getItem("token");
-  const { chosenFilters } = useFilter();
   const [openFilterModal, setOpenFilterModal] = useState(false);
 
   useEffect(() => {

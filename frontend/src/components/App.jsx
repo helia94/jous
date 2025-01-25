@@ -9,7 +9,6 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import MainPage from "./MainPage";
 import { check } from "../login";
 import Logout from "./Logout";
-import UserSettings from "./UserSettings";
 import NotFound from "./NotFound";
 import UserPage from "./UserPage";
 import GroupHome from "./GroupHome";
