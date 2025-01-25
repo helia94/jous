@@ -1,6 +1,6 @@
 // src/components/CollapsedMenu.js
 import React from "react";
-import { Button, Modal } from "semantic-ui-react";
+import { Modal } from "semantic-ui-react";
 
 function CollapsedMenu({
   open,
