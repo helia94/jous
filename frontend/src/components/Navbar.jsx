@@ -1,26 +1,15 @@
-// Navbar.js
-import React, { useState, useEffect } from "react";
-import { Button, Modal } from "semantic-ui-react";
-import Axios from "axios";
-import moment from "moment";
+// src/components/Navbar.js
+import React, { useState, useEffect, Suspense, lazy, useCallback } from "react";
+import { Button } from "semantic-ui-react";
 import { getCurrentUser } from "../login";
 import { useLanguage } from "./LanguageContext";
-import "./Navbar.css";
-import FilterModal from "./FilterModal";
+import "./NavbarCritical.css"; // Import critical CSS
 
-const activityMessage = {
-  answer: "answered your question",
-  newGroup: "You are added to ",
-  questionInGroup: " posted a question to ",
-  answerInGroup: " answered a question in ",
-};
-
-const activityLink = {
-  answer: "question",
-  newGroup: "group",
-  questionInGroup: "group",
-  answerInGroup: "group",
-};
+// Lazy load the non-critical components
+const ActivitiesModal = lazy(() => import("./ActivitiesModal"));
+const CollapsedMenu = lazy(() => import("./CollapsedMenu"));
+const FilterModal = lazy(() => import("./FilterModal"));
+const NavbarItems = lazy(() => import("./NavbarItems"));
 
 function Navbar() {
   const [user, setUser] = useState("noUser");
@@ -34,6 +23,23 @@ function Navbar() {
   const token = localStorage.getItem("token");
   const [openFilterModal, setOpenFilterModal] = useState(false);
 
+  // Function to load full CSS asynchronously
+  const loadFullCSS = useCallback(() => {
+    const existingLink = document.getElementById("navbar-full-css");
+    if (!existingLink) {
+      const link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = "./NavbarFull.css"; // Adjust the path as needed
+      link.id = "navbar-full-css";
+      document.head.appendChild(link);
+    }
+  }, []);
+
+  // Load full CSS after initial render
+  useEffect(() => {
+    loadFullCSS();
+  }, [loadFullCSS]);
+
   useEffect(() => {
     if (!token) return;
     getCurrentUser()
@@ -43,257 +49,70 @@ function Navbar() {
 
   useEffect(() => {
     if (!token || checkedForActivities) return;
-    Axios.get("/api/useractivities", {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((res) => {
+    const fetchActivities = async () => {
+      try {
+        const Axios = (await import("axios")).default;
+        const res = await Axios.get("/api/useractivities", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         setActivities(res.data);
         setCheckedForActivities(true);
         setNotify(res.data.some((item) => !item.read));
-      })
-      .catch((error) => console.error(error));
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchActivities();
   }, [token, checkedForActivities]);
 
-  function setActivitiesToRead() {
+  const setActivitiesToRead = useCallback(async () => {
     if (activities.length > 0) {
-      Axios.get(`/api/readuseractivity/${activities[0].id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-        .then(() => setNotify(false))
-        .catch((error) => console.error(error));
+      try {
+        const Axios = (await import("axios")).default;
+        await Axios.get(`/api/readuseractivity/${activities[0].id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setNotify(false);
+      } catch (error) {
+        console.error(error);
+      }
     }
-  }
+  }, [activities, token]);
 
-  function route(path) {
-    window.location.href = `/${path}?lang=${language}`;
-  }
+  const route = useCallback(
+    (path) => {
+      window.location.href = `/${path}?lang=${language}`;
+    },
+    [language]
+  );
 
-  const checkCollapse = () => {
+  const checkCollapse = useCallback(() => {
     if (window.innerWidth < 700) {
       setIsCollapsed(true);
     } else {
       setIsCollapsed(false);
       setOpenMenu(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     checkCollapse();
     window.addEventListener("resize", checkCollapse);
     return () => window.removeEventListener("resize", checkCollapse);
-  }, []);
-
-  const ActivitiesModal = () => (
-    <Modal
-      onClose={() => setOpenActivities(false)}
-      onOpen={() => setOpenActivities(true)}
-      open={openActivities}
-    >
-      <Modal.Content>
-        <Modal.Description>
-          {activities.length === 0 ? (
-            <div>No activities to show</div>
-          ) : (
-            <div className="ui feed">
-              {activities.map((item) => (
-                <div key={item.id} className="summary">
-                  <a
-                    className="user"
-                    href={`/${activityLink[item.type]}/${item.what}`}
-                  >
-                    {item.fromUid}
-                  </a>{" "}
-                  {activityMessage[item.type]}
-                  {item.type !== "answer" && (
-                    <span className="group">{item.what}</span>
-                  )}
-                  {!item.read && <div style={{ color: "#ffc107" }}>•</div>}
-                  <div className="date">{moment.utc(item.time).fromNow()}</div>
-                </div>
-              ))}
-            </div>
-          )}
-        </Modal.Description>
-      </Modal.Content>
-      <Modal.Actions>
-        <Button
-          color="black"
-          onClick={() => {
-            setOpenActivities(false);
-            setActivitiesToRead();
-          }}
-        >
-          OK
-        </Button>
-      </Modal.Actions>
-    </Modal>
-  );
-
-  const CollapsedMenu = () => {
-    const menuContainerStyle = {
-      backgroundColor: "#fff",
-      padding: "1rem",
-      fontFamily: "Helvetica, Arial, sans-serif",
-    };
-
-    const menuItemStyle = {
-      margin: "0.5rem 0",
-      fontSize: "1em",
-      fontWeight: "600",
-      color: "#333",
-      cursor: "pointer",
-      borderBottom: "1px solid #ddd",
-      paddingBottom: "0.5rem",
-    };
-
-    return (
-      <Modal open={openMenu} onClose={() => setOpenMenu(false)} size="tiny">
-        <Modal.Content style={menuContainerStyle}>
-          <div
-            style={menuItemStyle}
-            onClick={() => {
-              setOpenActivities(true);
-              setOpenMenu(false);
-            }}
-          >
-            Notifications{notify ? " (NEW)" : ""}
-          </div>
-          {token && (
-            <div
-              style={menuItemStyle}
-              onClick={() => {
-                route(`user/${user}`);
-                setOpenMenu(false);
-              }}
-            >
-              Profile
-            </div>
-          )}
-          <div
-            style={menuItemStyle}
-            onClick={() => {
-              route("random");
-              setOpenMenu(false);
-            }}
-          >
-            Random Question
-          </div>
-          <div
-            style={menuItemStyle}
-            onClick={() => {
-              route("home");
-              setOpenMenu(false);
-            }}
-          >
-            All Questions
-          </div>
-          <div
-            style={menuItemStyle}
-            onClick={() => {
-              setOpenMenu(false);
-              setTimeout(() => setOpenFilterModal(true), 0);
-            }}
-          >
-            Filter Questions
-          </div>
-          <div
-            style={menuItemStyle}
-            onClick={() => {
-              openLanguageModal();
-              setOpenMenu(false);
-            }}
-          >
-            Language: {language}
-          </div>
-          {!token ? (
-            <div
-              style={menuItemStyle}
-              onClick={() => {
-                route("login");
-                setOpenMenu(false);
-              }}
-            >
-              Login
-            </div>
-          ) : (
-            <div
-              style={menuItemStyle}
-              onClick={() => {
-                route("logout");
-                setOpenMenu(false);
-              }}
-            >
-              Logout
-            </div>
-          )}
-          <div
-            style={menuItemStyle}
-            onClick={() => {
-              route("blog");
-              setOpenMenu(false);
-            }}
-          >
-            Blog
-          </div>
-          <div
-            style={menuItemStyle}
-            onClick={() => {
-              route("bug");
-              setOpenMenu(false);
-            }}
-            title="report a bug"
-          >
-            Report Bug
-          </div>
-        </Modal.Content>
-      </Modal>
-    );
-  };
+  }, [checkCollapse]);
 
   const navbarItems = (
-    <>
-      <Button
-        className="nav-button"
-        title="notifications"
-        onClick={() => setOpenActivities(true)}
-      >
-        <i className={`lemon ${notify ? "yellow" : "outline"} icon`} />
-      </Button>
-      {token && (
-        <Button
-          className="nav-button"
-          title="profile"
-          onClick={() => route(`user/${user}`)}
-        >
-          <i className="user outline icon" />
-        </Button>
-      )}
-      <Button
-        className="nav-button"
-        onClick={() => setOpenFilterModal(true)}
-        title="Filters"
-      >
-        <i className="filter icon" />
-      </Button>
-      <Button className="nav-button" onClick={openLanguageModal}>
-        Language: {language}
-      </Button>
-      <Button className="nav-button" onClick={() => route("blog")}>
-        Blog
-      </Button>
-      {!token ? (
-        <Button className="nav-button" onClick={() => route("login")}>
-          Login
-        </Button>
-      ) : (
-        <Button className="nav-button" onClick={() => route("logout")}>
-          Logout
-        </Button>
-      )}
-      <Button className="nav-button" onClick={() => route("bug")}>
-        <i className="bug icon" />
-      </Button>
-    </>
+    <Suspense fallback={null}>
+      <NavbarItems
+        notify={notify}
+        token={token}
+        route={route}
+        user={user}
+        openLanguageModal={openLanguageModal}
+        setOpenFilterModal={setOpenFilterModal}
+        setOpenActivities={setOpenActivities}
+      />
+    </Suspense>
   );
 
   return (
@@ -310,28 +129,49 @@ function Navbar() {
           <i className="random icon" />
         </Button>
         {isCollapsed ? (
-          <Button
-            className="nav-button"
-            title="menu"
-            onClick={() => setOpenMenu(true)}
-          >
-            <i className="bars icon" />
-          </Button>
+          <Suspense fallback={null}>
+            <Button
+              className="nav-button"
+              title="menu"
+              onClick={() => setOpenMenu(true)}
+            >
+              <i className="bars icon" />
+            </Button>
+          </Suspense>
         ) : (
           navbarItems
         )}
       </div>
 
-      <ActivitiesModal />
-      <CollapsedMenu />
-
-      <FilterModal
-        open={openFilterModal}
-        onClose={() => setOpenFilterModal(false)}
-        languageId={language}
-      />
+      {/* Lazy-loaded Modals */}
+      <Suspense fallback={null}>
+        <ActivitiesModal
+          open={openActivities}
+          onClose={() => setOpenActivities(false)}
+          activities={activities}
+          setActivitiesToRead={setActivitiesToRead}
+          notify={notify}
+        />
+        <CollapsedMenu
+          open={openMenu}
+          onClose={() => setOpenMenu(false)}
+          setOpenActivities={setOpenActivities}
+          route={route}
+          user={user}
+          token={token}
+          notify={notify}
+          language={language}
+          openLanguageModal={openLanguageModal}
+          setOpenFilterModal={setOpenFilterModal}
+        />
+        <FilterModal
+          open={openFilterModal}
+          onClose={() => setOpenFilterModal(false)}
+          languageId={language}
+        />
+      </Suspense>
     </div>
   );
 }
 
-export default Navbar;
+export default React.memo(Navbar);

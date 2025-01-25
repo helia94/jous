@@ -1,60 +1,67 @@
-// FilterModal.js
-import React, { useEffect } from "react";
+// src/components/FilterModal.js
+import React, { useEffect, useState, useCallback, Suspense, lazy } from "react";
 import { Modal, Button } from "semantic-ui-react";
 import { useFilter } from "./FilterContext";
-import "./FilterModal.css";
-import { getFontForCards } from "./FontUtils";
+import "./FilterModalCritical.css";
 
-const isPersian = (text) => /[\u0600-\u06FF]/.test(text);
+// Lazy load full CSS
+const loadFullCSS = () => {
+  const existingLink = document.getElementById("filter-modal-full-css");
+  if (!existingLink) {
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = "./FilterModalFull.css";
+    link.id = "filter-modal-full-css";
+    document.head.appendChild(link);
+  }
+};
 
-const FilterModal = ({ open, onClose, languageId }) => {
-  const { filters, chosenFilters, fetchFilters, chooseFilterOption, clearFilters } = useFilter();
+// Lazy load FilterGroup component
+const FilterGroup = lazy(() => import("./FilterGroup"));
+
+const FilterModal = React.memo(({ open, onClose, languageId }) => {
+  const { filters, fetchFilters, clearFilters } = useFilter();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const fetchAndSetFilters = useCallback(async () => {
+    setIsLoading(true);
+    await fetchFilters(languageId);
+    setIsLoading(false);
+  }, [fetchFilters, languageId]);
 
   useEffect(() => {
     if (open) {
-      fetchFilters(languageId);
+      fetchAndSetFilters();
     }
-  }, [open, languageId, fetchFilters]);
+  }, [open, fetchAndSetFilters]);
 
-  const handleOptionSelect = (queryName, optionKey) => {
-    chooseFilterOption(queryName, optionKey === chosenFilters[queryName] ? null : optionKey);
-  };
-
-  const isChosen = (queryName, optionKey) => chosenFilters[queryName] === optionKey;
+  useEffect(() => {
+    if (open) {
+      loadFullCSS();
+    }
+  }, [open]);
 
   return (
-    <Modal open={open} onClose={onClose} size="tiny" className="filter-modal" closeIcon>
+    <Modal
+      open={open}
+      onClose={onClose}
+      size="tiny"
+      className="filter-modal"
+      closeIcon
+    >
       <Modal.Header>Filter</Modal.Header>
       <Modal.Content scrolling>
-        {filters && filters.length > 0 && filters.map((filter) => {
-          const rightAligned = isPersian(filter.display_name);
-          return (
-            <div
-              key={filter.query_name}
-              className="filter-group"
-              style={{
-                direction: rightAligned ? 'rtl' : 'ltr',
-                textAlign: rightAligned ? 'right' : 'left'
-              }}
-            >
-              <h3 style={{ fontFamily: getFontForCards(filter.display_name) }}>
-                {filter.display_name}
-              </h3>
-              <div className="filter-options">
-                {Object.entries(filter.options).map(([key, value]) => (
-                  <Button
-                    key={key}
-                    className={`filter-option ${isChosen(filter.query_name, key) ? "chosen" : ""}`}
-                    onClick={() => handleOptionSelect(filter.query_name, key)}
-                    style={{ fontFamily: getFontForCards(value) }}
-                  >
-                    {value}
-                  </Button>
-                ))}
-              </div>
-            </div>
-          );
-        })}
+        {isLoading ? (
+          <div>Loading filters...</div>
+        ) : filters && filters.length > 0 ? (
+          <Suspense fallback={<div>Loading filter groups...</div>}>
+            {filters.map((filter) => (
+              <FilterGroup key={filter.query_name} filter={filter} />
+            ))}
+          </Suspense>
+        ) : (
+          <div>No filters available</div>
+        )}
       </Modal.Content>
       <Modal.Actions>
         <Button onClick={clearFilters} basic color="red">
@@ -66,6 +73,6 @@ const FilterModal = ({ open, onClose, languageId }) => {
       </Modal.Actions>
     </Modal>
   );
-};
+});
 
 export default FilterModal;
