@@ -17,6 +17,8 @@ import { LanguageProvider } from "./LanguageContext";
 import { FilterProvider } from "./FilterContext";
 import Imprint from "./Imprint";
 import Blog from "./Blog";
+import './customSemantic.less';
+import 'semantic-ui-css/semantic.min.css';
 
 
 import "./theme.css";

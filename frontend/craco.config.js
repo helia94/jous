@@ -12,5 +12,36 @@ module.exports = {
         purgecss,
       ],
     },
+    // Add LESS support
+    modules: {
+      sass: {
+        loaderOptions: {
+          lessOptions: {
+            javascriptEnabled: true,
+          },
+        },
+      },
+    },
+  },
+  webpack: {
+    configure: (webpackConfig) => {
+      // Add a rule for handling .less files
+      webpackConfig.module.rules.push({
+        test: /\.less$/,
+        use: [
+          'style-loader',
+          'css-loader',
+          {
+            loader: 'less-loader',
+            options: {
+              lessOptions: {
+                javascriptEnabled: true,
+              },
+            },
+          },
+        ],
+      });
+      return webpackConfig;
+    },
   },
 };
