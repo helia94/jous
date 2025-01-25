@@ -1,0 +1,21 @@
+/* Homev2Critical.css - minimal critical styles */
+
+.huge-header {
+  margin-top: 0;
+  font-size: 10vw;
+  text-align: center;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+.ui.center.aligned.inverted.segment.transparent-black {
+  background-color: rgba(0, 0, 0, 0.8);
+  border: none;
+  box-shadow: none;
+}
+
+.grid-buttons-position {
+  position: absolute;
+  bottom: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+}

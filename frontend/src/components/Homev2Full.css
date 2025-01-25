@@ -1,0 +1,59 @@
+/* Homev2Full.css - the rest of the non-critical, heavier styles */
+
+/* Images and text responsiveness */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+.header {
+  font-size: 4vw;
+}
+
+.huge-header {
+  font-size: 6vw; /* Adjust for desktop; critical CSS set the mobile version */
+}
+
+/* Additional UI elements */
+.ui.center.aligned.inverted.segment.transparent-yellow {
+  background-color: rgba(255, 200, 0, 0.8) !important;
+}
+
+.transparent-yellow {
+  background-color: rgba(255, 223, 0, 0.5) !important;
+}
+
+.ui.modal {
+  background: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* Grid tweaks */
+.ui.grid > .stackable.stackable.row > .column,
+.ui.stackable.grid > .column.grid > .column,
+.ui.stackable.grid > .column.row > .column,
+.ui.stackable.grid > .column:not(.row),
+.ui.stackable.grid > .row > .column,
+.ui.stackable.grid > .row > .wide.column,
+.ui.stackable.grid > .wide.column {
+  padding: 0.2rem 0.2rem !important;
+}
+
+/* Button refinements - If additional custom styles are needed */
+.my-button {
+  background-color: 'rgba(0, 0, 0, 0.35)';
+  color: '#FFFFFF';
+  padding: '10px 10px';
+  font-size:  '14px';
+  text-shadow: '0px 1px 2px rgba(0, 0, 0, 0.3)';
+}
+
+/* Modal styling can go here if not in critical file */
+.modalOverlay {
+  justify-content: flex-start; /* Example override if needed */
+  padding-top: 5vh;
+}
+
+.modalContent {
+  /* Additional styling beyond the critical version */
+  box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+}
