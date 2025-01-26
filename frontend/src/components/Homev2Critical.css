@@ -18,6 +18,12 @@
   transform: translateX(-50%);
 }
 
+@media screen and (orientation: landscape) {
+  .ui.center.aligned.inverted.segment.transparent-black {
+    top: 15%;
+  }
+}
+
 .grid-buttons-position {
   position: absolute;
   bottom: 15%;

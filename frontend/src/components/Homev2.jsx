@@ -2,12 +2,12 @@ import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { Helmet } from 'react-helmet';
 import { Button } from 'semantic-ui-react'; 
 import { Cloudinary } from '@cloudinary/url-gen';
-import { auto, fill } from '@cloudinary/url-gen/actions/resize';
-//import { autoGravity } from '@cloudinary/url-gen/qualifiers/gravity';
-import {AdvancedImage, lazyload, accessibility, responsive, placeholder} from '@cloudinary/react';
-import { Gravity } from '@cloudinary/url-gen/qualifiers/gravity';
+import { fill } from '@cloudinary/url-gen/actions/resize';
+import {AdvancedImage, responsive, placeholder} from '@cloudinary/react';
+import { autoEco } from "@cloudinary/url-gen/qualifiers/quality";
 import {focusOn} from "@cloudinary/url-gen/qualifiers/gravity";
 import {FocusOn} from "@cloudinary/url-gen/qualifiers/focusOn";
+import { webp } from "@cloudinary/url-gen/qualifiers/format";
 import 'semantic-ui-css/semantic.min.css';  
 import './Homev2Critical.css';               
 import './Homev2Full.css';                   
@@ -36,8 +36,8 @@ function Homev2() {
 
   const img = cld
         .image(imgPublicId)
-        .format('auto') 
-        .quality('auto')
+        .format(webp())
+        .quality(autoEco())
         .resize(fill()
         .width(windowSize.width)
         .height(windowSize.height)
