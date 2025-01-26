@@ -18,11 +18,17 @@
   transform: translateX(-50%);
 }
 
-@media screen and (orientation: landscape) {
+@media screen and (max-height: 500px) and (orientation: landscape) {
   .ui.center.aligned.inverted.segment.transparent-black {
     top: 15%;
   }
+
+  .huge-header {
+    font-size: 4vw;
+  }
+  
 }
+
 
 .grid-buttons-position {
   position: absolute;
