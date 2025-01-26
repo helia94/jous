@@ -3,6 +3,7 @@
 import React, { useEffect, Suspense, lazy, useState } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import ReactGA from 'react-ga4';
+import AsyncCSSLoader from './AsyncCSSLoader';
 
 // Providers
 import { LanguageProvider } from "./LanguageContext";
@@ -47,6 +48,8 @@ function App() {
     }, []);
 
     return (
+        <>
+        <AsyncCSSLoader /> 
         <LanguageProvider>
             <FilterProvider>
                 <React.Fragment>
@@ -79,6 +82,7 @@ function App() {
                 </React.Fragment>
             </FilterProvider>
         </LanguageProvider>
+        </>
     );
 }
 
