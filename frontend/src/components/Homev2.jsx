@@ -1,6 +1,13 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { Helmet } from 'react-helmet';
 import { Button } from 'semantic-ui-react'; 
+import { Cloudinary } from '@cloudinary/url-gen';
+import { auto, fill } from '@cloudinary/url-gen/actions/resize';
+//import { autoGravity } from '@cloudinary/url-gen/qualifiers/gravity';
+import {AdvancedImage, lazyload, accessibility, responsive, placeholder} from '@cloudinary/react';
+import { Gravity } from '@cloudinary/url-gen/qualifiers/gravity';
+import {focusOn} from "@cloudinary/url-gen/qualifiers/gravity";
+import {FocusOn} from "@cloudinary/url-gen/qualifiers/focusOn";
 import 'semantic-ui-css/semantic.min.css';  
 import './Homev2Critical.css';               
 import './Homev2Full.css';                   
@@ -8,33 +15,52 @@ import './Homev2Full.css';
 const AboutModal = lazy(() => import( './AboutModal'));
 
 function Homev2() {
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [windowSize, setWindowSize] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight
+  });
   const [showAbout, setShowAbout] = useState(false);
 
   useEffect(() => {
-    const handleResize = () => setWindowWidth(window.innerWidth);
+    const handleResize = () => setWindowSize({
+      width: window.innerWidth,
+      height: window.innerHeight
+    });
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const backgroundUrl =
-    windowWidth < 768 ? 'url(./jous-awkwart-mobile.webp)' : 'url(./jous-awkwart.webp)';
+  const cld = new Cloudinary({ cloud: { cloudName: 'dl9xg597r' } });
+
+  const imgPublicId = '9dced400-e81c-4256-baa6-0daac025b21b_ehh68a'
+
+  const img = cld
+        .image(imgPublicId)
+        .format('auto') 
+        .quality('auto')
+        .resize(fill()
+        .width(windowSize.width)
+        .height(windowSize.height)
+        .gravity(focusOn(FocusOn.faces()))
+      );
 
   const backgroundStyle = {
-    backgroundImage: backgroundUrl,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
+    //backgroundSize: 'cover',
+    //backgroundPosition: 'center',
     height: '100vh',
-    width: '100vw',
-    position: 'relative',
-    padding: '15px 20px 5px 10px',
+    //width: '100vw',
+    //position: 'relative',
+    //padding: '15px 20px 5px 10px',
   };
+
+
+  const cldImage = <AdvancedImage cldImg={img} plugins={[responsive({steps: 200}), placeholder({mode: 'blur'})]} style = {backgroundStyle}/>
 
   const buttonStyle = {
     backgroundColor: 'rgba(0, 0, 0, 0.35)',
     color: '#FFFFFF',
     padding: '10px 10px',
-    fontSize: windowWidth < 768 ? '14px' : '24px',
+    fontSize: windowSize.width < 768 ? '14px' : '24px',
     textShadow: '0px 1px 2px rgba(0, 0, 0, 0.3)'
   };
 
@@ -61,12 +87,11 @@ function Homev2() {
         <link rel="canonical" href="https://www.jous.app/" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </Helmet>
-
-      <div style={backgroundStyle}>
+      <div>
         <div className="ui center aligned inverted segment transparent-black">
           <h1 className="huge-header">Jous</h1>
         </div>
-
+        {cldImage}
         <div className="grid-buttons-position">
           <Button 
             fluid 
@@ -77,9 +102,7 @@ function Homev2() {
             About Jous
           </Button>
         </div>
-      </div>
-
-      {/* Lazy-load AboutModal (JS only) */}
+        </div>
       <Suspense fallback={<div style={{ color: 'white' }}>Loading...</div>}>
         {showAbout && <AboutModal open={showAbout} onClose={() => setShowAbout(false)} />}
       </Suspense>

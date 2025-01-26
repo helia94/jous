@@ -6,19 +6,6 @@ img {
   height: auto;
 }
 
-.header {
-  font-size: 4vw;
-}
-
-.huge-header {
-  font-size: 6vw; /* Adjust for desktop; critical CSS set the mobile version */
-}
-
-/* Additional UI elements */
-.ui.center.aligned.inverted.segment.transparent-yellow {
-  background-color: rgba(255, 200, 0, 0.8) !important;
-}
-
 .transparent-yellow {
   background-color: rgba(255, 223, 0, 0.5) !important;
 }
