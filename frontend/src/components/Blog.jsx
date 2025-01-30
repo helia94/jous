@@ -4,7 +4,33 @@ import React, { useEffect, useRef, useState } from "react";
 
 import { Helmet } from "react-helmet";
 import { Icon } from "semantic-ui-react";
+
+import { Cloudinary } from '@cloudinary/url-gen';
+import {AdvancedImage, responsive, placeholder} from '@cloudinary/react';
+import { autoEco } from "@cloudinary/url-gen/qualifiers/quality";
+import { webp } from "@cloudinary/url-gen/qualifiers/format";
+
+
 import "./Blog.css";
+
+const cld = new Cloudinary({ cloud: { cloudName: 'dl9xg597r' } });
+
+const imgPublicId = 'printed-cards-trans_klnc6j.png'
+
+const img = cld
+      .image(imgPublicId)
+      .format(webp())
+      .quality(autoEco())
+
+const backgroundStyle = {
+  width: '95%',
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+};
+
+
+const cldImage = <AdvancedImage cldImg={img} plugins={[responsive({steps: 200}), placeholder({mode: 'blur'})]} style = {backgroundStyle}/>
 
 export default function Blog() {
 
@@ -238,6 +264,7 @@ export default function Blog() {
           <p className="mag-paragraph">
             <em>Coming Soon...</em>
           </p>
+          {cldImage}
         </article>
 
         <article
@@ -252,7 +279,7 @@ export default function Blog() {
             The best and most direct support for <i>Jous</i> is simply using it with people you care about. If <i>Jous</i> isn’t your thing, maybe that introspective friend of yours might enjoy it. Other than that, you can share your honest feedback; even a small note about what worked (or didn’t) can help me understand better what you need and improve <i>Jous</i> in this way.
           </p>
           <p className="mag-paragraph">
-            If you feel comfortable, you can introduce <i>Jous</i> to a wider circle by posting about it on social media or linking it in your website. Backlinks help <i>Jous</i> come up in Googel Search. You can mention it to that friend who organizes group gatherings, has their own cafe or is the creator of a casual conversation podcast. If you need pictures for a social media post, contact me.
+            If you feel comfortable, you can introduce <i>Jous</i> to a wider circle by posting about it on social media or linking it in your website. Backlinks help <i>Jous</i> come up in Google Search. You can mention it to that friend who organizes group gatherings, has their own cafe or is the creator of a casual conversation podcast. If you need pictures for a social media post, contact me.
           </p>
           <p className="mag-paragraph">
             I’m grateful for all forms of support. From message telling me you had a memorable evening or you creating an artistic work inspired by <i>Jous</i> for <i>Jous</i>, every step contributes to making <i>Jous</i> the community it aspires to be.
@@ -305,11 +332,10 @@ export default function Blog() {
           </p>
           <p className="mag-paragraph">
             So I need you. You, who are hosting a casual conversation podcast,
-            because you are already in the business of changing the culture around talking.
-            <i>Jous</i> on its own is like a couple of seeds, it doesn't yet smell or look particularly good.
+            because you are already in the business of changing the culture around talking. <i>Jous</i> on its own is like a couple of seeds, it doesn't yet smell or look particularly good, hard to imagine what is it for.
             The conversations that come from it are the real flowers, only then does it become something remarkable.
             Many of my own friends ignored <i>Jous</i> for years, up until we used it to talk together.
-            So my ask for you is to be the flower, so the newcomers can see and smell it.
+            So my ask for you is to be the soil and water for these seeds, so the newcomers have something to see and to smell.
 
           </p>
           <p className="mag-paragraph">
