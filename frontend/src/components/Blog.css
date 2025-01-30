@@ -236,3 +236,29 @@
 .empty-block {
   margin-bottom: 15rem;
 }
+
+.scroll-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1rem auto 0;
+  padding: 0.5rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+
+.scroll-button:hover svg {
+  transform: translateY(-5px);
+}
+
+.scroll-button:focus {
+  outline: none;
+}
+
+.scroll-button svg {
+  width: 24px;
+  height: 24px;
+  transition: transform 0.3s;
+}

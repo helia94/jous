@@ -40,6 +40,13 @@ export default function Blog() {
 
   const [currentSection, setCurrentSection] = useState("");
 
+  const scrollToContent = () => {
+    const target = document.getElementById('articles-block');
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
 
   useEffect(() => {
     const checkIsMobile = () => setIsMobile(window.innerWidth <= 767);
@@ -121,7 +128,8 @@ export default function Blog() {
 
 
       {/* Table of Contents (moves to left on desktop, on top on phone) */}
-      <nav className="toc-block" id="toc-block">
+  {/* Table of Contents (moves to left on desktop, on top on phone) */}
+  <nav className="toc-block" id="toc-block">
         <h2 className="toc-heading">Contents</h2>
         <ul>
           <li>
@@ -158,10 +166,16 @@ export default function Blog() {
             <a href="#change-culture">Change the Culture</a>
           </li>
         </ul>
+        {isMobile && (
+        <button className="scroll-button" onClick={scrollToContent} aria-label="Scroll to Content">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="12,4 4,16 20,16" fill="#000" />
+          </svg>
+        </button>
+        )}
       </nav>
-
       {/* Articles Area */}
-      <div className="articles-block">
+      <div className="articles-block"  id="articles-block">
         {/* Single share button (fixed at top-right of articles area) */}
         <div className="share-button" onClick={copyLink}>
           <Icon name="share alternate" size="large" />
