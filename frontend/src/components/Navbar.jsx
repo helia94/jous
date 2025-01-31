@@ -1,6 +1,6 @@
 // src/components/Navbar.js
 import React, { useState, useEffect, Suspense, lazy, useCallback } from "react";
-import { Button } from "semantic-ui-react";
+import { Button, Icon } from "semantic-ui-react"; // Import Icon from Semantic UI
 import { getCurrentUser } from "../login";
 import { useLanguage } from "./LanguageContext";
 import "./NavbarCritical.css"; // Import critical CSS
@@ -115,6 +115,26 @@ function Navbar() {
     </Suspense>
   );
 
+  // Additional Buttons for Mobile View
+  const mobileExtraButtons = (
+    <>
+      <Button
+        className="nav-button"
+        onClick={openLanguageModal}
+        title="Language"
+      >
+        <Icon name="language" />
+      </Button>
+      <Button
+        className="nav-button"
+        onClick={() => setOpenFilterModal(true)}
+        title="Filter"
+      >
+        <Icon name="filter" />
+      </Button>
+    </>
+  );
+
   return (
     <div className="navbar">
       <div className="brand" onClick={() => route("")}>
@@ -124,18 +144,39 @@ function Navbar() {
         <Button
           className="nav-button"
           onClick={() => route("random")}
-          title="random questions"
+          title="Random Questions"
         >
-          <i className="random icon" />
+          <Icon name="random" />
         </Button>
+
+        {/* Conditionally render additional buttons on mobile */}
+        {isCollapsed && (
+          <>
+            <Button
+              className="nav-button"
+              onClick={openLanguageModal}
+              title="Language"
+            >
+              <Icon name="language" />
+            </Button>
+            <Button
+              className="nav-button"
+              onClick={() => setOpenFilterModal(true)}
+              title="Filter"
+            >
+              <Icon name="filter" />
+            </Button>
+          </>
+        )}
+
         {isCollapsed ? (
           <Suspense fallback={null}>
             <Button
               className="nav-button"
-              title="menu"
+              title="Menu"
               onClick={() => setOpenMenu(true)}
             >
-              <i className="bars icon" />
+              <Icon name="bars" />
             </Button>
           </Suspense>
         ) : (
