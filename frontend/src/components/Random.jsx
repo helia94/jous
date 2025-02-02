@@ -1,10 +1,13 @@
+// FRONTEND (Random.js)
 import React from "react";
 import Axios from "axios";
 import TweetItem2 from "./TweetItem2";
-import { Helmet } from 'react-helmet';
+import { Helmet } from "react-helmet";
 import { LanguageContext } from "./LanguageContext";
 import { FilterContext } from "./FilterContext";
-import { getFontForCards } from './FontUtils';
+import { getFontForCards } from "./FontUtils";
+import { Container, Segment, Header, Card, Button } from "semantic-ui-react";
+import 'semantic-ui-css/semantic.min.css';
 
 class Random extends React.Component {
   static contextType = LanguageContext;
@@ -12,59 +15,78 @@ class Random extends React.Component {
   constructor(props, context) {
     super(props, context);
     const { availableLanguages = [], language } = context;
-    const selectedLanguage = availableLanguages.find(
-      (lang) => lang.frontend_code === language
-    ) || { frontend_code: "original", backend_code: null };
+    const selectedLanguage =
+      availableLanguages.find((lang) => lang.frontend_code === language) || {
+        frontend_code: "original",
+        backend_code: null,
+      };
 
     this.state = {
-      question: null,
+      questions: [],
       selectedLanguageFrontendCode: selectedLanguage.frontend_code,
       selectedLanguageBackendCode: selectedLanguage.backend_code,
-      minHeight: 200
+      minHeight: 200,
     };
   }
 
-  fetchRandomQuestion = () => {
+  // Fetch 20 random questions; if append=true, add to current list
+  fetchRandomQuestions = (append = false) => {
     const { chosenFilters } = this.props.filterContext;
     const filtersToUse = chosenFilters || {};
 
     Axios.get("/api/question/random", {
       params: {
         language_id: this.state.selectedLanguageBackendCode,
-        ...filtersToUse
-      }
+        ...filtersToUse,
+      },
     })
-    .then((res) => {
-      if (res.data.error === "No questions available") {
-        this.setState({ question: null });
-      } else {
-        this.setState({ question: res.data.question });
+      .then((res) => {
+        if (res.data.error) {
+          if (!append) this.setState({ questions: [] });
+        } else {
+          const newQuestions = res.data.questions;
+          this.setState((prevState) => ({
+            questions: append
+              ? [...prevState.questions, ...newQuestions]
+              : newQuestions,
+          }));
+        }
+      })
+      .catch(() => {
+        if (!append) this.setState({ questions: [] });
+      });
+  };
+
+  // Remove the current question; if less than 2 remain, fetch 20 more and append them.
+  nextQuestion = () => {
+    this.setState((prevState) => {
+      const newQuestions = prevState.questions.slice(1);
+      if (newQuestions.length < 2) {
+        this.fetchRandomQuestions(true);
       }
-    })
-    .catch(() => {
-      this.setState({ question: null });
+      return { questions: newQuestions };
     });
   };
 
   componentDidMount() {
-    this.fetchRandomQuestion(); // Immediately attempt to fetch a question on mount
+    this.fetchRandomQuestions();
   }
 
   componentDidUpdate(prevProps) {
     if (
-      JSON.stringify(prevProps.filterContext.chosenFilters) !== 
+      JSON.stringify(prevProps.filterContext.chosenFilters) !==
       JSON.stringify(this.props.filterContext.chosenFilters)
     ) {
-      this.fetchRandomQuestion();
+      this.fetchRandomQuestions();
     }
   }
 
   render() {
-    const contentFont = getFontForCards(this.props.content);
+    const fallbackMessage = "No question left after filters, try something else.";
+    const contentFont = getFontForCards(fallbackMessage);
+    const cardStyle = { minHeight: this.state.minHeight };
 
-    const cardStyle = {
-      minHeight: this.state.minHeight,
-    };
+    const currentQuestion = this.state.questions[0];
 
     return (
       <>
@@ -72,31 +94,30 @@ class Random extends React.Component {
           <title>Random</title>
           <link rel="canonical" href="https://jous.app/random" />
         </Helmet>
-        <div className="ui center aligned yellow inverted segment">
-          <h1 className="w3-jumbo">Random Jous</h1>
-        </div>
-        <div className="ui container">
+        <Segment inverted color="yellow" textAlign="center">
+          <Header as="h1" className="w3-jumbo">
+            Random Jous
+          </Header>
+        </Segment>
+        <Container>
           <div className="event">
-            {this.state.question ? (
+            {currentQuestion ? (
               <TweetItem2
-                id={this.state.question.id}
-                content={this.state.question.content}
-                author={this.state.question.username}
-                time={this.state.question.time}
-                likes={this.state.question.like_number}
-                answers={this.state.question.answer_number}
+                id={currentQuestion.question.id}
+                content={currentQuestion.question.content}
+                author={currentQuestion.question.username}
+                time={currentQuestion.question.time}
+                likes={currentQuestion.question.like_number}
+                answers={currentQuestion.question.answer_number}
                 isOwner={false}
                 key={0}
                 selectedLanguageFrontendCode={this.state.selectedLanguageFrontendCode}
               />
             ) : (
-              <div className="ui fluid card" id={0} style={cardStyle}>
-                <div
-                  className="content"
-                  style={{ display: "flex", flexDirection: "column", height: "100%" }}
-                >
-                  <div
-                    className="center aligned description"
+              <Card fluid style={cardStyle}>
+                <Card.Content style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+                  <Card.Description
+                    textAlign="center"
                     style={{
                       flexGrow: 1,
                       display: "flex",
@@ -104,18 +125,16 @@ class Random extends React.Component {
                       justifyContent: "center",
                     }}
                   >
-                    <p style={{ fontFamily: contentFont }}>
-                      {"No question left after filters, try something else."}
-                    </p>
-                  </div>
-                </div>
-              </div>
+                    <p style={{ fontFamily: contentFont }}>{fallbackMessage}</p>
+                  </Card.Description>
+                </Card.Content>
+              </Card>
             )}
           </div>
-          <button className="ui yellow button" onClick={this.fetchRandomQuestion}>
+          <Button color="yellow" onClick={this.nextQuestion}>
             Next
-          </button>
-        </div>
+          </Button>
+        </Container>
       </>
     );
   }
@@ -123,6 +142,6 @@ class Random extends React.Component {
 
 export default (props) => (
   <FilterContext.Consumer>
-    {filterCtx => <Random {...props} filterContext={filterCtx} />}
+    {(filterCtx) => <Random {...props} filterContext={filterCtx} />}
   </FilterContext.Consumer>
 );

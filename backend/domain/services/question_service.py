@@ -51,33 +51,40 @@ class QuestionService:
         return self._apply_translations(json_questions, language_id)
 
 
-    def get_random_question(self, language_id = DEFAULT_LANGUSGE_ID, occasion = None, level= None):
+    # In question_service.py, add:
+    def get_random_questions(self, language_id=DEFAULT_LANGUSGE_ID, occasion=None, level=None):
         if language_id == DEFAULT_LANGUSGE_ID:
-            question = self.question_repository.get_random_question(occasion, level)
-            if not question:
+            questions = self.question_repository.get_random_questions(occasion, level, limit=20)
+            if not questions:
                 return {"error": "No questions available"}
-            answers = self.question_repository.get_public_answers_for_question(question.id)
-            json_question = {
-                "question": self._serialize_question(question),
-                "answers": self._apply_to_list(answers, self._serialize_answer)
-            }
-            return json_question
-        
+            result = []
+            for question in questions:
+                answers = self.question_repository.get_public_answers_for_question(question.id)
+                result.append({
+                    "question": self._serialize_question(question),
+                    "answers": self._apply_to_list(answers, self._serialize_answer)
+                })
+            return {"questions": result}
+            
         if not is_supported_language(language_id):
             return {"error": "Invalid language"}, 400
-        
-        translated_question = self.question_repository.get_random_question_in_language(language_id , occasion, level)
-        if not translated_question:
+            
+        translations = self.question_repository.get_random_questions_in_language(language_id, occasion, level, limit=20)
+        if not translations:
             return {"error": "No questions available"}
-        
-        question = self.question_repository.get_question_by_id(translated_question.question_id)
-        answers = self.question_repository.get_public_answers_for_question(question.id)
-        json_question = {
-                "question": self._serialize_question(question),
+            
+        result = []
+        for translated in translations:
+            question = self.question_repository.get_question_by_id(translated.question_id)
+            answers = self.question_repository.get_public_answers_for_question(question.id)
+            json_question = self._serialize_question(question)
+            json_question["content"] = translated.translated_content
+            result.append({
+                "question": json_question,
                 "answers": self._apply_to_list(answers, self._serialize_answer)
-            }
-        json_question["question"]["content"] = translated_question.translated_content
-        return json_question
+            })
+        return {"questions": result}
+
 
     def get_question_by_id(self, question_id, language_id = DEFAULT_LANGUSGE_ID):
         question = self.question_repository.get_question_by_id(question_id)

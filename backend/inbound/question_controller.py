@@ -34,8 +34,7 @@ def get_question(question_id):
     return jsonify(data), 200
 
 @question_api.route("/question/random", methods=["GET"])
-def get_random_question():
-    
+def get_random_questions():
     query_params = {
         'language_id': request.args.get('language_id', type=str, default=None),
         'occasion': request.args.get('occasion', type=int, default=None),
@@ -43,11 +42,10 @@ def get_random_question():
     }
     
     query_params = to_lower_list(filter_none(query_params))
-
-    random_question = question_service.get_random_question(**query_params)
-    if "error" in random_question:
-        return jsonify(random_question), 404
-    return jsonify(random_question), 200
+    random_questions = question_service.get_random_questions(**query_params)
+    if "error" in random_questions:
+        return jsonify(random_questions), 404
+    return jsonify(random_questions), 200
 
 @question_api.route("/addquestion", methods=["POST"])
 @jwt_required(optional=True)

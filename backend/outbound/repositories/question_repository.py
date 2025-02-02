@@ -5,7 +5,8 @@ from backend.api.models.QuestionLevel import QuestionLevel
 from backend.api.models.QuestionOccasions import QuestionOccasions
 from backend.api.models.PublicAnswer import PublicAnswer
 from backend.api.core.logger import logger
-import random
+from sqlalchemy.sql.expression import func
+
 
 class QuestionRepository:
 
@@ -34,7 +35,7 @@ class QuestionRepository:
                      .all())
         return list(reversed(questions))
 
-    def get_random_question(self, occasion, level):
+    def get_random_questions(self, occasion, level, limit=20):
         try:
             query = db.session.query(Question)
             if occasion:
@@ -43,18 +44,12 @@ class QuestionRepository:
             if level is not None:
                 query = query.join(QuestionLevel, Question.id == QuestionLevel.question_id)
                 query = query.filter(QuestionLevel.level_id == level)
-
-            question_count = query.count()
-            if question_count == 0:
-                return None
-
-            rand_offset = random.randint(0, question_count - 1)
-            return query.offset(rand_offset).first()
+            return query.order_by(func.random()).limit(limit).all()
         except Exception as e:
             logger.error(e)
-            return None
+            return []
 
-    def get_random_question_in_language(self, language_id, occasion, level):
+    def get_random_questions_in_language(self, language_id, occasion, level, limit=20):
         try:
             query = db.session.query(QuestionTranslation).join(
                 Question,
@@ -66,17 +61,11 @@ class QuestionRepository:
             if level is not None:
                 query = query.join(QuestionLevel, Question.id == QuestionLevel.question_id)
                 query = query.filter(QuestionLevel.level_id == level)
-
             query = query.filter(QuestionTranslation.language_id == language_id)
-            question_count = query.count()
-            if question_count == 0:
-                return None
-
-            rand_offset = random.randint(0, question_count - 1)
-            return query.offset(rand_offset).first()
+            return query.order_by(func.random()).limit(limit).all()
         except Exception as e:
             logger.error(e)
-            return None
+            return []
 
     def delete_question(self, question_id):
         PublicAnswer.query.filter_by(question=question_id).delete()
