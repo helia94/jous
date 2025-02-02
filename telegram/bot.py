@@ -50,7 +50,7 @@ async def handle_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
         chosen_lang = context.user_data.get('lang', 'en')
         response = requests.get(f"{QUESTION_API_URL}?language_id={chosen_lang}")
         if response.status_code == 200:
-            question_content = response.json()['question']['content']
+            question_content = response.json()['questions'][0]['question']['content']
             keyboard = [[InlineKeyboardButton("Next question", callback_data='next')]]
             reply_markup = InlineKeyboardMarkup(keyboard)
             await query.edit_message_text(text=question_content, reply_markup=reply_markup)
@@ -65,7 +65,7 @@ async def inline_query(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     chosen_lang = context.user_data.get('lang', 'en')
     response = requests.get(f"{QUESTION_API_URL}?language_id={chosen_lang}")
     if response.status_code == 200:
-        question_content = response.json()['question']['content']
+        question_content = response.json()['questions'][0]['question']['content']
         results = [
             InlineQueryResultArticle(
                 id=str(uuid4()),
