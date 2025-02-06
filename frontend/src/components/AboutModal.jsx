@@ -114,7 +114,7 @@ function AboutModal({ open, onClose }) {
             marginTop: '2em' , }}>
             <h3 style={{ marginBottom: '0.5em' }}>Jous is a slow growing community</h3>
             <p style={{ fontSize: '1.1em', lineHeight: '1.6'  }}>
-              In <strong style={{ color:"#fbbd08"}}>{stats.oldestQuestionAge}</strong> days, we've shared <strong >{stats.questions}</strong> questions,
+              In <strong style={{ color:"#fbbd08"}}>{stats.oldestQuestionAge}</strong> days, we've shared <strong >{stats.questions}</strong> questions and
               <strong> {stats.answers}</strong> answers,
               <br />
               from <strong>{stats.users}</strong> curious souls, be our <strong>#{stats.users + 1}</strong>.
