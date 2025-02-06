@@ -36,3 +36,9 @@ body.dark button.w3-pink {
 .impressum-footer:hover {
     opacity: 1;
 }
+
+
+.yellow {
+    background-color: #fbbd08 !important;
+  }
+  

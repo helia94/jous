@@ -15,5 +15,10 @@ def get_filters():
     filters = feature_service.get_filters(to_lower(language_id))
     return jsonify(filters), 200
 
+@feature_api.route("/stat", methods=["GET"])
+def get_stats():
+    stats = feature_service.get_stats()
+    return jsonify(stats), 200
+
 
 
