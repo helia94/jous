@@ -1,12 +1,30 @@
-// AboutModal.jsx
-
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal, Button, Icon } from 'semantic-ui-react';
 import { useLanguage } from './LanguageContext';
 import ProductHuntBadge from './ProductHuntBadge';
 
 function AboutModal({ open, onClose }) {
   const { language } = useLanguage();
+  const [stats, setStats] = useState({
+    questions: 0,
+    answers: 0,
+    users: 0,
+    oldestQuestionAge: 0,
+  });
+
+  useEffect(() => {
+    fetch('/api/stat')
+      .then((res) => res.json())
+      .then((data) => {
+        setStats({
+          questions: data.number_of_questions,
+          answers: data.number_of_answers,
+          users: data.number_of_users,
+          oldestQuestionAge: data.age_of_oldest_question_days,
+        });
+      })
+      .catch((err) => console.error(err));
+  }, []);
 
   return (
     <Modal
@@ -88,6 +106,18 @@ function AboutModal({ open, onClose }) {
               >
                 <strong>info@jous.app</strong>
               </a>. I promise I'm friendly!
+            </p>
+          </section>
+
+          <section style={{ padding: '1em', 
+            textAlign: 'center', 
+            marginTop: '2em' , }}>
+            <h3 style={{ marginBottom: '0.5em' }}>Jous is a slow growing community</h3>
+            <p style={{ fontSize: '1.1em', lineHeight: '1.6'  }}>
+              In <strong style={{ color:"#fbbd08"}}>{stats.oldestQuestionAge}</strong> days, we've shared <strong >{stats.questions}</strong> questions,
+              <strong> {stats.answers}</strong> answers,
+              <br />
+              from <strong>{stats.users}</strong> curious souls, be our <strong>#{stats.users + 1}</strong>.
             </p>
           </section>
         </Modal.Description>
