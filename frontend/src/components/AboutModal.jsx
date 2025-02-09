@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Button, Icon } from 'semantic-ui-react';
 import { useLanguage } from './LanguageContext';
 import ProductHuntBadge from './ProductHuntBadge';
+import InstagramBadge from './InstagramBadge';
 
 function AboutModal({ open, onClose }) {
   const { language } = useLanguage();
@@ -122,7 +123,11 @@ function AboutModal({ open, onClose }) {
           </section>
         </Modal.Description>
       </Modal.Content>
+      <div style={{ display: 'flex', justifyContent: 'center', gap: '30px' }}>
       <ProductHuntBadge />
+      <InstagramBadge />
+      </div>
+
       <br />
     </Modal>
   );
