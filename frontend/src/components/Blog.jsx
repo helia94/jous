@@ -289,15 +289,29 @@ export default function Blog() {
           <h1 className="mag-title">
             How to Support Jous
           </h1>
+
           <p className="mag-paragraph">
-            The best and most direct support for <i>Jous</i> is simply using it with people you care about. If <i>Jous</i> isn’t your thing, maybe that introspective friend of yours might enjoy it. Other than that, you can share your honest feedback; even a small note about what worked (or didn’t) can help me understand better what you need and improve <i>Jous</i> in this way.
-          </p>
-          <p className="mag-paragraph">
-            If you feel comfortable, you can introduce <i>Jous</i> to a wider circle by posting about it on social media or linking it in your website. Backlinks help <i>Jous</i> come up in Google Search. You can mention it to that friend who organizes group gatherings, has their own cafe or is the creator of a casual conversation podcast. If you need pictures for a social media post, contact me.
-          </p>
-          <p className="mag-paragraph">
-            I’m grateful for all forms of support. From message telling me you had a memorable evening or you creating an artistic work inspired by <i>Jous</i> for <i>Jous</i>, every step contributes to making <i>Jous</i> the community it aspires to be.
-          </p>
+        The best and most direct support for <i>Jous</i> is simply using it with people you care about. If <i>Jous</i> isn’t your thing, maybe that introspective friend of yours might enjoy it.
+      </p>
+      <p className="mag-paragraph">
+        Other than that, you can share your honest feedback; even a small note about what worked (or didn’t) can help me. I need to find out which of the following is true: 
+      </p>
+      <ul className="mag-paragraph">
+        <li>1: <i>Jous</i> is a service some people (may it be a small number) deeply appreciate, enjoy, and care about.</li>
+        <li>2: It is what I like and not useful for almost anyone else; the idea of an app with random questions is simply not a helpful/tasteful tool for better conversations.</li>
+      </ul>
+      <p className="mag-paragraph">
+        Any information on whether to decide on one or two is a huge help to me. You can also help me do user interviews, which means letting me watch when you are using <i>Jous</i> with someone, so that I can understand its dynamics and problems.
+      </p>
+      <p className="mag-paragraph">
+        If you feel comfortable, you can introduce <i>Jous</i> to a wider circle by posting about it on social media. Find <i>Jous</i> on Instagram with <b>@jouscards</b> and <b>@jousfarsi</b>. What has worked best is using Instagram question-stories (<a href="https://www.tailwindapp.com/blog/10-instagram-questions-ideas-sticker-how-to" target="_blank" rel="noopener noreferrer">link</a>) to ask a <i>Jous</i>-question from your friends or sharing a video of yourself answering a question.
+      </p>
+      <p className="mag-paragraph">
+        You can also link <i>Jous</i> to your website. Backlinks help <i>Jous</i> come up in Google Search. You can mention it to that friend who organizes group gatherings, has their own cafe, or is the creator of a casual conversation podcast. If you need pictures for a social media post, contact me.
+      </p>
+      <p className="mag-paragraph">
+        I’m grateful for all forms of support. From a message telling me you had a memorable evening to you creating an artistic work inspired by <i>Jous</i> for <i>Jous</i>, every step contributes to making <i>Jous</i> the community it aspires to be.
+      </p>
           {isMobile && (
             <div className="toc-mobile-button">
               <a href="#toc-block">Back to Contents</a>
