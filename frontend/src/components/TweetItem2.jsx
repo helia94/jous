@@ -162,6 +162,17 @@ class TweetItem2 extends React.Component {
     }
   };
 
+  copyQuestionContent = () => {
+    const contentToCopy = `${this.props.content}\nMore on https://jous.app`;
+    navigator.clipboard.writeText(contentToCopy)
+      .then(() => {
+        alert("Content copied to clipboard!");
+      })
+      .catch(() => {
+        alert("Failed to copy content to clipboard.");
+      });
+  };
+
   render() {
     const contentFont = getFontForCards(this.props.content);
     const cardStyle = { minHeight: this.state.minHeight };
@@ -204,7 +215,7 @@ class TweetItem2 extends React.Component {
                   className="ui icon button circular"
                   onClick={this.likeTweet}
                   style={buttonStyle}
-                  onMouseOver={(e) => (e.currentTarget.style.boxShadow = "0 0 0 2px #2185D0 inset")}
+                  onMouseOver={(e) => (e.currentTarget.style.boxShadow = "0 0 0 2px #ffff inset")}
                   onMouseOut={(e) => (e.currentTarget.style.boxShadow = "none")}
                 >
                   <i className="heart icon" style={iconStyle}></i>
@@ -218,7 +229,7 @@ class TweetItem2 extends React.Component {
                   className="ui icon button circular"
                   onClick={this.routeToQuestion}
                   style={buttonStyle}
-                  onMouseOver={(e) => (e.currentTarget.style.boxShadow = "0 0 0 2px #2185D0 inset")}
+                  onMouseOver={(e) => (e.currentTarget.style.boxShadow = "0 0 0 2px #ffff inset")}
                   onMouseOut={(e) => (e.currentTarget.style.boxShadow = "none")}
                 >
                   <i className="reply icon" style={iconStyle}></i>
@@ -230,6 +241,19 @@ class TweetItem2 extends React.Component {
               <div className="ui basic button" data-tooltip="share" onClick={this.toggleShareModal}>
                 <i className="share alternate icon"></i>
               </div>
+              <div className="ui labeled button" tabIndex="0" data-tooltip="copy">
+              <div
+                className="ui icon button circular"
+                onClick={this.copyQuestionContent}
+                style={buttonStyle}
+                onMouseOver={(e) => (e.currentTarget.style.boxShadow = "0 0 0 2px #ffff inset")}
+                onMouseOut={(e) => (e.currentTarget.style.boxShadow = "none")}
+              >
+                <i className="copy icon" style={iconStyle}></i>
+              </div>
+              <a className="ui basic label" style={labelStyle}>
+              </a>
+            </div>
               {this.props.isOwner && (
                 <button className="ui basic button" onClick={this.deleteTweet}>
                   <i className="trash alternate outline icon"></i>
