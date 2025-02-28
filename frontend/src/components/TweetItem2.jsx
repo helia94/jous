@@ -94,31 +94,56 @@ class TweetItem2 extends React.Component {
       const canvas = document.createElement("canvas");
       canvas.width = 1080;
       canvas.height = 1080;
+
       const ctx = canvas.getContext("2d");
       // Bright orange background
       ctx.fillStyle = "#ff6600";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // White text, Georgia font
+      // White text, Georgia font, centered
       ctx.fillStyle = "#ffffff";
-      ctx.font = "60px Georgia";
+      ctx.font = "80px Georgia";
       ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
+      ctx.textBaseline = "top";
 
-      const lines = this.props.content.split("\n");
-      let offsetY = canvas.height / 2 - (lines.length - 1) * 30;
-      lines.forEach((line) => {
-        ctx.fillText(line, canvas.width / 2, offsetY, 900);
-        offsetY += 70;
+      // We will wrap text if it doesn't fit in 80% width
+      const maxWidth     = canvas.width * 0.8;
+      const xCenter      = canvas.width / 2;
+      const lineHeight   = 80;
+      const words        = this.props.content.split(" ");
+      const wrappedLines = [];
+      let tempLine       = "";
+      
+      // First pass: split into an array of wrapped lines
+      words.forEach((word, idx) => {
+        const testLine = tempLine + word + " ";
+        const metrics  = ctx.measureText(testLine);
+        if (metrics.width > maxWidth && idx > 0) {
+          wrappedLines.push(tempLine.trim());
+          tempLine = word + " ";
+        } else {
+          tempLine = testLine;
+        }
+      });
+      // Push final line
+      wrappedLines.push(tempLine.trim());
+      
+      // Now calculate total height for vertical centering
+      const totalHeight = wrappedLines.length * lineHeight;
+      let startY        = (canvas.height - totalHeight) / 2; // center vertically
+      
+      wrappedLines.forEach((ln) => {
+        ctx.fillText(ln, xCenter, startY, maxWidth);
+        startY += lineHeight;
       });
 
-      // Turn canvas into a file for sharing
+      // Turn canvas into file
       const dataUrl = canvas.toDataURL("image/png");
       const res = await fetch(dataUrl);
       const blob = await res.blob();
       const file = new File([blob], "instagram.png", { type: "image/png" });
 
-      // Attempt to open share sheet directly
+      // Native share if supported
       if (navigator.canShare && navigator.canShare({ files: [file] })) {
         await navigator.share({
           files: [file],
@@ -126,14 +151,14 @@ class TweetItem2 extends React.Component {
           text: "Check out this question",
         });
       } else {
-        // Fallback: open image in new tab and also open Instagram
+        // Fallback: open image in new tab + try opening Instagram
         const newTab = window.open();
         newTab.document.write(`<img src="${dataUrl}" style="max-width:100%" />`);
         newTab.document.title = "Instagram Card";
-        window.open("instagram://app", "_blank");
+        window.open("instagram://camera", "_blank");
       }
     } catch (error) {
-      alert("Could not share to Instagram, double check it.");
+      alert("Could not share to Instagram, double check your browser/device.");
     }
   };
 
@@ -221,8 +246,8 @@ class TweetItem2 extends React.Component {
               style={{ maxWidth: "400px", margin: "auto" }}
             >
               <div className="header">Share This Question</div>
-              <div className="content" style={{ textAlign: "center" }}>
-                <button className="ui button" onClick={this.copyQuestionAddressToClipboard}>
+              <div className="content share-modal" style={{ textAlign: "center" }}>
+                <button className="ui button " onClick={this.copyQuestionAddressToClipboard}>
                   Copy Link
                 </button>
                 <button className="ui button" onClick={this.shareToInstagram}>
