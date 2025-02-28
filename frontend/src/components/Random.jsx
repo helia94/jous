@@ -1,4 +1,3 @@
-// SimplifiedRandom.jsx
 import React, { useState, useEffect, useContext } from "react";
 import Axios from "axios";
 import TweetItem2 from "./TweetItem2";
@@ -24,6 +23,7 @@ const Random = () => {
 
   const [questions, setQuestions] = useState([]);
   const [showPopup, setShowPopup] = useState(true);
+  const [showNoQuestion, setShowNoQuestion] = useState(false);
   const isMobile = window.innerWidth < 768;
 
   const fetchQuestions = async () => {
@@ -46,6 +46,15 @@ const Random = () => {
     setQuestions([]);
     fetchQuestions();
   }, [chosenFilters, selectedLanguage.backend_code]);
+
+  useEffect(() => {
+    const delay = 500; // 500ms delay
+    const timer = setTimeout(() => {
+      setShowNoQuestion(true);
+    }, delay);
+
+    return () => clearTimeout(timer); // Clear timeout on component unmount
+  }, [questions]); // Run effect when questions change
 
   const nextQuestion = () => {
     setQuestions((prev) => {
@@ -73,7 +82,7 @@ const Random = () => {
       <Segment inverted color="yellow" textAlign="center">
         <Header as="h1">Random Jous</Header>
       </Segment>
-      <Container>
+      <Container className="random-container">
         {isMobile && showPopup && <SwipePopup onClose={() => setShowPopup(false)} />}
         <div className="event" {...swipeHandlers}>
           <TransitionGroup>
@@ -97,17 +106,19 @@ const Random = () => {
                 </div>
               </CSSTransition>
             ) : (
-              <CSSTransition key="no-question" timeout={300} classNames="slide">
-                <div className="tweet-container">
-                  <Card fluid>
-                    <Card.Content >
-                      <Card.Description textAlign="center">
-                        <p style={{ fontFamily: contentFont }}>{fallbackMessage}</p>
-                      </Card.Description>
-                    </Card.Content>
-                  </Card>
-                </div>
-              </CSSTransition>
+              showNoQuestion && (
+                <CSSTransition key="no-question" timeout={300} classNames="slide">
+                  <div className="tweet-container">
+                    <Card fluid>
+                      <Card.Content>
+                        <Card.Description textAlign="center">
+                          <p style={{ fontFamily: contentFont }}>{fallbackMessage}</p>
+                        </Card.Description>
+                      </Card.Content>
+                    </Card>
+                  </div>
+                </CSSTransition>
+              )
             )}
           </TransitionGroup>
         </div>
