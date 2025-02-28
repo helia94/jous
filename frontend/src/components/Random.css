@@ -13,6 +13,10 @@
     opacity: 0;
     transition: opacity 300ms;
   }
+
+  .event{
+    height: 200px;
+  }
   
   /* Mobile-specific styles */
   @media (max-width: 768px) {
@@ -21,5 +25,9 @@
       height: 3.5rem;
       padding: 15px;
       font-size: 1.5em;
+    } 
+    
+    .event{
+      height: 420px;
     }
   }
