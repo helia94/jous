@@ -4,7 +4,6 @@ import Axios from "axios";
 import moment from "moment";
 import "./TweetItem2.css";
 import { getFontForCards } from "./FontUtils";
-import html2canvas from "html2canvas";
 
 class TweetItem2 extends React.Component {
   constructor(props) {
@@ -15,7 +14,6 @@ class TweetItem2 extends React.Component {
       minHeight: 200,
       showShareModal: false,
     };
-    this.cardRef = React.createRef();
   }
 
   componentDidMount() {
@@ -33,9 +31,7 @@ class TweetItem2 extends React.Component {
   deleteTweet = (e) => {
     e.stopPropagation();
     Axios.delete("/api/deletequestion/" + this.props.id, {
-      headers: {
-        Authorization: "Bearer " + localStorage.getItem("token"),
-      },
+      headers: { Authorization: "Bearer " + localStorage.getItem("token") },
     }).then(() => {
       window.location.reload();
     });
@@ -44,9 +40,7 @@ class TweetItem2 extends React.Component {
   likeTweet = (e) => {
     e.stopPropagation();
     Axios.post("/api/likequestion/" + this.props.id, null, {
-      headers: {
-        Authorization: "Bearer " + localStorage.getItem("token"),
-      },
+      headers: { Authorization: "Bearer " + localStorage.getItem("token") },
     }).then((res) => {
       if (res.data.success) {
         this.setState((prevState) => ({ likes: prevState.likes + 1 }));
@@ -97,17 +91,49 @@ class TweetItem2 extends React.Component {
 
   shareToInstagram = async () => {
     try {
-      const cardElement = this.cardRef.current;
-      const canvas = await html2canvas(cardElement);
+      const canvas = document.createElement("canvas");
+      canvas.width = 1080;
+      canvas.height = 1080;
+      const ctx = canvas.getContext("2d");
+      // Bright orange background
+      ctx.fillStyle = "#ff6600";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // White text, Georgia font
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "60px Georgia";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+
+      const lines = this.props.content.split("\n");
+      let offsetY = canvas.height / 2 - (lines.length - 1) * 30;
+      lines.forEach((line) => {
+        ctx.fillText(line, canvas.width / 2, offsetY, 900);
+        offsetY += 70;
+      });
+
+      // Turn canvas into a file for sharing
       const dataUrl = canvas.toDataURL("image/png");
-      const link = document.createElement("a");
-      link.download = "card.png";
-      link.href = dataUrl;
-      link.click();
-      alert("Screenshot ready for Instagram. Double check if everything looks good.");
+      const res = await fetch(dataUrl);
+      const blob = await res.blob();
+      const file = new File([blob], "instagram.png", { type: "image/png" });
+
+      // Attempt to open share sheet directly
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: "Instagram Post",
+          text: "Check out this question",
+        });
+      } else {
+        // Fallback: open image in new tab and also open Instagram
+        const newTab = window.open();
+        newTab.document.write(`<img src="${dataUrl}" style="max-width:100%" />`);
+        newTab.document.title = "Instagram Card";
+        window.open("instagram://app", "_blank");
+      }
     } catch (error) {
-      console.error(error);
-      alert("Screenshot failed. Double check if you have the right setup.");
+      alert("Could not share to Instagram, double check it.");
     }
   };
 
@@ -120,7 +146,7 @@ class TweetItem2 extends React.Component {
 
     return (
       <>
-        <div className="ui fluid card" id={this.props.id} style={cardStyle} ref={this.cardRef}>
+        <div className="ui fluid card" id={this.props.id} style={cardStyle}>
           <div
             className="content"
             onClick={this.routeToQuestion}
@@ -153,9 +179,7 @@ class TweetItem2 extends React.Component {
                   className="ui icon button circular"
                   onClick={this.likeTweet}
                   style={buttonStyle}
-                  onMouseOver={(e) =>
-                    (e.currentTarget.style.boxShadow = "0 0 0 2px #2185D0 inset")
-                  }
+                  onMouseOver={(e) => (e.currentTarget.style.boxShadow = "0 0 0 2px #2185D0 inset")}
                   onMouseOut={(e) => (e.currentTarget.style.boxShadow = "none")}
                 >
                   <i className="heart icon" style={iconStyle}></i>
@@ -169,9 +193,7 @@ class TweetItem2 extends React.Component {
                   className="ui icon button circular"
                   onClick={this.routeToQuestion}
                   style={buttonStyle}
-                  onMouseOver={(e) =>
-                    (e.currentTarget.style.boxShadow = "0 0 0 2px #2185D0 inset")
-                  }
+                  onMouseOver={(e) => (e.currentTarget.style.boxShadow = "0 0 0 2px #2185D0 inset")}
                   onMouseOut={(e) => (e.currentTarget.style.boxShadow = "none")}
                 >
                   <i className="reply icon" style={iconStyle}></i>
@@ -204,7 +226,7 @@ class TweetItem2 extends React.Component {
                   Copy Link
                 </button>
                 <button className="ui button" onClick={this.shareToInstagram}>
-                  Instagram (screenshot)
+                  Instagram
                 </button>
                 <button className="ui button" onClick={this.shareToX}>
                   X
