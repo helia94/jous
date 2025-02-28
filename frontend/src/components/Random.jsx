@@ -1,5 +1,4 @@
-// FRONTEND (Random.js)
-import React from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Axios from "axios";
 import TweetItem2 from "./TweetItem2";
 import { Helmet } from "react-helmet";
@@ -8,137 +7,144 @@ import { FilterContext } from "./FilterContext";
 import { getFontForCards } from "./FontUtils";
 import { Container, Segment, Header, Card, Button } from "semantic-ui-react";
 import 'semantic-ui-css/semantic.min.css';
+import { useSwipeable } from "react-swipeable";
+import { CSSTransition, TransitionGroup } from "react-transition-group";
+import SwipePopup from "./SwipePopup"; // Import the SwipePopup component
+import "./Random.css";
 
-class Random extends React.Component {
-  static contextType = LanguageContext;
-
-  constructor(props, context) {
-    super(props, context);
-    const { availableLanguages = [], language } = context;
-    const selectedLanguage =
-      availableLanguages.find((lang) => lang.frontend_code === language) || {
-        frontend_code: "original",
-        backend_code: null,
-      };
-
-    this.state = {
-      questions: [],
-      selectedLanguageFrontendCode: selectedLanguage.frontend_code,
-      selectedLanguageBackendCode: selectedLanguage.backend_code,
-      minHeight: 200,
+const Random = ({ filterContext }) => {
+  const { availableLanguages, language } = useContext(LanguageContext);
+  const selectedLanguage =
+    availableLanguages.find((lang) => lang.frontend_code === language) || {
+      frontend_code: "original",
+      backend_code: null,
     };
-  }
 
-  // Fetch 20 random questions; if append=true, add to current list
-  fetchRandomQuestions = (append = false) => {
-    const { chosenFilters } = this.props.filterContext;
+  const [questions, setQuestions] = useState([]);
+  const [selectedLanguageFrontendCode, setSelectedLanguageFrontendCode] = useState(selectedLanguage.frontend_code);
+  const [selectedLanguageBackendCode, setSelectedLanguageBackendCode] = useState(selectedLanguage.backend_code);
+  const [minHeight, setMinHeight] = useState(200);
+  const [showPopup, setShowPopup] = useState(true);
+  const isMobile = window.innerWidth < 768;
+
+  const fetchRandomQuestions = async (append = false) => {
+    const { chosenFilters } = filterContext;
     const filtersToUse = chosenFilters || {};
 
-    Axios.get("/api/question/random", {
-      params: {
-        language_id: this.state.selectedLanguageBackendCode,
-        ...filtersToUse,
-      },
-    })
-      .then((res) => {
-        if (res.data.error) {
-          if (!append) this.setState({ questions: [] });
-        } else {
-          const newQuestions = res.data.questions;
-          this.setState((prevState) => ({
-            questions: append
-              ? [...prevState.questions, ...newQuestions]
-              : newQuestions,
-          }));
-        }
-      })
-      .catch(() => {
-        if (!append) this.setState({ questions: [] });
+    try {
+      const res = await Axios.get("/api/question/random", {
+        params: {
+          language_id: selectedLanguageBackendCode,
+          ...filtersToUse,
+        },
       });
+      if (res.data.error) {
+        if (!append) setQuestions([]);
+      } else {
+        const newQuestions = res.data.questions;
+        setQuestions((prevQuestions) =>
+          append ? [...prevQuestions, ...newQuestions] : newQuestions
+        );
+      }
+    } catch (error) {
+      if (!append) setQuestions([]);
+    }
   };
 
-  // Remove the current question; if less than 2 remain, fetch 20 more and append them.
-  nextQuestion = () => {
-    this.setState((prevState) => {
-      const newQuestions = prevState.questions.slice(1);
+  const nextQuestion = () => {
+    setQuestions((prevQuestions) => {
+      const newQuestions = prevQuestions.slice(1);
       if (newQuestions.length < 2) {
-        this.fetchRandomQuestions(true);
+        fetchRandomQuestions(true);
       }
-      return { questions: newQuestions };
+      return newQuestions;
     });
   };
 
-  componentDidMount() {
-    this.fetchRandomQuestions();
-  }
+  useEffect(() => {
+    fetchRandomQuestions();
+  }, []);
 
-  componentDidUpdate(prevProps) {
-    if (
-      JSON.stringify(prevProps.filterContext.chosenFilters) !==
-      JSON.stringify(this.props.filterContext.chosenFilters)
-    ) {
-      this.fetchRandomQuestions();
-    }
-  }
+  useEffect(() => {
+    fetchRandomQuestions();
+  }, [filterContext.chosenFilters]);
 
-  render() {
-    const fallbackMessage = "No question left after filters, try something else.";
-    const contentFont = getFontForCards(fallbackMessage);
-    const cardStyle = { minHeight: this.state.minHeight };
+  const fallbackMessage = "No question left after filters, try something else.";
+  const contentFont = getFontForCards(fallbackMessage);
+  const cardStyle = { minHeight };
 
-    const currentQuestion = this.state.questions[0];
+  const currentQuestion = questions[0];
 
-    return (
-      <>
-        <Helmet>
-          <title>Random</title>
-          <link rel="canonical" href="https://jous.app/random" />
-        </Helmet>
-        <Segment inverted color="yellow" textAlign="center">
-          <Header as="h1" className="w3-jumbo">
-            Random Jous
-          </Header>
-        </Segment>
-        <Container>
-          <div className="event">
+  const swipeHandlers = useSwipeable({
+    onSwipedLeft: () => nextQuestion(),
+    preventDefaultTouchmoveEvent: true,
+    trackMouse: true,
+  });
+
+  return (
+    <>
+      <Helmet>
+        <title>Random</title>
+        <link rel="canonical" href="https://jous.app/random" />
+      </Helmet>
+      <Segment inverted color="yellow" textAlign="center">
+        <Header as="h1" className="w3-jumbo">
+          Random Jous
+        </Header>
+      </Segment>
+      <Container>
+        {isMobile && showPopup && <SwipePopup onClose={() => setShowPopup(false)} />}
+        <div className="event" {...swipeHandlers}>
+          <TransitionGroup>
             {currentQuestion ? (
-              <TweetItem2
-                id={currentQuestion.question.id}
-                content={currentQuestion.question.content}
-                author={currentQuestion.question.username}
-                time={currentQuestion.question.time}
-                likes={currentQuestion.question.like_number}
-                answers={currentQuestion.question.answer_number}
-                isOwner={false}
-                key={0}
-                selectedLanguageFrontendCode={this.state.selectedLanguageFrontendCode}
-              />
+              <CSSTransition
+                key={currentQuestion.question.id}
+                timeout={300}
+                classNames="fade"
+              >
+                <TweetItem2
+                  id={currentQuestion.question.id}
+                  content={currentQuestion.question.content}
+                  author={currentQuestion.question.username}
+                  time={currentQuestion.question.time}
+                  likes={currentQuestion.question.like_number}
+                  answers={currentQuestion.question.answer_number}
+                  isOwner={false}
+                  selectedLanguageFrontendCode={selectedLanguageFrontendCode}
+                />
+              </CSSTransition>
             ) : (
-              <Card fluid style={cardStyle}>
-                <Card.Content style={{ display: "flex", flexDirection: "column", height: "100%" }}>
-                  <Card.Description
-                    textAlign="center"
-                    style={{
-                      flexGrow: 1,
-                      display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <p style={{ fontFamily: contentFont }}>{fallbackMessage}</p>
-                  </Card.Description>
-                </Card.Content>
-              </Card>
+              <CSSTransition
+                key="no-question"
+                timeout={300}
+                classNames="fade"
+              >
+                <Card fluid style={cardStyle}>
+                  <Card.Content style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+                    <Card.Description
+                      textAlign="center"
+                      style={{
+                        flexGrow: 1,
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <p style={{ fontFamily: contentFont }}>{fallbackMessage}</p>
+                    </Card.Description>
+                  </Card.Content>
+                </Card>
+              </CSSTransition>
             )}
-          </div>
-          <Button color="yellow" onClick={this.nextQuestion}>
-            Next
-          </Button>
-        </Container>
-      </>
-    );
-  }
-}
+          </TransitionGroup>
+        </div>
+        <Button color="yellow" onClick={nextQuestion} className="mobile-next-button">
+          Next
+        </Button>
+      </Container>
+    </>
+  );
+};
 
 export default (props) => (
   <FilterContext.Consumer>

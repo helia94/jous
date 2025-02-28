@@ -28,6 +28,8 @@
     "react-infinite-scroll-component": "^6.1.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^5.0.1",
+    "react-swipeable": "^7.0.2",
+    "react-transition-group": "^4.4.5",
     "semantic-ui-css": "^2.5.0",
     "semantic-ui-react": "^2.1.5",
     "sitemap": "^8.0.0",
