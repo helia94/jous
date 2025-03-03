@@ -1,5 +1,6 @@
 // src/components/FilterGroup.js
 import React, { useEffect, useState, useCallback } from "react";
+import ReactGA from 'react-ga4';
 import { useFilter } from "./FilterContext";
 import FilterOptionButton from "./FilterOptionButton";
 import { getFontForCards } from "./FontUtils";
@@ -25,6 +26,13 @@ const FilterGroup = React.memo(({ filter }) => {
         filter.query_name,
         optionKey === chosenFilters[filter.query_name] ? null : optionKey
       );
+
+      ReactGA.event({
+        category: 'settings',
+        action: 'filter',
+        label: optionKey, 
+      });
+
     },
     [chooseFilterOption, filter.query_name, chosenFilters]
   );

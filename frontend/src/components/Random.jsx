@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
+import ReactGA from 'react-ga4';
 import Axios from "axios";
 import TweetItem2 from "./TweetItem2";
 import { Helmet } from "react-helmet";
@@ -57,6 +58,13 @@ const Random = () => {
   }, [questions]); // Run effect when questions change
 
   const nextQuestion = () => {
+
+    ReactGA.event({
+      category: 'random',
+      action: 'next random',
+      label: "next_random",
+    });
+
     setQuestions((prev) => {
       const newList = prev.slice(1);
       if (newList.length < 2) fetchQuestions();

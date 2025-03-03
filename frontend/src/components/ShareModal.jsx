@@ -1,5 +1,6 @@
 // ShareModal.js
 import React from "react";
+import ReactGA from 'react-ga4';
 
 const ShareModal = ({ content, id, selectedLanguageFrontendCode, onClose }) => {
   const copyQuestionAddressToClipboard = () => {
@@ -13,18 +14,36 @@ const ShareModal = ({ content, id, selectedLanguageFrontendCode, onClose }) => {
     const text = encodeURIComponent(content + " \nby jous.app");
     const shareUrl = `https://twitter.com/intent/tweet?text=${text}`;
     window.open(shareUrl, "_blank");
+    
+        ReactGA.event({
+          category: 'share',
+          action: 'x',
+          label: "x",
+        });
   };
 
   const shareToWhatsApp = () => {
     const text = encodeURIComponent(content + " \nby jous.app");
     const shareUrl = `https://api.whatsapp.com/send?text=${text}`;
     window.open(shareUrl, "_blank");
+    
+    ReactGA.event({
+      category: 'share',
+      action: 'WhatsApp',
+      label: "WhatsApp",
+    });
   };
 
   const shareToTelegram = () => {
     const text = encodeURIComponent(content + " \nby jous.app");
     const shareUrl = `https://t.me/share/url?url=${text}`;
     window.open(shareUrl, "_blank");
+    
+    ReactGA.event({
+      category: 'share',
+      action: 'Telegram',
+      label: "Telegram",
+    });
   };
 
   const shareToInstagram = async () => {
@@ -104,6 +123,12 @@ const ShareModal = ({ content, id, selectedLanguageFrontendCode, onClose }) => {
     } catch (error) {
         alert("Could not share to Instagram, double check your browser/device.");
     }
+    
+    ReactGA.event({
+      category: 'share',
+      action: 'Instagram',
+      label: "Instagram",
+    });
 };
 
   return (

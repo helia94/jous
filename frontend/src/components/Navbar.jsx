@@ -1,5 +1,6 @@
 // src/components/Navbar.js
 import React, { useState, useEffect, Suspense, lazy, useCallback } from "react";
+import ReactGA from 'react-ga4';
 import { Button, Icon } from "semantic-ui-react"; // Import Icon from Semantic UI
 import { getCurrentUser } from "../login";
 import { useLanguage } from "./LanguageContext";
@@ -81,10 +82,19 @@ function Navbar() {
 
   const route = useCallback(
     (path) => {
+
+      ReactGA.event({
+        category: 'navigate',
+        action: 'nav-button',
+        label: path, 
+      });
+
       window.location.href = `/${path}?lang=${language}`;
     },
     [language]
   );
+
+
 
   const checkCollapse = useCallback(() => {
     if (window.innerWidth < 700) {

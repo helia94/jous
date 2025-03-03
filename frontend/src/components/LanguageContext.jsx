@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import ReactGA from 'react-ga4';
 import { Modal, Button } from 'semantic-ui-react';
 import './LanguageContext.css';
 
@@ -39,6 +40,12 @@ export const LanguageProvider = ({ children }) => {
     const urlParams = new URLSearchParams(window.location.search);
     urlParams.set('lang', newLang);
     window.history.replaceState({}, '', `${window.location.pathname}?${urlParams}`);
+
+    ReactGA.event({
+      category: 'settings',
+      action: 'language',
+      label: newLang, 
+    });
 
     window.location.reload();
   };

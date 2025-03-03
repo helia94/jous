@@ -1,5 +1,6 @@
 // TweetItem2.js
 import React, { Suspense, lazy } from "react";
+import ReactGA from 'react-ga4';
 import Axios from "axios";
 import moment from "moment";
 import "./TweetItem2.css";
@@ -75,6 +76,12 @@ class TweetItem2 extends React.Component {
       .catch(() => {
         alert("Failed to copy content to clipboard.");
       });
+
+    ReactGA.event({
+      category: 'share',
+      action: 'copy question',
+      label: "copy_button",
+    });
   };
 
   render() {
