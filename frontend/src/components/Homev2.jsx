@@ -1,18 +1,19 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react';
+import ReactGA from 'react-ga4';
 import { Helmet } from 'react-helmet';
-import { Button } from 'semantic-ui-react'; 
+import { Button } from 'semantic-ui-react';
 import { Cloudinary } from '@cloudinary/url-gen';
 import { fill } from '@cloudinary/url-gen/actions/resize';
-import {AdvancedImage, responsive, placeholder} from '@cloudinary/react';
+import { AdvancedImage, responsive, placeholder } from '@cloudinary/react';
 import { autoEco } from "@cloudinary/url-gen/qualifiers/quality";
-import {focusOn} from "@cloudinary/url-gen/qualifiers/gravity";
-import {FocusOn} from "@cloudinary/url-gen/qualifiers/focusOn";
+import { focusOn } from "@cloudinary/url-gen/qualifiers/gravity";
+import { FocusOn } from "@cloudinary/url-gen/qualifiers/focusOn";
 import { webp } from "@cloudinary/url-gen/qualifiers/format";
-import 'semantic-ui-css/semantic.min.css';  
-import './Homev2Critical.css';               
-import './Homev2Full.css';                   
+import 'semantic-ui-css/semantic.min.css';
+import './Homev2Critical.css';
+import './Homev2Full.css';
 
-const AboutModal = lazy(() => import( './AboutModal'));
+const AboutModal = lazy(() => import('./AboutModal'));
 
 function Homev2() {
   const [windowSize, setWindowSize] = useState({
@@ -35,14 +36,14 @@ function Homev2() {
   const imgPublicId = '9dced400-e81c-4256-baa6-0daac025b21b_ehh68a'
 
   const img = cld
-        .image(imgPublicId)
-        .format(webp())
-        .quality(autoEco())
-        .resize(fill()
-        .width(windowSize.width)
-        .height(windowSize.height)
-        .gravity(focusOn(FocusOn.faces()))
-      );
+    .image(imgPublicId)
+    .format(webp())
+    .quality(autoEco())
+    .resize(fill()
+      .width(windowSize.width)
+      .height(windowSize.height)
+      .gravity(focusOn(FocusOn.faces()))
+    );
 
   const backgroundStyle = {
     //backgroundSize: 'cover',
@@ -54,7 +55,7 @@ function Homev2() {
   };
 
 
-  const cldImage = <AdvancedImage cldImg={img} plugins={[responsive({steps: 200}), placeholder({mode: 'blur'})]} style = {backgroundStyle}/>
+  const cldImage = <AdvancedImage cldImg={img} plugins={[responsive({ steps: 200 }), placeholder({ mode: 'blur' })]} style={backgroundStyle} />
 
   const buttonStyle = {
     backgroundColor: 'rgba(0, 0, 0, 0.35)',
@@ -65,7 +66,7 @@ function Homev2() {
   };
 
   return (
-    
+
     <>
       <Helmet>
         <title>Jous - Deep Conversation Starters</title>
@@ -93,16 +94,22 @@ function Homev2() {
         </div>
         {cldImage}
         <div className="grid-buttons-position">
-          <Button 
-            fluid 
-
+          <Button
+            fluid
             style={buttonStyle}
-            onClick={() => setShowAbout(true)}
+            onClick={() => {
+              setShowAbout(true);
+              ReactGA.event({
+                category: 'learn',
+                action: 'button',
+                label: 'about',
+              });
+            }}
           >
             About Jous
           </Button>
         </div>
-        </div>
+      </div>
       <Suspense fallback={<div style={{ color: 'white' }}>Loading...</div>}>
         {showAbout && <AboutModal open={showAbout} onClose={() => setShowAbout(false)} />}
       </Suspense>
