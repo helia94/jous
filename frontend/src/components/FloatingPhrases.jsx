@@ -50,12 +50,22 @@ const phrases = [
 
   function FloatingPhrases() {
     const [activePhrases, setActivePhrases] = useState([]);
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
     const phraseIndex = useRef(Math.floor(Math.random() * phrases.length));
+  
+    useEffect(() => {
+      const mediaQuery = window.matchMedia('(max-width: 767px)');
+      const handleResize = () => setIsMobile(mediaQuery.matches);
+      mediaQuery.addEventListener('change', handleResize);
+      return () => mediaQuery.removeEventListener('change', handleResize);
+    }, []);
   
     useEffect(() => {
       let isMounted = true;
       const spawnPhrase = () => {
         if (!isMounted) return;
+        const baseSize = 36 + Math.random() * 36;
+        const fontSize = (isMobile ? baseSize * 0.3 : baseSize) + 'px';
         const text = phrases[phraseIndex.current];
         phraseIndex.current = (phraseIndex.current + 1) % phrases.length;
         const newPhrase = {
@@ -63,58 +73,59 @@ const phrases = [
           text,
           top: Math.random() * 80 + '%',
           left: Math.random() * 80 + '%',
-          fontSize: (36 + Math.random() * 48) + 'px'
+          fontSize
         };
         setActivePhrases(prev => [...prev, newPhrase]);
         setTimeout(() => {
           setActivePhrases(prev => prev.filter(p => p.id !== newPhrase.id));
         }, 2000);
-        const delay = Math.random() * 1000 + 2000; // next phrase in 500ms-1500ms
+        const delay = Math.random() * 2500 + 2000;
         setTimeout(spawnPhrase, delay);
       };
       spawnPhrase();
       return () => { isMounted = false; };
-    }, []);
+    }, [isMobile]);
   
     const variants = {
       initial: { opacity: 0 },
-      animate: { opacity: 1, transition: { duration: 0.5 } },
-      exit: { opacity: 0, transition: { duration: 0.5 } }
+      animate: { opacity: 1, transition: { duration: 1 } },
+      exit: { opacity: 0, transition: { duration: 1 } }
     };
   
     return (
-      <div
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          zIndex: 2,
-          width: '100%',
-          height: '100%',
-          pointerEvents: 'none'
-        }}
-      >
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        zIndex: 2,
+        width: '100%',
+        height: '100%',
+        pointerEvents: 'none'
+      }}>
         <AnimatePresence>
           {activePhrases.map(phrase => (
             <motion.div
-  key={phrase.id}
-  initial="initial"
-  animate="animate"
-  exit="exit"
-  variants={variants}
-  style={{
-    position: 'absolute',
-    top: phrase.top,
-    left: phrase.left,
-    fontSize: phrase.fontSize,
-    color: 'white',
-    fontWeight: 'bold',
-    textShadow: '2px 2px 4px rgba(0, 0, 0, 0.7)',
-    lineHeight: '1.2'
-  }}
->
-  {phrase.text}
-</motion.div>
+              key={phrase.id}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              variants={variants}
+              style={{
+                position: 'absolute',
+                top: phrase.top,
+                left: phrase.left,
+                fontSize: phrase.fontSize,
+                color: '#FFF8E7',
+                fontWeight: 'bold',
+                textShadow: '4px 8px 10px rgba(0,0,0,0.6)',
+                lineHeight: '1.2',
+                background: 'linear-gradient(to top, rgba(0,0,0,0.5) 40%, rgba(0,0,0,0)) 30%', // Super soft background
+                padding: '4px 8px',
+                borderRadius: '20px',
+              }}
+            >
+              {phrase.text}
+            </motion.div>
           ))}
         </AnimatePresence>
       </div>

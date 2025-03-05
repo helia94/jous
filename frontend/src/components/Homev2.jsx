@@ -60,7 +60,7 @@ function Homev2() {
 
   const buttonStyle = {
     backgroundColor: 'rgba(0, 0, 0, 0.35)',
-    color: '#FFFFFF',
+    color: '#D6BFA8',
     padding: '10px 10px',
     fontSize: windowSize.width < 768 ? '14px' : '24px',
     textShadow: '0px 1px 2px rgba(0, 0, 0, 0.3)'
@@ -108,7 +108,7 @@ function Homev2() {
               });
             }}
           >
-            About Jous
+            Start Here
           </Button>
         </div>
       </div>
