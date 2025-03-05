@@ -1,5 +1,7 @@
 // FloatingPhrases.js
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+
 
 const phrases = [
     "How about this weather, huh?",
@@ -20,16 +22,11 @@ const phrases = [
     "At least it’s Wednesday!",
     "Hump Day! We’re halfway there.",
     "How’s it going?",
-    "I’m so tired today.",
-    "I’m starving right now.",
-    "I’ve been so busy lately.",
     "Read any good books recently?",
     "Is that book you’re reading any good?",
     "Seen any good movies lately?",
     "What shows are you watching?",
-    "What kind of music are you into?",
-    "Did you catch the game?",
-    "How do elevators even work?",
+    "Did you catch the game? (you did not)",
     "This elevator is so slow.",
     "What are you having for lunch?",
     "What did you have for lunch?",
@@ -51,56 +48,77 @@ const phrases = [
     "Is it a good morning? IS IT?"
   ];
 
-function getRandomPosition() {
-  return {
-    top: Math.random() * 80 + '%',
-    left: Math.random() * 80 + '%'
-  };
-}
-
-function getRandomFontSize() {
-  return (16 + Math.random() * 24) + 'px';
-}
-
-function FloatingPhrases() {
-  const [currentIndex, setCurrentIndex] = useState(Math.floor(Math.random() * phrases.length));
-  const [phrase, setPhrase] = useState(phrases[currentIndex]);
-  const [style, setStyle] = useState({});
-
-  useEffect(() => {
-    const showPhrase = () => {
-      const nextIndex = (currentIndex + 1) % phrases.length;
-      setCurrentIndex(nextIndex);
-      setPhrase(phrases[nextIndex]);
-      setStyle({
-        position: 'absolute',
-        color: 'white',
-        top: getRandomPosition().top,
-        left: getRandomPosition().left,
-        fontSize: getRandomFontSize(),
-        animation: 'fadeInOut 2s',
-        pointerEvents: 'none'
-      });
-      const nextDelay = 2000 + Math.random() * 2000; // 2 to 4 seconds delay
-      setTimeout(showPhrase, nextDelay);
+  function FloatingPhrases() {
+    const [activePhrases, setActivePhrases] = useState([]);
+    const phraseIndex = useRef(Math.floor(Math.random() * phrases.length));
+  
+    useEffect(() => {
+      let isMounted = true;
+      const spawnPhrase = () => {
+        if (!isMounted) return;
+        const text = phrases[phraseIndex.current];
+        phraseIndex.current = (phraseIndex.current + 1) % phrases.length;
+        const newPhrase = {
+          id: Date.now() + Math.random(),
+          text,
+          top: Math.random() * 80 + '%',
+          left: Math.random() * 80 + '%',
+          fontSize: (36 + Math.random() * 48) + 'px'
+        };
+        setActivePhrases(prev => [...prev, newPhrase]);
+        setTimeout(() => {
+          setActivePhrases(prev => prev.filter(p => p.id !== newPhrase.id));
+        }, 2000);
+        const delay = Math.random() * 1000 + 2000; // next phrase in 500ms-1500ms
+        setTimeout(spawnPhrase, delay);
+      };
+      spawnPhrase();
+      return () => { isMounted = false; };
+    }, []);
+  
+    const variants = {
+      initial: { opacity: 0 },
+      animate: { opacity: 1, transition: { duration: 0.5 } },
+      exit: { opacity: 0, transition: { duration: 0.5 } }
     };
-    const timer = setTimeout(showPhrase, 2000);
-    return () => clearTimeout(timer);
-  }, [currentIndex]);
-
-  return (
-    <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-      <span style={style}>{phrase}</span>
-      <style>{`
-        @keyframes fadeInOut {
-          0% { opacity: 0; }
-          10% { opacity: 1; }
-          90% { opacity: 1; }
-          100% { opacity: 0; }
-        }
-      `}</style>
-    </div>
-  );
-}
-
-export default FloatingPhrases;
+  
+    return (
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          zIndex: 2,
+          width: '100%',
+          height: '100%',
+          pointerEvents: 'none'
+        }}
+      >
+        <AnimatePresence>
+          {activePhrases.map(phrase => (
+            <motion.div
+  key={phrase.id}
+  initial="initial"
+  animate="animate"
+  exit="exit"
+  variants={variants}
+  style={{
+    position: 'absolute',
+    top: phrase.top,
+    left: phrase.left,
+    fontSize: phrase.fontSize,
+    color: 'white',
+    fontWeight: 'bold',
+    textShadow: '2px 2px 4px rgba(0, 0, 0, 0.7)',
+    lineHeight: '1.2'
+  }}
+>
+  {phrase.text}
+</motion.div>
+          ))}
+        </AnimatePresence>
+      </div>
+    );
+  }
+  
+  export default FloatingPhrases;
