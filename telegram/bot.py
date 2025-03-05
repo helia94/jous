@@ -76,7 +76,7 @@ async def fetch_question_of_the_day() -> str:
 
 async def broadcast_question(context: ContextTypes.DEFAULT_TYPE):
     user_id = context.job.context['user_id']
-    question = context.application_data.get('question_of_the_day', "No question of the day yet")
+    question = context.bot_data.get('question_of_the_day', "No question of the day yet")
     await context.bot.send_message(chat_id=user_id, text=f"Question of the day:\n{question}")
 
 async def set_timezone(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -101,7 +101,7 @@ async def set_timezone(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def daily_update_question(context: ContextTypes.DEFAULT_TYPE):
     question = await fetch_question_of_the_day()
-    context.application_data['question_of_the_day'] = question
+    context.bot_data['question_of_the_day'] = question
     logger.info("Updated Question of the Day: %s", question)
 
 def fetch_random_questions(chosen_lang):
@@ -195,7 +195,7 @@ def main() -> None:
     application.add_handler(CommandHandler("settimezone", set_timezone))
     application.add_handler(CallbackQueryHandler(handle_callback))
     application.add_handler(InlineQueryHandler(inline_query))
-    application.application_data['question_of_the_day'] = "Not yet fetched"
+    application.bot_data['question_of_the_day'] = "Not yet fetched"
     application.run_polling()
 
 if __name__ == '__main__':
