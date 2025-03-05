@@ -9,6 +9,7 @@ import { autoEco } from "@cloudinary/url-gen/qualifiers/quality";
 import { focusOn } from "@cloudinary/url-gen/qualifiers/gravity";
 import { FocusOn } from "@cloudinary/url-gen/qualifiers/focusOn";
 import { webp } from "@cloudinary/url-gen/qualifiers/format";
+import FloatingPhrases from './FloatingPhrases';
 import 'semantic-ui-css/semantic.min.css';
 import './Homev2Critical.css';
 import './Homev2Full.css';
@@ -93,6 +94,7 @@ function Homev2() {
           <h1 className="huge-header">Jous</h1>
         </div>
         {cldImage}
+        <FloatingPhrases />
         <div className="grid-buttons-position">
           <Button
             fluid
