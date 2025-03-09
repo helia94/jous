@@ -11,7 +11,8 @@ from .InvalidToken import InvalidToken
 from .base import db
 from .Activity import Activity
 from .QuestionTranslation import QuestionTranslation
+from .Blog import Blog
 
-__all__ = ["UserAuth", "Question", "InvalidToken", "User", "Group", "GroupAnswer", "PublicAnswer", "Activity", "db", "QuestionTranslation"]
+__all__ = ["UserAuth", "Question", "InvalidToken", "User", "Group", "GroupAnswer", "PublicAnswer", "Activity", "db", "QuestionTranslation", "Blog"]
 
 # You must import all of the new Models you create to this page

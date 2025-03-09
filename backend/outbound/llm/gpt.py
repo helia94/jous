@@ -11,11 +11,11 @@ model_list = [
 ]
 
 class GPT(LLMInterface):
-    def __init__(self):
+    def __init__(self, model_name: str = 'chatgpt-4o-latest'):
         self.client = client = OpenAI(
             api_key=os.environ.get("OPENAI_API_KEY"), 
         )
-        self.model_name = 'chatgpt-4o-latest'
+        self.model_name = model_name
 
     def get_response(self, prompt: str) -> str:
         response = self.client.chat.completions.create(

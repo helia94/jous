@@ -165,6 +165,9 @@ export default function Blog() {
           <li>
             <a href="#change-culture">Change the Culture</a>
           </li>
+          <li>
+            <a href="more-blogs">More Blogs</a>
+          </li>
         </ul>
         {isMobile && (
         <button className="scroll-button" onClick={scrollToContent} aria-label="Scroll to Content">

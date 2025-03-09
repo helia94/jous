@@ -16,6 +16,7 @@ import Navbar from "./Navbar";
 import './customSemantic.less';
 import 'semantic-ui-css/semantic.min.css';
 import "./theme.css";
+import DatabaseBlogData from "./DatabaseBlogData";
 
 // Lazy-loaded Components
 const Homev2 = lazy(() => import("./Homev2"));
@@ -31,6 +32,9 @@ const GroupHome = lazy(() => import("./GroupHome"));
 const TweetDetailPage = lazy(() => import("./TweetDetailPage"));
 const Imprint = lazy(() => import("./Imprint"));
 const Blog = lazy(() => import("./Blog"));
+const DatabaseBlogList = lazy(() => import("./DatabaseBlogList"));
+const DatabaseBlog = lazy(() => import("./DatabaseBlog"));
+
 
 
 
@@ -68,6 +72,14 @@ function App() {
                                 <Route path="/bug" exact component={Bug} />
                                 <Route path="/impressum" exact component={Imprint} />
                                 <Route path="/blog" exact component={Blog} />
+                                <Route path="/more-blogs" exact component={DatabaseBlogList} />
+                                {DatabaseBlogData.map((post) => (
+                                    <Route
+                                        key={post.URL}
+                                        path={`/blog/${post.URL}`}
+                                        render={() => <DatabaseBlog url={post.URL} />}
+                                    />
+                                ))}
                                 <Route component={NotFound} />
                             </Switch>
                         </Suspense>
