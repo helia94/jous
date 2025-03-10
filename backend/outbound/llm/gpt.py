@@ -23,6 +23,7 @@ class GPT(LLMInterface):
         response = self.client.chat.completions.create(
             model=self.model_name,
             messages=[{"role": "user", "content": prompt}],
-            response_format={"type": "json_object"}
+            response_format={"type": "json_object"},
+            timeout=300
         )
         return response.choices[0].message.content
