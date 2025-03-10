@@ -5,6 +5,8 @@ from backend.domain.supported_languages import supported_languages
 from backend.domain.translator import Translator
 from backend.outbound.repositories.question_repository import QuestionRepository
 from backend.outbound.repositories.filter_repository import FilterRepository
+from backend.outbound.repositories.blog_repository import BlogRepository
+from backend.domain.blog_writer import BlogWriter
 from backend.outbound.llm.gpt import GPT
 from backend.tests.test_llm import TestLMM
 from backend.api.core.logger import logger
@@ -57,6 +59,8 @@ else:
 
 question_repository = QuestionRepository()
 filter_repository = FilterRepository()
+blog_repository = BlogRepository()
+blog_writer = BlogWriter()
 
 
 @shared_task(name = "backend.outbound.queue.tasks.translation_task.translate_all_questions")
@@ -113,6 +117,13 @@ def add_all_filters():
             questions = question_repository.get_all_questions(offset, None, None)
 
 
+@shared_task(name="backend.outbound.queue.tasks.translation_task.create_blog_task")
+def create_blog_task(url, title, storyline):
+    if blog_repository.find_blog_by_url(url):
+        return {"error": "Blog with this URL already exists"}
+    html_content = blog_writer.generate_article(title, storyline, url)
+    blog_repository.create_blog(url, html_content)
+    logger.info(f"Blog created for title: {title}")
 
 # Check that both tasks are indeed imported when starting the worker.
 # For example, add these lines at the end of the file:
