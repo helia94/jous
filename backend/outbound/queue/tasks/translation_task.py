@@ -60,7 +60,7 @@ else:
 question_repository = QuestionRepository()
 filter_repository = FilterRepository()
 blog_repository = BlogRepository()
-blog_writer = BlogWriter()
+blog_writer = BlogWriter(llm = GPT(model_name = 'o3-mini'))
 
 
 @shared_task(name = "backend.outbound.queue.tasks.translation_task.translate_all_questions")
