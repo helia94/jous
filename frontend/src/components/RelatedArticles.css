@@ -1,0 +1,31 @@
+/* RelatedArticles.css */
+.relatedArticlesContainer {
+    margin: 20px 0;
+  }
+  
+  .relatedHeader {
+    font-size: 24px;
+    margin-bottom: 15px;
+  }
+  
+  .relatedArticlesList {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+  }
+  
+  .relatedArticleCard {
+    flex: 0 0 auto;
+    width: 200px;
+    cursor: pointer;
+    text-align: center;
+  }
+  
+  .relatedImageContainer {
+    margin-bottom: 10px;
+  }
+  
+  .relatedTitle {
+    font-size: 16px;
+    color: #333;
+  }

@@ -7,6 +7,7 @@ import { fill } from "@cloudinary/url-gen/actions/resize";
 import { webp } from "@cloudinary/url-gen/qualifiers/format";
 import { byRadius } from "@cloudinary/url-gen/actions/roundCorners";
 import { monsters } from './monsters';
+import RelatedArticles from './RelatedArticles';
 import './Blog.css'; // Import the local CSS file
 import './DatabaseBlog.css'; // Import the local CSS file
 
@@ -50,7 +51,12 @@ const DatabaseBlog = ({ url }) => {
       )}
 
       {/* Render the fetched HTML content */}
+      <div className="content-container">
       <div dangerouslySetInnerHTML={{ __html: htmlContent }} />
+      </div>
+      <div className="content-container">
+      <RelatedArticles />
+      </div>
     </div>
   );
 };

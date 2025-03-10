@@ -3,17 +3,20 @@ import random
 from backend.outbound.llm.llm_interface import LLMInterface
 
 KEYWORDS = [
-    "Conversation starters", 
-    "Deep questions to ask", 	
-    "Relationship questions", 
-    "Card games for couples", 	
-    "Conversation cards", 
-    "first date questions", 
-    "great conversation starters", 
+    ["Conversation starters", 
+    "Deep questions to ask", 
+    "Conversation cards",
+    "great conversation starters"],
+
+    ["Relationship questions", 
+    "Card games for couples"], 	
+
+    ["first date questions", 
     "fun date night ideas", 
-    "best friend questions", 
-    "deep questions for friends", 
-    "date night cards", 
+    "date night cards"], 
+
+    ["best friend questions", 
+    "deep questions for friends"], 
 ]
 
 PERSONAS = [
@@ -35,19 +38,10 @@ PERSONAS = [
     "Nassim Nicholas Taleb",
     "Chris Arnade",
     "Jonathan Haidt",  # Psychology & moral philosophy
-    "Daniel Kahneman",  # Behavioral economics
     "Steven Pinker",  # Cognitive psychology & linguistics
     "Malcolm Gladwell",  # Pop psychology & social science
     "Robert Sapolsky",  # Neuroscience & human behavior
     "Alain de Botton",  # Philosophy & personal growth
-    "Jordan Peterson",  # Psychology & culture
-    "Yuval Noah Harari",  # History & philosophy
-    "Dan Ariely",  # Behavioral economics
-    "Cal Newport",  # Productivity & focus
-    "Michael Lewis",  # Economics & finance storytelling
-    "Maria Konnikova",  # Psychology & poker strategy
-    "Douglas Murray",  # Culture & politics
-    "Richard Thaler",  # Behavioral economics
     "Edward Slingerland"  # Philosophy & science of effortlessness
 ]
 
@@ -68,13 +62,14 @@ class BlogWriter:
 Title: {title}
 Storyline: {storyline}
 URL: {url}
-Keywords: {', '.join(KEYWORDS)}
+Keywords: {KEYWORDS}
 Your writer persona: {random.choice(PERSONAS)}
 
 Requirements:
 - Persona is only to inspire you, do not mention their name in the article.
 - Generate an international-sounding author name.
 - Style the article beautifully as HTML (no CSS).
+- Pick a subgroup of the most relevant keywords to focus on in the article.
 - Include meta tags for title, description, and keywords within the HTML content.
 - Make sure the page would be indexable by search engines.
 - Wrap the article in a <div> with class "articles-block".
@@ -85,6 +80,7 @@ Requirements:
 - Use <h2> or <h3> with class "mag-subtitle" for subtitles.
 - Use <ul> with class "mag-list" for unordered lists.
 - Add a tips section with class "mag-tips".
+- Maximum of 8 headers in total.
 - Ensure links are standard blue with underline and hover effect.
 - Make it ready to post with no placeholders in the text.
 - Maximum 3 links to the app in the main content (outside the final call to action).
@@ -127,6 +123,6 @@ Remember, the goal is to create an article that feels authentic, relatable, and 
         response = self.llm.get_response(prompt)
         try:
             article_json = json.loads(response)
-            return article_json["Content"].replace("—", ", ")
+            return article_json["Content"].replace("—", ", ").replace("\n", "")
         except Exception:
             return {"error": "Invalid JSON response from the LLM."}

@@ -8,6 +8,8 @@ model_list = [
     "gpt-4-turbo",
     "gpt-4",
     "gpt-3.5-turbo",
+    "o3-mini",
+    "o1"
 ]
 
 class GPT(LLMInterface):
@@ -21,7 +23,6 @@ class GPT(LLMInterface):
         response = self.client.chat.completions.create(
             model=self.model_name,
             messages=[{"role": "user", "content": prompt}],
-            response_format={"type": "json_object"},
-            temperature=0.2
+            response_format={"type": "json_object"}
         )
         return response.choices[0].message.content
