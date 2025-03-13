@@ -25,16 +25,7 @@ const QuizQuestion = ({ question, answers, onAnswerSelect, questionsLeft }) => {
                 backgroundColor: "#E3D5CA",
                 transition: "all 0.3s ease",
               }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "#fbbd08";
-                e.currentTarget.style.borderColor = "#fbbd08";
-                e.currentTarget.style.color = "#000";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "#EDE0D4";
-                e.currentTarget.style.borderColor = "#ddd";
-                e.currentTarget.style.color = "inherit";
-              }}
+
             >
               <span style={{ fontSize: "1em", color: "inherit" }}>{answer.text}</span>
             </div>
