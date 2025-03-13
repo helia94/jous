@@ -7,6 +7,7 @@ import { check } from "../login";
 import { Helmet } from 'react-helmet';
 import { LanguageContext } from "./LanguageContext";
 import { FilterContext } from "./FilterContext";
+import ConfettiBackground from "./ConfettiBackground"
 
 class MainPage extends React.Component {
   static contextType = LanguageContext;
@@ -26,6 +27,8 @@ class MainPage extends React.Component {
       page: 0,
       width: 500,
       height: 600,
+      windowWidth: window.innerWidth,
+      windowHeight: window.innerHeight,
       showAddQuestion: false,
       selectedLanguageFrontendCode: selectedLanguage.frontend_code,
       selectedLanguageBackendCode: selectedLanguage.backend_code
@@ -135,14 +138,26 @@ class MainPage extends React.Component {
         })}
         </script>
       </Helmet> 
-        <div className="ui basic segment" style={{ width: Math.min(this.state.width, 768) }}>
+      <div style={{justifyItems: "center"}}>
+        
+      <ConfettiBackground />
+        <div
+          className="ui basic segment"
+          style={{
+            width: Math.min(this.state.width * 0.95, 768),
+            position: "relative",
+            zIndex: 1,
+          }}
+        >
           <h1>Home</h1>
-          {!this.state.showAddQuestion &&
-            <div className="ui tiny black button"
-                 onClick={this.toggleShowAddQuestion}>
+          {!this.state.showAddQuestion && (
+            <div className="ui tiny black button" onClick={this.toggleShowAddQuestion}>
               Add a question
-            </div>}
-          {this.state.showAddQuestion && <AddTweet onClose={this.toggleShowAddQuestion} onAdd={this.addNewTweet} />}
+            </div>
+          )}
+          {this.state.showAddQuestion && (
+            <AddTweet onClose={this.toggleShowAddQuestion} onAdd={this.addNewTweet} />
+          )}
           <div className="ui hidden divider"></div>
           <InfiniteScroll
             dataLength={this.state.tweets.length}
@@ -150,7 +165,7 @@ class MainPage extends React.Component {
             hasMore={this.state.hasMore}
             loader={<h4>Loading...</h4>}
             endMessage={
-              <p style={{ textAlign: 'center' }}>
+              <p style={{ textAlign: "center" }}>
                 <b>The end.</b>
               </p>
             }
@@ -174,6 +189,7 @@ class MainPage extends React.Component {
             ))}
           </InfiniteScroll>
         </div>
+      </div>
       </React.Fragment>
     );
   }

@@ -146,7 +146,7 @@ function Navbar() {
   );
 
   return (
-    <div className="navbar">
+    <div className="navbar" style={{ position: 'relative', zIndex: 999, width:"100%" }} >
       <div className="brand" onClick={() => route("")}>
         Jous
       </div>

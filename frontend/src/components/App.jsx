@@ -1,5 +1,3 @@
-// src/components/App.jsx
-
 import React, { useEffect, Suspense, lazy, useState } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import ReactGA from 'react-ga4';
@@ -35,9 +33,6 @@ const Blog = lazy(() => import("./Blog"));
 const DatabaseBlogList = lazy(() => import("./DatabaseBlogList"));
 const DatabaseBlog = lazy(() => import("./DatabaseBlog"));
 
-
-
-
 function App() {
     const [login, setLogin] = useState(false);
 
@@ -54,7 +49,8 @@ function App() {
         <LanguageProvider>
             <FilterProvider>
                 <React.Fragment>
-                    <Navbar />
+                    <Navbar style={{ position: 'relative', zIndex: 1 }} />
+
                     <Router>
                         <Suspense fallback={<div>Loading...</div>}>
                             <Switch>

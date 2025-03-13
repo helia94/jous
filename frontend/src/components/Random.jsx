@@ -11,6 +11,7 @@ import { useSwipeable } from "react-swipeable";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import SwipePopup from "./SwipePopup";
 import "./Random.css";
+import ConfettiBackground from "./ConfettiBackground"
 
 const Random = () => {
   const { availableLanguages, language } = useContext(LanguageContext);
@@ -90,7 +91,8 @@ const Random = () => {
       <Segment inverted color="yellow" textAlign="center">
         <Header as="h1">Random Jous</Header>
       </Segment>
-      <Container className="random-container">
+      <ConfettiBackground />
+      <Container className="random-container" style={{ position: 'relative', zIndex: 1 }}>
         {isMobile && showPopup && <SwipePopup onClose={() => setShowPopup(false)} />}
         <div className="event" {...swipeHandlers}>
           <TransitionGroup>
@@ -130,7 +132,7 @@ const Random = () => {
             )}
           </TransitionGroup>
         </div>
-        <Button color="yellow" onClick={nextQuestion} className="mobile-next-button">
+        <Button color="#fff" onClick={nextQuestion} className="mobile-next-button">
           Next
         </Button>
       </Container>
