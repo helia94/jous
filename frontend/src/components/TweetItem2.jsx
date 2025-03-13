@@ -1,6 +1,6 @@
 // TweetItem2.js
 import React, { Suspense, lazy } from "react";
-import ReactGA from 'react-ga4';
+import ReactGA from "react-ga4";
 import Axios from "axios";
 import moment from "moment";
 import "./TweetItem2.css";
@@ -8,21 +8,13 @@ import { getFontForCards } from "./FontUtils";
 
 const ShareModal = lazy(() => import("./ShareModal"));
 
-class TweetItem2 extends React.Component {
+export default class TweetItem2 extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       likes: Number(props.likes) || 0,
-      mobile: false,
-      minHeight: 200,
       showShareModal: false,
     };
-  }
-
-  componentDidMount() {
-    if (window.innerWidth < 450) {
-      this.setState({ mobile: true, minHeight: 414 });
-    }
   }
 
   componentDidUpdate(prevProps) {
@@ -35,9 +27,7 @@ class TweetItem2 extends React.Component {
     e.stopPropagation();
     Axios.delete("/api/deletequestion/" + this.props.id, {
       headers: { Authorization: "Bearer " + localStorage.getItem("token") },
-    }).then(() => {
-      window.location.reload();
-    });
+    }).then(() => window.location.reload());
   };
 
   likeTweet = (e) => {
@@ -46,129 +36,70 @@ class TweetItem2 extends React.Component {
       headers: { Authorization: "Bearer " + localStorage.getItem("token") },
     }).then((res) => {
       if (res.data.success) {
-        this.setState((prevState) => ({ likes: prevState.likes + 1 }));
+        this.setState((prev) => ({ likes: prev.likes + 1 }));
       }
     });
   };
 
   routeToQuestion = () => {
-    const path = `/question/${this.props.id}?lang=${this.props.selectedLanguageFrontendCode}`;
-    window.location.href = path;
+    window.location.href = `/question/${this.props.id}?lang=${this.props.selectedLanguageFrontendCode}`;
   };
 
   routeToAuthor = (e) => {
     e.stopPropagation();
-    const path = "/user/" + this.props.author;
-    window.location.href = path;
+    window.location.href = `/user/${this.props.author}`;
   };
 
   toggleShareModal = (e) => {
     e.stopPropagation();
-    this.setState({ showShareModal: !this.state.showShareModal });
+    this.setState((prev) => ({ showShareModal: !prev.showShareModal }));
   };
 
   copyQuestionContent = () => {
-    const contentToCopy = `${this.props.content}\nMore on https://jous.app`;
-    navigator.clipboard.writeText(contentToCopy)
-      .then(() => {
-        alert("Content copied to clipboard!");
-      })
-      .catch(() => {
-        alert("Failed to copy content to clipboard.");
-      });
+    const content = `${this.props.content}\nMore on https://jous.app`;
+    navigator.clipboard.writeText(content)
+      .then(() => alert("Copied!"))
+      .catch(() => alert("Failed to copy!"));
 
-    ReactGA.event({
-      category: 'share',
-      action: 'copy question',
-      label: "copy_button",
-    });
+    ReactGA.event({ category: "share", action: "copy question", label: "copy_button" });
   };
 
   render() {
     const contentFont = getFontForCards(this.props.content);
-    const cardStyle = { minHeight: this.state.minHeight };
-    const buttonStyle = { boxShadow: "none", background: "transparent" };
-    const iconStyle = { color: "rgba(0, 0, 0, 0.6)" };
-    const labelStyle = { border: "none", background: "none", paddingLeft: "5px" };
 
     return (
       <>
-        <div className="ui fluid card" id={this.props.id} style={cardStyle}>
-          <div
-            className="content"
-            onClick={this.routeToQuestion}
-            style={{ display: "flex", flexDirection: "column", height: "100%" }}
-          >
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "auto" }}>
-              <div className="right floated meta">
-                {moment(this.props.time, "ddd, DD MMM YYYY h:mm:ss").format("DD MMM YYYY")}
-              </div>
-              <div className="left floated meta" onClick={this.routeToAuthor}>
-                {this.props.author}
-              </div>
-            </div>
-            <div
-              className="center aligned description"
-              style={{
-                flexGrow: 1,
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-              }}
-            >
-              <p style={{ fontFamily: contentFont }}>{this.props.content}</p>
-            </div>
+        <div className="tweet-card-parisian" onClick={this.routeToQuestion}>
+          <div className="bg-ornament" />
+          <div className="tweet-header-parisian">
+            <span className="tweet-time-parisian">
+              {moment(this.props.time, "ddd, DD MMM YYYY h:mm:ss").format("DD MMM YYYY")}
+            </span>
+            <span className="tweet-author-parisian" onClick={this.routeToAuthor}>
+              {this.props.author}
+            </span>
           </div>
-          <div className="extra content">
-            <div className="ui mini icon buttons">
-              <div className="ui labeled button" tabIndex="0" data-tooltip="like">
-                <div
-                  className="ui icon button circular"
-                  onClick={this.likeTweet}
-                  style={buttonStyle}
-                  onMouseOver={(e) => (e.currentTarget.style.boxShadow = "0 0 0 2px #ffff inset")}
-                  onMouseOut={(e) => (e.currentTarget.style.boxShadow = "none")}
-                >
-                  <i className="heart icon" style={iconStyle}></i>
-                </div>
-                <a className="ui basic label" style={labelStyle}>
-                  {this.state.likes}
-                </a>
+          <div className="tweet-content-parisian">
+            <p style={{ fontFamily: contentFont }}>{this.props.content}</p>
+          </div>
+          <div className="tweet-footer-parisian">
+            <div className="parisian-buttons">
+              <div className="action-btn" onClick={this.likeTweet}>
+                <i className="heart icon"></i><span>{this.state.likes}</span>
               </div>
-              <div className="ui labeled button" tabIndex="0" data-tooltip="answer">
-                <div
-                  className="ui icon button circular"
-                  onClick={this.routeToQuestion}
-                  style={buttonStyle}
-                  onMouseOver={(e) => (e.currentTarget.style.boxShadow = "0 0 0 2px #ffff inset")}
-                  onMouseOut={(e) => (e.currentTarget.style.boxShadow = "none")}
-                >
-                  <i className="reply icon" style={iconStyle}></i>
-                </div>
-                <a className="ui basic label" style={labelStyle}>
-                  {this.props.answers}
-                </a>
+              <div className="action-btn" onClick={this.routeToQuestion}>
+                <i className="reply icon"></i><span>{this.props.answers}</span>
               </div>
-              <div className="ui basic button" data-tooltip="share" onClick={this.toggleShareModal}>
+              <div className="action-btn" onClick={this.toggleShareModal}>
                 <i className="share alternate icon"></i>
               </div>
-              <div className="ui labeled button" tabIndex="0" data-tooltip="copy">
-                <div
-                  className="ui icon button circular"
-                  onClick={this.copyQuestionContent}
-                  style={buttonStyle}
-                  onMouseOver={(e) => (e.currentTarget.style.boxShadow = "0 0 0 2px #ffff inset")}
-                  onMouseOut={(e) => (e.currentTarget.style.boxShadow = "none")}
-                >
-                  <i className="copy icon" style={iconStyle}></i>
-                </div>
-                <a className="ui basic label" style={labelStyle}>
-                </a>
+              <div className="action-btn" onClick={this.copyQuestionContent}>
+                <i className="copy icon"></i>
               </div>
               {this.props.isOwner && (
-                <button className="ui basic button" onClick={this.deleteTweet}>
+                <div className="action-btn" onClick={this.deleteTweet}>
                   <i className="trash alternate outline icon"></i>
-                </button>
+                </div>
               )}
             </div>
           </div>
@@ -187,5 +118,3 @@ class TweetItem2 extends React.Component {
     );
   }
 }
-
-export default TweetItem2;
