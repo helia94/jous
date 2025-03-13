@@ -173,7 +173,7 @@ class MainPage extends React.Component {
             height={Math.max(this.state.height - 200, 300)}
           >
             {this.state.tweets.map((item, index) => (
-              <div className="event" key={item.id || index}>
+              <div className="event" style = {{padding:"1rem"}} key={item.id || index}>
                 <TweetItem2
                   id={item.id}
                   content={item.content}
