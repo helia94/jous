@@ -95,7 +95,7 @@ const Random = () => {
   const currentQuestion = questions[0];
   const fallbackMessage = "No question left after filters, try something else.";
   const contentFont = getFontForCards(fallbackMessage);
-  const maxWidth = windowWidth < 768 ? '95%' : '500';
+  const maxWidth = windowWidth < 768 ? '98%' : '500';
 
   return (
     <>
@@ -119,7 +119,7 @@ const Random = () => {
                 timeout={300}
                 classNames="slide"
               >
-                <div className="tweet-container" style={{ padding: "1rem" }}>
+                <div className="tweet-container" >
                   <TweetItem2
                     id={currentQuestion.question.id}
                     content={currentQuestion.question.content}
