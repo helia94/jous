@@ -131,39 +131,38 @@ const ShareModal = ({ content, id, selectedLanguageFrontendCode, onClose }) => {
     });
 };
 
-  return (
-    <div className="ui dimmer modals visible active" onClick={onClose}>
-      <div
-        className="ui standard modal visible active"
-        onClick={(e) => e.stopPropagation()}
-        style={{ maxWidth: "400px", margin: "auto" }}
-      >
-        <div className="header">Share This Question</div>
-        <div className="content share-modal" style={{ textAlign: "center" }}>
-          <button className="ui button" onClick={copyQuestionAddressToClipboard}>
-            Copy Link
-          </button>
-          <button className="ui button" onClick={shareToInstagram}>
-            Instagram
-          </button>
-          <button className="ui button" onClick={shareToX}>
-            X
-          </button>
-          <button className="ui button" onClick={shareToTelegram}>
-            Telegram
-          </button>
-          <button className="ui button" onClick={shareToWhatsApp}>
-            WhatsApp
-          </button>
-        </div>
-        <div className="actions">
-          <div className="ui button" onClick={onClose}>
-            Close
-          </div>
-        </div>
+return (
+  <div className="c-modal" onClick={onClose}>
+    <div
+      className="c-modal-content"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <div className="c-modal-header">Share This Question</div>
+      <div style={{ textAlign: "center", marginBottom: "1rem" }}>
+        <button className="c-button" onClick={copyQuestionAddressToClipboard}>
+          Copy Link
+        </button>
+        <button className="c-button" onClick={shareToInstagram}>
+          Instagram
+        </button>
+        <button className="c-button" onClick={shareToX}>
+          X
+        </button>
+        <button className="c-button" onClick={shareToTelegram}>
+          Telegram
+        </button>
+        <button className="c-button" onClick={shareToWhatsApp}>
+          WhatsApp
+        </button>
+      </div>
+      <div style={{ textAlign: "center" }}>
+        <button className="c-button" onClick={onClose}>
+          Close
+        </button>
       </div>
     </div>
-  );
+  </div>
+);
 };
 
 export default ShareModal;

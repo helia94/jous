@@ -1,3 +1,5 @@
+/* =====================[ TweetItem2.css ]===================== */
+/* Keeping distinct tweet card style but referencing new classes as needed */
 .tweet-card {
   position: relative;
   max-width: 600px;
@@ -72,7 +74,6 @@
 .tweet-footer {
   border-top: 1px solid #000;
   padding-top: 10px;
-  
 }
 
 .action-buttons {
@@ -82,7 +83,6 @@
   font-size: 1rem;
   font-family: "BreamcatcherRegular", cursive;
 }
-
 .action-btn {
   display: flex;
   align-items: center;
@@ -108,11 +108,5 @@
     right: -40px;
     width: 150px;
     height: 150px;
-  }
-  .tweet-header {
-    font-size: 1rem;
-  }
-  .tweet-content {
-    font-size: 1.5rem;
   }
 }

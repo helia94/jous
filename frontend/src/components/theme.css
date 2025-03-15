@@ -24,58 +24,138 @@
 }
 
 
-  
-
-body.dark {
-    background-color: #333;
-    color: #fff;
-}
-
-body.dark .w3-blue {
-    background-color: #494949 !important;
-    color: #fff !important;
-}
-
-body.dark .w3-card, body.dark .w3-card-4 {
-    background-color: #6d6d6d !important;
-    color: #fff !important;
-}
-
-body.dark .w3-light-gray {
-    background-color: #102027 !important;
-    color: #fff !important;
-}
-
-body.dark button.w3-pink {
-    background-color: #512da8 !important;
-    color: #fff !important;
-}
-
-.impressum-footer {
-    position: fixed;
-    bottom: 5px;
-    width: 100%;
-    text-align: center;
-    font-size: 12px;
-    opacity: 0.3;
-    transition: opacity 0.3s;
-}
-
-.impressum-footer:hover {
-    opacity: 1;
-}
 
 
-.yellow {
-    background-color: #fbbd08 !important;
-
-}
-
+/* Global text, background */
 html, body {
   margin: 0;
   padding: 0;
   background-color: #fff;
   color: #000;
+  font-family: "Vazirmatn RD", sans-serif;
 }
 
-/* You can add more global styles here */
+/* Utility classes for general layout: cards, modals, forms, buttons */
+.c-card {
+  position: relative;
+  max-width: 600px;
+  margin: 1rem auto;
+  background: #fff;
+  border: 2px solid #000;
+  border-radius: 12px;
+  padding: 1rem;
+  overflow: hidden;
+  box-shadow: 0px 2px 6px rgba(0,0,0,0.2);
+  transition: transform 0.2s ease;
+}
+.c-card:hover {
+  transform: scale(1.01);
+}
+
+.c-modal {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex; 
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+.c-modal-content {
+  background: #fff;
+  border: 2px solid #000;
+  border-radius: 12px;
+  max-width: 400px;
+  width: 90%;
+  padding: 1.5rem;
+  position: relative;
+  box-shadow: 0px 2px 8px rgba(0,0,0,0.3);
+}
+.c-modal-header {
+  font-family: "Limelight", cursive;
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.c-button {
+  cursor: pointer;
+  border: 2px solid #000;
+  background: #000;
+  border-radius: 8px;
+  font-family: "Limelight", sans-serif;
+  padding: 0.5rem 0.75rem;
+  margin: 0.25rem;
+  color: #fff;
+  font-size: 1.3rem;
+}
+.c-button:hover {
+  color: #000;
+  background: #fff;
+  padding: 0.3rem;
+}
+
+.c-form .c-field {
+  margin-bottom: 1rem;
+}
+.c-form textarea {
+  width: 100%;
+  min-height: 80px;
+  border: 2px solid #000;
+  border-radius: 8px;
+  padding: 0.5rem;
+  font-family: "Poiret One", sans-serif;
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+.c-form-error {
+  color: red;
+  font-size: 0.9rem;
+  margin: 0.25rem 0;
+}
+
+/* Headings in the new style */
+.c-heading {
+  font-family: "Limelight", cursive;
+  text-align: center;
+  font-size: 4rem;
+  margin-top: 3rem;
+  text-align: "center";
+  padding: "0";
+}
+
+/* Keep the ornamental deco style for general usage if needed */
+.ornamental-deco {
+  position: absolute;
+  width: 180px;
+  height: 180px;
+  background: url("https://via.placeholder.com/180x180/FFFFFF/000000?text=Ornament") no-repeat center center;
+  background-size: contain;
+  opacity: 0.08;
+  pointer-events: none;
+}
+
+/* Dark mode references left alone if needed */
+body.dark {
+  background-color: #333;
+  color: #fff;
+}
+
+/* ============  Use the same fonts from TweetItem2  =========== */
+.poiret-one {
+  font-family: "Poiret One", sans-serif;
+}
+.limelight {
+  font-family: "Limelight", sans-serif;
+}
+
+
+@media screen and (max-width: 600px) {
+
+  .c-heading {
+    font-size: 2rem;
+    margin: 2.0rem;
+  }
+
+}

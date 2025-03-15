@@ -60,55 +60,52 @@ class AddTweet extends React.Component {
 
     render() {
         const { onClose } = this.props;
-        
+    
         return (
-            <div className="ui fluid card" id="addTweet">
-                <div className="extra content">
-                    <div className="right floated meta">
-                        <span 
-                            className="w3-button w3-display-topright w3-hover-none w3-hover-text-white" 
-                            onClick={onClose}
-                        >
-                            X
-                        </span>
-                    </div>
-                    <div className="left floated meta">
-                        Add a question
-                    </div>
-                    <p></p>
-                    <form className="ui form" onSubmit={this.submitForm} id="submit-form">
-                        <div className="field">
-                            <textarea 
-                                rows="3" 
-                                value={this.state.content} 
-                                onChange={this.handleInputChange}
-                            ></textarea>
-                        </div>
-                        {this.state.contentErr && <div className="ui pointing red basic label">{this.state.contentErr}</div>}
-                        {this.state.formErr && <div className="ui pointing red basic label">{this.state.formErr}</div>}
-                        <div className="ui mini buttons">
-                            {this.state.isLoggedIn && 
-                                <button 
-                                    type="submit" 
-                                    className="ui black submit icon button" 
-                                    onClick={() => this.setState({ anon: 'False' })}
-                                >
-                                    <i className="icon edit"></i>
-                                </button>
-                            }
-                            <button 
-                                type="submit" 
-                                className="ui black submit icon button" 
-                                onClick={() => this.setState({ anon: 'True' })}
-                            >
-                                <i className="user secret icon"></i>
-                            </button>
-                        </div>
-                    </form>
-                </div>
+          <div className="c-card" id="addTweet">
+            <div style={{ textAlign: "right" }}>
+              <span 
+                style={{ cursor: "pointer", fontWeight: "bold" }}
+                onClick={onClose}
+              >
+                X
+              </span>
             </div>
-        )
+            <div style={{ fontFamily: "Limelight", fontSize: "1.2rem", marginBottom: "1rem" }}>
+              Add a question
+            </div>
+            <form className="c-form" onSubmit={this.submitForm} id="submit-form">
+              <div className="c-field">
+                <textarea
+                  rows="3"
+                  value={this.state.content}
+                  onChange={this.handleInputChange}
+                />
+              </div>
+              {this.state.contentErr && <div className="c-form-error">{this.state.contentErr}</div>}
+              {this.state.formErr && <div className="c-form-error">{this.state.formErr}</div>}
+              <div>
+                {this.state.isLoggedIn && (
+                  <button
+                    type="submit"
+                    className="c-button"
+                    onClick={() => this.setState({ anon: "False" })}
+                  >
+                    <i className="icon edit"></i>
+                  </button>
+                )}
+                <button
+                  type="submit"
+                  className="c-button"
+                  onClick={() => this.setState({ anon: "True" })}
+                >
+                  <i className="user secret icon"></i>
+                </button>
+              </div>
+            </form>
+          </div>
+        );
+      }
     }
-}
-
-export default AddTweet;
+    
+    export default AddTweet;

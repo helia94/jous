@@ -27,8 +27,6 @@ class MainPage extends React.Component {
       page: 0,
       width: 500,
       height: 600,
-      windowWidth: window.innerWidth,
-      windowHeight: window.innerHeight,
       showAddQuestion: false,
       selectedLanguageFrontendCode: selectedLanguage.frontend_code,
       selectedLanguageBackendCode: selectedLanguage.backend_code
@@ -138,58 +136,60 @@ class MainPage extends React.Component {
         })}
         </script>
       </Helmet> 
-      <div style={{justifyItems: "center"}}>
-        
-      <ConfettiBackground />
-        <div
-          className="ui basic segment"
-          style={{
-            width: Math.min(this.state.width * 0.95, 768),
-            position: "relative",
-            zIndex: 1,
-          }}
-        >
-          <h1>Home</h1>
-          {!this.state.showAddQuestion && (
-            <div className="ui tiny black button" onClick={this.toggleShowAddQuestion}>
-              Add a question
-            </div>
-          )}
-          {this.state.showAddQuestion && (
-            <AddTweet onClose={this.toggleShowAddQuestion} onAdd={this.addNewTweet} />
-          )}
-          <div className="ui hidden divider"></div>
-          <InfiniteScroll
-            dataLength={this.state.tweets.length}
-            next={this.fetchMoreData}
-            hasMore={this.state.hasMore}
-            loader={<h4>Loading...</h4>}
-            endMessage={
-              <p style={{ textAlign: "center" }}>
-                <b>The end.</b>
-              </p>
-            }
-            useWindow={false}
-            height={Math.max(this.state.height - 200, 300)}
+      <div style={{ justifyItems: "center" }}>
+          <ConfettiBackground />
+          <div
+            style={{
+              maxWidth: Math.min(this.state.width * 0.95, 768),
+              position: "relative",
+              zIndex: 1,
+            }}
           >
-            {this.state.tweets.map((item, index) => (
-              <div className="event" style = {{padding:"1rem"}} key={item.id || index}>
-                <TweetItem2
-                  id={item.id}
-                  content={item.content}
-                  author={item.username}
-                  time={item.time}
-                  likes={item.like_number}
-                  answers={item.answer_number}
-                  isOwner={this.state.currentUser.username === item.username}
-                  isLoggedIn={this.state.login}
-                  selectedLanguageFrontendCode={this.state.selectedLanguageFrontendCode}
-                />
-              </div>
-            ))}
-          </InfiniteScroll>
+            <h1  className="c-heading" >Home</h1>
+            {!this.state.showAddQuestion && (
+              <button className="c-button" onClick={this.toggleShowAddQuestion}>
+                Add a question
+              </button>
+            )}
+            {this.state.showAddQuestion && (
+              <AddTweet
+                onClose={this.toggleShowAddQuestion}
+                onAdd={this.addNewTweet}
+              />
+            )}
+            <InfiniteScroll
+              dataLength={this.state.tweets.length}
+              next={this.fetchMoreData}
+              hasMore={this.state.hasMore}
+              loader={<h4>Loading...</h4>}
+              endMessage={
+                <p style={{ textAlign: "center" }}>
+                  <b>The end.</b>
+                </p>
+              }
+              useWindow={false}
+              height={Math.max(this.state.height - 200, 300)}
+            >
+              {this.state.tweets.map((item, index) => (
+                <div style={{ padding: "0rem", marginBottom: "2rem" }} key={item.id || index}>
+                  <TweetItem2
+                    id={item.id}
+                    content={item.content}
+                    author={item.username}
+                    time={item.time}
+                    likes={item.like_number}
+                    answers={item.answer_number}
+                    isOwner={this.state.currentUser.username === item.username}
+                    isLoggedIn={this.state.login}
+                    selectedLanguageFrontendCode={
+                      this.state.selectedLanguageFrontendCode
+                    }
+                  />
+                </div>
+              ))}
+            </InfiniteScroll>
+          </div>
         </div>
-      </div>
       </React.Fragment>
     );
   }

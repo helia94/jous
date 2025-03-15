@@ -6,7 +6,6 @@ import { Helmet } from "react-helmet";
 import { LanguageContext } from "./LanguageContext";
 import { FilterContext } from "./FilterContext";
 import { getFontForCards } from "./FontUtils";
-import { Container, Segment, Header, Card, Button } from "semantic-ui-react";
 import { useSwipeable } from "react-swipeable";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import SwipePopup from "./SwipePopup";
@@ -26,7 +25,9 @@ const Random = () => {
   const [questions, setQuestions] = useState([]);
   const [showPopup, setShowPopup] = useState(true);
   const [showNoQuestion, setShowNoQuestion] = useState(false);
-  const isMobile = window.innerWidth < 768;
+  const isMobile = window.innerWidth < 768;  
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
 
   const fetchQuestions = async () => {
     try {
@@ -43,6 +44,18 @@ const Random = () => {
       // Should double check error handling
     }
   };
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   useEffect(() => {
     setQuestions([]);
@@ -82,17 +95,21 @@ const Random = () => {
   const currentQuestion = questions[0];
   const fallbackMessage = "No question left after filters, try something else.";
   const contentFont = getFontForCards(fallbackMessage);
+  const maxWidth = windowWidth < 768 ? '95%' : '500';
 
   return (
     <>
       <Helmet>
         <title>Random</title>
       </Helmet>
-      <Segment inverted color="yellow" textAlign="center">
-        <Header as="h1">Random Jous</Header>
-      </Segment>
+        <h1 className="c-heading" style={{ position: "relative", zIndex: 1}}>Random Jous</h1>
       <ConfettiBackground />
-      <Container className="random-container" style={{ position: 'relative', zIndex: 1 }}>
+      <div
+        className="random-container"
+        style={{ position: "relative", 
+          zIndex: 1,
+          maxWidth: maxWidth }}
+      >
         {isMobile && showPopup && <SwipePopup onClose={() => setShowPopup(false)} />}
         <div className="event" {...swipeHandlers}>
           <TransitionGroup>
@@ -102,7 +119,7 @@ const Random = () => {
                 timeout={300}
                 classNames="slide"
               >
-                <div className="tweet-container">
+                <div className="tweet-container" style={{ padding: "1rem" }}>
                   <TweetItem2
                     id={currentQuestion.question.id}
                     content={currentQuestion.question.content}
@@ -118,24 +135,22 @@ const Random = () => {
             ) : (
               showNoQuestion && (
                 <CSSTransition key="no-question" timeout={300} classNames="slide">
-                  <div className="tweet-container">
-                    <Card fluid>
-                      <Card.Content>
-                        <Card.Description textAlign="center">
-                          <p style={{ fontFamily: contentFont }}>{fallbackMessage}</p>
-                        </Card.Description>
-                      </Card.Content>
-                    </Card>
+                  <div className="tweet-container" style={{ padding: "1rem" }}>
+                    <div className="c-card">
+                      <p style={{ fontFamily: getFontForCards(fallbackMessage), textAlign: "center" }}>
+                        {fallbackMessage}
+                      </p>
+                    </div>
                   </div>
                 </CSSTransition>
               )
             )}
           </TransitionGroup>
         </div>
-        <Button color="#fff" onClick={nextQuestion} className="mobile-next-button">
+        <button className="c-button mobile-next-button" onClick={nextQuestion} style={{ margin: "1rem auto", display: "block", zIndex: 1 }}>
           Next
-        </Button>
-      </Container>
+        </button>
+      </div>
     </>
   );
 };

@@ -77,7 +77,7 @@ export default class TweetItem2 extends React.Component {
     const cardStyle = { minHeight: this.state.minHeight };
     return (
       <>
-        <div className="tweet-card" onClick={this.routeToQuestion} style={cardStyle}>
+        <div className="tweet-card"  style={cardStyle}>
           <div className="bg-ornament" />
           <div className="tweet-header">
             <span className="tweet-time">
@@ -87,7 +87,7 @@ export default class TweetItem2 extends React.Component {
               {this.props.author}
             </span>
           </div>
-          <div className="tweet-content">
+          <div className="tweet-content" onClick={this.routeToQuestion}>
             <p style={{ fontFamily: contentFont }}>{this.props.content}</p>
           </div>
           <div className="tweet-footer">

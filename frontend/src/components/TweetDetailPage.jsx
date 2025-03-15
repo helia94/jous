@@ -6,6 +6,7 @@ import TweetItem2 from "./TweetItem2";
 import { Helmet } from 'react-helmet';
 import { LanguageContext } from "./LanguageContext";
 import { getFontForCards } from './FontUtils';
+import ConfettiBackground from "./ConfettiBackground"
 
 class TweetDetailPage extends React.Component {
   static contextType = LanguageContext;
@@ -32,6 +33,9 @@ class TweetDetailPage extends React.Component {
   }
 
   componentDidMount() {
+    window.addEventListener('resize', this.updateDimensions);
+    this.setState({ width: window.innerWidth, height: window.innerHeight });
+
     Axios.get("/api/question/" + this.props.match.params.question, {
       params: {
         language_id: this.state.selectedLanguageBackendCode
@@ -56,9 +60,18 @@ class TweetDetailPage extends React.Component {
       }
     }, 20);
 
-    this.setState({ width: window.innerWidth, height: window.innerHeight });
     window.addEventListener('resize', this.updateDimensions);
+    this.setState({ width: window.innerWidth, height: window.innerHeight });
   }
+
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.updateDimensions);
+  }
+
+  updateDimensions = () => {
+    this.setState({ width: window.innerWidth, height: window.innerHeight });
+  };
 
   handleFormSubmit = (e) => {
     e.preventDefault();
@@ -123,7 +136,7 @@ class TweetDetailPage extends React.Component {
 
   render() {
     return (
-      <React.Fragment>
+      <>
         <Helmet>
           <title>{`Question ${this.state.question.id}`}</title>
           <link
@@ -131,57 +144,68 @@ class TweetDetailPage extends React.Component {
             href={`https://jous.app/question/${this.state.question.id}`}
           />
         </Helmet>
-        <div className="ui basic segment" style={{ width: Math.min(this.state.width * 0.9, 500) }}>
+      <ConfettiBackground />
+        <div className="Questin-and-Answer"
+        style={{ maxWidth: Math.min(this.state.width, 500), 
+          margin: "0 auto", 
+          padding: "1rem", 
+          position: "relative", 
+          zIndex: 1  }}
+        >
           {this.renderTweetItem(this.state.question)}
-          <div className="ui comments">
-            <h3 className="ui dividing header">Answers</h3>
+          <div style={{ marginTop: "1rem" }}>
+            <h3 style={{ fontFamily: "Limelight", marginBottom: "1rem" }}>Answers</h3>
             {this.state.answers.map((item, index) => {
               return (
-                <div className="comment" key={index}>
-                  <div className="content">
-                    <a className="author" href={"/user/" + item.username}>
+                <div key={index} style={{ margin: "1rem 0" }}>
+                  <div style={{ marginBottom: "0.3rem", fontFamily:"Limelight" }}>
+                    <a style={{ textDecoration: "underline" }} href={"/user/" + item.username}>
                       {item.username}
                     </a>
-                    <div className="metadata">
-                      <span className="date">
-                        {moment(item.time, 'ddd, DD MMM YYYY h:mm:ss').format('DD MMM')}
-                      </span>
-                    </div>
-                    <p style={{fontFamily: getFontForCards(item.content)}}>{item.content}</p>
+                    <span style={{ marginLeft: "1rem", opacity: 0.7, fontFamily:"Limelight" }}>
+                      {moment(item.time, "ddd, DD MMM YYYY h:mm:ss").format("DD MMM")}
+                    </span>
                   </div>
+                  <p style={{ fontFamily: getFontForCards(item.content), fontWeight: "800", fontSize: "1.5rem" }}>
+                    {item.content}
+                  </p>
                 </div>
               );
             })}
           </div>
-          <form className="ui reply form" onSubmit={this.handleFormSubmit} id="submit-form">
-            <div className="field" value={this.state.newAnswer} onChange={this.handleInputChange}>
-              <textarea style={{fontFamily: getFontForCards(this.state.newAnswer)}} value={this.state.newAnswer} />
+          <form className="c-form" onSubmit={this.handleFormSubmit} id="submit-form">
+            <div className="c-field">
+              <textarea
+                style={{ fontFamily: getFontForCards(this.state.newAnswer) }}
+                value={this.state.newAnswer}
+                onChange={this.handleInputChange}
+              />
             </div>
-            <div className="ui buttons">
+            <div>
               {this.state.isLoggedIn && (
                 <button
                   type="submit"
-                  className="ui black submit icon button"
-                  data-tooltip="add answer"
-                  onClick={() => this.setState({ anon: 'False' })}
+                  className="c-button"
+                  onClick={() => this.setState({ anon: "False" })}
+                  style={{ marginRight: "0.5rem" }}
                 >
                   <i className="icon edit"></i>
                 </button>
               )}
               <button
                 type="submit"
-                className="ui black submit icon button"
-                data-tooltip="add answer anonymously"
-                onClick={() => this.setState({ anon: 'True' })}
+                className="c-button"
+                onClick={() => this.setState({ anon: "True" })}
               >
                 <i className="user secret icon"></i>
               </button>
             </div>
           </form>
         </div>
-      </React.Fragment>
+      </>
     );
   }
 }
+
 
 export default TweetDetailPage;

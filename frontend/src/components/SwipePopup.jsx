@@ -12,7 +12,7 @@ const SwipePopup = ({ onClose }) => {
   return (
     <div className="swipe-popup">
       <div className="finger-icon">
-      <i class="hand point up icon"></i>
+      <i className="hand point up icon"></i>
       </div>
       <p>Swipe right to left</p>
     </div>
