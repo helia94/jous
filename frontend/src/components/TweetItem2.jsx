@@ -13,10 +13,18 @@ export default class TweetItem2 extends React.Component {
     super(props);
     this.state = {
       likes: Number(props.likes) || 0,
+      mobile: false,
+      minHeight: 0,
       showShareModal: false,
     };
   }
 
+
+  componentDidMount() {
+    if (window.innerWidth < 450) {
+      this.setState({ mobile: true, minHeight: 350 });
+    }
+  }
   componentDidUpdate(prevProps) {
     if (prevProps.likes !== this.props.likes) {
       this.setState({ likes: Number(this.props.likes) });
@@ -36,7 +44,7 @@ export default class TweetItem2 extends React.Component {
       headers: { Authorization: "Bearer " + localStorage.getItem("token") },
     }).then((res) => {
       if (res.data.success) {
-        this.setState((prev) => ({ likes: prev.likes + 1 }));
+        this.setState((prevState) => ({ likes: prevState.likes + 1 }));
       }
     });
   };
@@ -52,7 +60,7 @@ export default class TweetItem2 extends React.Component {
 
   toggleShareModal = (e) => {
     e.stopPropagation();
-    this.setState((prev) => ({ showShareModal: !prev.showShareModal }));
+    this.setState({ showShareModal: !this.state.showShareModal });
   };
 
   copyQuestionContent = () => {
@@ -66,24 +74,24 @@ export default class TweetItem2 extends React.Component {
 
   render() {
     const contentFont = getFontForCards(this.props.content);
-
+    const cardStyle = { minHeight: this.state.minHeight };
     return (
       <>
-        <div className="tweet-card-parisian" onClick={this.routeToQuestion}>
+        <div className="tweet-card" onClick={this.routeToQuestion} style={cardStyle}>
           <div className="bg-ornament" />
-          <div className="tweet-header-parisian">
-            <span className="tweet-time-parisian">
+          <div className="tweet-header">
+            <span className="tweet-time">
               {moment(this.props.time, "ddd, DD MMM YYYY h:mm:ss").format("DD MMM YYYY")}
             </span>
-            <span className="tweet-author-parisian" onClick={this.routeToAuthor}>
+            <span className="tweet-author" onClick={this.routeToAuthor}>
               {this.props.author}
             </span>
           </div>
-          <div className="tweet-content-parisian">
+          <div className="tweet-content">
             <p style={{ fontFamily: contentFont }}>{this.props.content}</p>
           </div>
-          <div className="tweet-footer-parisian">
-            <div className="parisian-buttons">
+          <div className="tweet-footer">
+            <div className="action-buttons">
               <div className="action-btn" onClick={this.likeTweet}>
                 <i className="heart icon"></i><span>{this.state.likes}</span>
               </div>

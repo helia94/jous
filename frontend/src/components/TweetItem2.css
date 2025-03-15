@@ -1,33 +1,20 @@
-/* TweetItem2.css */
-
-@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Parisienne&display=swap");
-
-@font-face {
-  font-family: 'Vazirmatn RD';
-  src: url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Round-Dots/fonts/webfonts/Vazirmatn-RD[wght].woff2')
-      format('woff2 supports variations'),
-    url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Round-Dots/fonts/webfonts/Vazirmatn-RD[wght].woff2')
-      format('woff2-variations');
-  font-weight: 100 900;
-  font-style: normal;
-  font-display: swap;
-}
-
-/* Card */
-.tweet-card-parisian {
+.tweet-card {
   position: relative;
   max-width: 600px;
   margin: 30px auto;
   background: #fff;
-  color: #000;
   border: 2px solid #000;
   border-radius: 12px;
   padding: 20px;
   overflow: hidden;
   cursor: pointer;
   transition: transform 0.2s ease;
+  box-shadow: #555;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
-.tweet-card-parisian:hover {
+.tweet-card:hover {
   transform: scale(1.02);
 }
 
@@ -38,7 +25,8 @@
   right: -60px;
   width: 200px;
   height: 200px;
-  background: url("https://via.placeholder.com/200x200/FFFFFF/000000?text=Ornament") no-repeat center center;
+  background: url("https://via.placeholder.com/200x200/FFFFFF/000000?text=Ornament")
+    no-repeat center center;
   background-size: contain;
   opacity: 0.1;
   transform: rotate(15deg);
@@ -46,49 +34,53 @@
 }
 
 /* Header */
-.tweet-header-parisian {
+.tweet-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-family: "Parisienne", cursive;
+  font-family: "Limelight", cursive;
   font-size: 1.2rem;
   margin-bottom: 10px;
 }
 
-.tweet-time-parisian {
+.tweet-time {
   opacity: 0.8;
   font-size: 0.9rem;
+  font-family: "Limelight", sans-serif;
 }
 
-.tweet-author-parisian {
+.tweet-author {
   font-weight: bold;
   text-decoration: underline;
   transition: color 0.2s;
 }
-.tweet-author-parisian:hover {
+.tweet-author:hover {
   color: #555;
 }
 
 /* Content */
-.tweet-content-parisian {
-  font-family: "Playfair Display", serif;
-  font-size: 1.2rem;
+.tweet-content {
+  font-size: 2rem;
   line-height: 1.6;
   margin-bottom: 16px;
+  font-family: "Poiret One", sans-serif;
+  font-weight: 800;
+  flex-grow: 1;
 }
 
 /* Footer */
-.tweet-footer-parisian {
+.tweet-footer {
   border-top: 1px solid #000;
   padding-top: 10px;
+  
 }
 
-.parisian-buttons {
+.action-buttons {
   display: flex;
   gap: 15px;
   align-items: center;
-  font-family: "Playfair Display", serif;
   font-size: 1rem;
+  font-family: "BreamcatcherRegular", cursive;
 }
 
 .action-btn {
@@ -105,23 +97,9 @@
   color: #fff;
 }
 
-/* Share Modal Buttons */
-.share-modal .ui.button {
-  margin: 10px;
-  border: 2px solid #000;
-  border-radius: 10px;
-  background: #fff;
-  color: #000;
-  transition: background 0.2s;
-}
-.share-modal .ui.button:hover {
-  background: #000;
-  color: #fff;
-}
-
 /* Responsive */
 @media screen and (max-width: 600px) {
-  .tweet-card-parisian {
+  .tweet-card {
     margin: 20px;
     padding: 15px;
   }
@@ -131,10 +109,10 @@
     width: 150px;
     height: 150px;
   }
-  .tweet-header-parisian {
+  .tweet-header {
     font-size: 1rem;
   }
-  .tweet-content-parisian {
-    font-size: 1rem;
+  .tweet-content {
+    font-size: 1.5rem;
   }
 }
