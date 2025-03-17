@@ -4,7 +4,7 @@ import ReactGA from "react-ga4";
 import Axios from "axios";
 import moment from "moment";
 import "./TweetItem2.css";
-import { getFontForCards } from "./FontUtils";
+import { getFontClassForCards } from "./FontUtils";
 
 const ShareModal = lazy(() => import("./ShareModal"));
 
@@ -73,7 +73,7 @@ export default class TweetItem2 extends React.Component {
   };
 
   render() {
-    const contentFont = getFontForCards(this.props.content);
+    const contentFont = getFontClassForCards(this.props.content);
     const cardStyle = { minHeight: this.state.minHeight };
     return (
       <>
@@ -87,8 +87,8 @@ export default class TweetItem2 extends React.Component {
               {this.props.author}
             </span>
           </div>
-          <div className="tweet-content" onClick={this.routeToQuestion}>
-            <p style={{ fontFamily: contentFont }}>{this.props.content}</p>
+          <div className={"tweet-content "+contentFont} onClick={this.routeToQuestion}>
+            <p >{this.props.content}</p>
           </div>
           <div className="tweet-footer">
             <div className="action-buttons">

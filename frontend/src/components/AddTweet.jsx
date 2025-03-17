@@ -1,6 +1,7 @@
 // AddTweet.jsx
 import React from "react";
 import Axios from "axios";
+import { getFontClassForCards } from "./FontUtils";
 
 class AddTweet extends React.Component {
     state = { 
@@ -77,6 +78,7 @@ class AddTweet extends React.Component {
             <form className="c-form" onSubmit={this.submitForm} id="submit-form">
               <div className="c-field">
                 <textarea
+                  className={getFontClassForCards(this.state.content)}
                   rows="3"
                   value={this.state.content}
                   onChange={this.handleInputChange}

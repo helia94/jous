@@ -4,17 +4,6 @@ import { Modal, Button } from "semantic-ui-react";
 import { useFilter } from "./FilterContext";
 import "./FilterModalCritical.css";
 
-// Lazy load full CSS
-const loadFullCSS = () => {
-  const existingLink = document.getElementById("filter-modal-full-css");
-  if (!existingLink) {
-    const link = document.createElement("link");
-    link.rel = "stylesheet";
-    link.href = "./FilterModalFull.css";
-    link.id = "filter-modal-full-css";
-    document.head.appendChild(link);
-  }
-};
 
 // Lazy load FilterGroup component
 const FilterGroup = lazy(() => import("./FilterGroup"));
@@ -34,12 +23,6 @@ const FilterModal = React.memo(({ open, onClose, languageId }) => {
       fetchAndSetFilters();
     }
   }, [open, fetchAndSetFilters]);
-
-  useEffect(() => {
-    if (open) {
-      loadFullCSS();
-    }
-  }, [open]);
 
   return (
     <Modal

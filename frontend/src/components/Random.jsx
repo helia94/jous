@@ -5,7 +5,7 @@ import TweetItem2 from "./TweetItem2";
 import { Helmet } from "react-helmet";
 import { LanguageContext } from "./LanguageContext";
 import { FilterContext } from "./FilterContext";
-import { getFontForCards } from "./FontUtils";
+import { getFontClassForCards } from "./FontUtils";
 import { useSwipeable } from "react-swipeable";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import SwipePopup from "./SwipePopup";
@@ -94,7 +94,6 @@ const Random = () => {
 
   const currentQuestion = questions[0];
   const fallbackMessage = "No question left after filters, try something else.";
-  const contentFont = getFontForCards(fallbackMessage);
   const maxWidth = windowWidth < 768 ? '98%' : '500';
 
   return (
@@ -136,8 +135,8 @@ const Random = () => {
               showNoQuestion && (
                 <CSSTransition key="no-question" timeout={300} classNames="slide">
                   <div className="tweet-container" style={{ padding: "1rem" }}>
-                    <div className="c-card">
-                      <p style={{ fontFamily: getFontForCards(fallbackMessage), textAlign: "center" }}>
+                    <div className={"c-card " + getFontClassForCards(fallbackMessage)}>
+                      <p style={{  textAlign: "center" }}>
                         {fallbackMessage}
                       </p>
                     </div>

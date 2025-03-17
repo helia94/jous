@@ -5,7 +5,7 @@ import moment from 'moment';
 import TweetItem2 from "./TweetItem2";
 import { Helmet } from 'react-helmet';
 import { LanguageContext } from "./LanguageContext";
-import { getFontForCards } from './FontUtils';
+import { getFontClassForCards } from './FontUtils';
 import ConfettiBackground from "./ConfettiBackground"
 
 class TweetDetailPage extends React.Component {
@@ -166,7 +166,7 @@ class TweetDetailPage extends React.Component {
                       {moment(item.time, "ddd, DD MMM YYYY h:mm:ss").format("DD MMM")}
                     </span>
                   </div>
-                  <p style={{ fontFamily: getFontForCards(item.content), fontWeight: "800", fontSize: "1.5rem" }}>
+                  <p className = {getFontClassForCards(item.content)} style={{fontSize: "1.5rem" }}>
                     {item.content}
                   </p>
                 </div>
@@ -176,7 +176,7 @@ class TweetDetailPage extends React.Component {
           <form className="c-form" onSubmit={this.handleFormSubmit} id="submit-form">
             <div className="c-field">
               <textarea
-                style={{ fontFamily: getFontForCards(this.state.newAnswer) }}
+                className={getFontClassForCards(this.state.newAnswer)}
                 value={this.state.newAnswer}
                 onChange={this.handleInputChange}
               />
