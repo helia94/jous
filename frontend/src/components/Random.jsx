@@ -94,7 +94,7 @@ const Random = () => {
 
   const currentQuestion = questions[0];
   const fallbackMessage = "No question left after filters, try something else.";
-  const maxWidth = windowWidth < 768 ? '98%' : '500';
+  const maxWidth = windowWidth < 768 ? '98%' : '500px';
 
   return (
     <>
