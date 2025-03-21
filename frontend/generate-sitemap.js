@@ -24,7 +24,7 @@ const paths = [
 
 const allPaths = paths.concat(blogPaths);
 
-const sitemapStream = new SitemapStream({ hostname: 'https://www.jous.app' });
+const sitemapStream = new SitemapStream({ hostname: 'https://jous.app' });
 
 streamToPromise(Readable.from(allPaths).pipe(sitemapStream)).then((sitemap) => {
     fs.writeFileSync('public/sitemap.xml', sitemap.toString());
