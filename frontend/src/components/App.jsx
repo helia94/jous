@@ -1,6 +1,7 @@
 import React, { useEffect, Suspense, lazy, useState } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import ReactGA from 'react-ga4';
+import { PostHogProvider } from 'posthog-js/react'
 
 // Providers
 import { LanguageProvider } from "./LanguageContext";
@@ -33,6 +34,11 @@ const Blog = lazy(() => import("./Blog"));
 const DatabaseBlogList = lazy(() => import("./DatabaseBlogList"));
 const DatabaseBlog = lazy(() => import("./DatabaseBlog"));
 
+
+const options = {
+  api_host: process.env.REACT_APP_PUBLIC_POSTHOG_HOST,
+}
+
 function App() {
     const [login, setLogin] = useState(false);
 
@@ -46,47 +52,54 @@ function App() {
     }, []);
 
     return (
-        <LanguageProvider>
-            <FilterProvider>
-                <React.Fragment>
-                    <Navbar style={{ position: 'relative', zIndex: 1 }} />
+        <React.StrictMode>
+            <PostHogProvider
+                apiKey={process.env.REACT_APP_PUBLIC_POSTHOG_KEY}
+                options={options}
+            >
+            <LanguageProvider>
+                <FilterProvider>
+                    <React.Fragment>
+                        <Navbar style={{ position: 'relative', zIndex: 1 }} />
 
-                    <Router>
-                        <Suspense fallback={<div>Loading...</div>}>
-                            <Switch>
-                                <Route path="/" exact>
-                                    {login ? <MainPage /> : <Homev2 />}
-                                </Route>
-                                <Route path="/home" component={MainPage} />
-                                <Route path="/random" component={Random} />
-                                <Route path="/user/:username" component={UserPage} />
-                                <Route path="/group/:groupname" component={GroupHome} />
-                                <Route path="/question/:question" component={TweetDetailPage} />
-                                <Route path="/login" exact component={Login} />
-                                <Route path="/register" exact component={Register} />
-                                <Route path="/logout" exact component={Logout} />
-                                <Route path="/bug" exact component={Bug} />
-                                <Route path="/impressum" exact component={Imprint} />
-                                <Route path="/blog" exact component={Blog} />
-                                <Route path="/more-blogs" exact component={DatabaseBlogList} />
-                                {DatabaseBlogData.map((post) => (
-                                    <Route
-                                        key={post.URL}
-                                        path={`/blog/${post.URL}`}
-                                        render={() => <DatabaseBlog url={post.URL} />}
-                                    />
-                                ))}
-                                <Route component={NotFound} />
-                            </Switch>
-                        </Suspense>
-                    </Router>
+                        <Router>
+                            <Suspense fallback={<div>Loading...</div>}>
+                                <Switch>
+                                    <Route path="/" exact>
+                                        {login ? <MainPage /> : <Homev2 />}
+                                    </Route>
+                                    <Route path="/home" component={MainPage} />
+                                    <Route path="/random" component={Random} />
+                                    <Route path="/user/:username" component={UserPage} />
+                                    <Route path="/group/:groupname" component={GroupHome} />
+                                    <Route path="/question/:question" component={TweetDetailPage} />
+                                    <Route path="/login" exact component={Login} />
+                                    <Route path="/register" exact component={Register} />
+                                    <Route path="/logout" exact component={Logout} />
+                                    <Route path="/bug" exact component={Bug} />
+                                    <Route path="/impressum" exact component={Imprint} />
+                                    <Route path="/blog" exact component={Blog} />
+                                    <Route path="/more-blogs" exact component={DatabaseBlogList} />
+                                    {DatabaseBlogData.map((post) => (
+                                        <Route
+                                            key={post.URL}
+                                            path={`/blog/${post.URL}`}
+                                            render={() => <DatabaseBlog url={post.URL} />}
+                                        />
+                                    ))}
+                                    <Route component={NotFound} />
+                                </Switch>
+                            </Suspense>
+                        </Router>
 
-                    <footer className="impressum-footer">
-                        <a href="/impressum">Impressum</a>
-                    </footer>
-                </React.Fragment>
-            </FilterProvider>
-        </LanguageProvider>
+                        <footer className="impressum-footer">
+                            <a href="/impressum">Impressum</a>
+                        </footer>
+                    </React.Fragment>
+                </FilterProvider>
+            </LanguageProvider>
+        </PostHogProvider>
+  </React.StrictMode >
     );
 }
 
