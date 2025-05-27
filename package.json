@@ -4,6 +4,8 @@
   "scripts": {
     "postinstall": "cd frontend && npm ci && npm run build",
     "analyze": "webpack --profile --json > stats.json && webpack-bundle-analyzer stats.json"
-    
+  },
+  "dependencies": {
+    "@openreplay/tracker": "^16.2.1"
   }
 }

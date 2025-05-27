@@ -1,6 +1,7 @@
 import React, { useEffect, Suspense, lazy, useState } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import ReactGA from 'react-ga4';
+import Tracker from '@openreplay/tracker';
 
 // Providers
 import { LanguageProvider } from "./LanguageContext";
@@ -32,6 +33,12 @@ const Imprint = lazy(() => import("./Imprint"));
 const Blog = lazy(() => import("./Blog"));
 const DatabaseBlogList = lazy(() => import("./DatabaseBlogList"));
 const DatabaseBlog = lazy(() => import("./DatabaseBlog"));
+
+const tracker = new Tracker({
+  projectKey: "p4f5Wf1LmOEoNTPy1o1Q",  
+});
+
+tracker.start()
 
 function App() {
     const [login, setLogin] = useState(false);
