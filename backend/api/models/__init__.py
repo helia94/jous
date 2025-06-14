@@ -12,7 +12,21 @@ from .base import db
 from .Activity import Activity
 from .QuestionTranslation import QuestionTranslation
 from .Blog import Blog
+from .QuestionEmbedding import QuestionEmbedding
 
-__all__ = ["UserAuth", "Question", "InvalidToken", "User", "Group", "GroupAnswer", "PublicAnswer", "Activity", "db", "QuestionTranslation", "Blog"]
+__all__ = [
+    "UserAuth",
+    "Question",
+    "InvalidToken",
+    "User",
+    "Group",
+    "GroupAnswer",
+    "PublicAnswer",
+    "Activity",
+    "db",
+    "QuestionTranslation",
+    "Blog",
+    "QuestionEmbedding",
+]
 
 # You must import all of the new Models you create to this page
