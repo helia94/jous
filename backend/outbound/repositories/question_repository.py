@@ -79,6 +79,11 @@ class QuestionRepository:
 
     def get_question_by_id(self, question_id):
         return Question.query.get(question_id)
+
+    def get_questions_by_ids(self, ids):
+        if not ids:
+            return []
+        return Question.query.filter(Question.id.in_(ids)).all()
     
 
     def get_public_answers_for_question(self, question_id):
