@@ -17,6 +17,11 @@ LANG_API_URL = 'https://jous.app/api/languages'
 QUESTION_API_URL = 'https://jous.app/api/question/random'
 USER_DATA_FILE = 'user_data.json'
 
+# Default settings
+DEFAULT_LANGUAGE = 'en'
+DEFAULT_TIMEZONE = 0  # UTC
+DEFAULT_DAILY_TIME = 19  # 7 PM
+
 # Logging setup
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -62,9 +67,15 @@ class UserDataManager:
             logger.error(f"Unexpected error saving user data: {e}")
     
     def get_user_data(self, user_id):
-        """Get user data by ID."""
+        """Get user data by ID with defaults."""
         with self._lock:
-            return self.data.get(str(user_id), {})
+            user_data = self.data.get(str(user_id), {})
+            # Apply defaults if not set
+            if 'lang' not in user_data:
+                user_data['lang'] = DEFAULT_LANGUAGE
+            if 'timezone' not in user_data:
+                user_data['timezone'] = DEFAULT_TIMEZONE
+            return user_data
     
     def set_user_data(self, user_id, key, value):
         """Set user data with automatic saving."""
@@ -79,24 +90,15 @@ class UserDataManager:
         logger.debug(f"Set {key}={value} for user {user_id}")
     
     def get_all_users_with_timezone(self):
-        """Get all users that have both language and timezone data."""
+        """Get all users that have timezone data (for job restoration)."""
         with self._lock:
             users_with_tz = {}
             for user_id, user_data in self.data.items():
-                if 'lang' in user_data and 'timezone' in user_data:
-                    users_with_tz[user_id] = user_data.copy()
+                # Include all users since we have defaults
+                users_with_tz[user_id] = user_data.copy()
             
-            logger.info(f"Found {len(users_with_tz)} users with timezone data")
+            logger.info(f"Found {len(users_with_tz)} users for job restoration")
             return users_with_tz
-    
-    def remove_user_data(self, user_id):
-        """Remove user data."""
-        user_id_str = str(user_id)
-        with self._lock:
-            if user_id_str in self.data:
-                del self.data[user_id_str]
-                self.save_data()
-                logger.info(f"Removed data for user {user_id}")
 
 
 # Global user data manager instance
@@ -175,7 +177,7 @@ def get_fallback_languages():
 async def fetch_question_in_language(language_id):
     """Fetch a question in the specified language with error handling."""
     try:
-        params = {'lang': language_id}
+        params = {'language_id': language_id}
         response = requests.get(QUESTION_API_URL, params=params, timeout=10)
         response.raise_for_status()
         
@@ -212,83 +214,176 @@ def get_fallback_question(language_id):
     return fallback_questions.get(language_id, fallback_questions['en'])
 
 
-async def get_next_question(language_id='en'):
-    """Get next question for the specified language."""
+def fetch_random_questions(chosen_lang):
+    """Fetch multiple random questions for on-demand use."""
     try:
-        question_content = await fetch_question_in_language(language_id)
-        return {
-            'question': {
-                'content': question_content
-            }
-        }
+        response = requests.get(f"{QUESTION_API_URL}?language_id={chosen_lang}", timeout=10)
+        if response.status_code == 200:
+            data = response.json()
+            questions = data.get('questions', [])
+            logger.debug(f"Fetched {len(questions)} random questions in {chosen_lang}")
+            return questions
+        logger.error("Failed to fetch questions. Status code: %s", response.status_code)
     except Exception as e:
-        logger.error(f"Error getting next question: {e}")
+        logger.error("Exception fetching questions: %s", e)
+    return []
+
+
+def get_next_question(context, chosen_lang):
+    """Get next question from user's question queue."""
+    questions = context.user_data.get('questions', [])
+    if len(questions) < 2:
+        # Refill question queue
+        new_questions = fetch_random_questions(chosen_lang)
+        questions.extend(new_questions)
+    
+    if not questions:
+        # Fallback if no questions available
         return {
             'question': {
-                'content': get_fallback_question(language_id)
+                'content': get_fallback_question(chosen_lang)
             }
         }
+    
+    next_question = questions.pop(0)
+    context.user_data['questions'] = questions
+    return next_question
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Handle /start command with improved user experience."""
+    """Handle /start command with automatic setup."""
     user_id = update.effective_user.id
     user_data = user_manager.get_user_data(user_id)
     
     try:
-        if user_data.get('lang') and user_data.get('timezone') is not None:
-            # Returning user with complete setup
-            lang = user_data['lang'].upper()
-            timezone = user_data['timezone']
-            tz_str = f"UTC{timezone:+d}" if timezone != 0 else "UTC"
+        # Set up user with defaults if first time
+        if str(user_id) not in user_manager.data:
+            user_manager.set_user_data(user_id, 'lang', DEFAULT_LANGUAGE)
+            user_manager.set_user_data(user_id, 'timezone', DEFAULT_TIMEZONE)
+            
+            # Automatically set up daily questions with defaults
+            await setup_daily_questions_for_user(context, user_id, DEFAULT_TIMEZONE)
             
             welcome_msg = (
-                f"🎉 Welcome back!\n\n"
-                f"Your settings:\n"
-                f"🌍 Language: {lang}\n"
-                f"🕐 Timezone: {tz_str}\n\n"
-                f"You're all set to receive daily questions at 7 PM your local time!\n\n"
-                f"Use /newquestion for a question now, or /settimezone to change your timezone."
+                f"🎉 Welcome to the Daily Question Bot!\n\n"
+                f"I've automatically set you up with:\n"
+                f"🌍 Language: English\n"
+                f"🕐 Timezone: UTC (daily questions at 7 PM UTC)\n\n"
+                f"✨ You'll now receive daily questions automatically!\n\n"
+                f"**Commands to customize:**\n"
+                f"• `/language` - Change your language\n"
+                f"• `/settimezone +3` - Set your timezone\n"
+                f"• `/question` - Get a question right now\n\n"
+                f"Click below to get your first question!"
             )
             
             keyboard = [
                 [InlineKeyboardButton("🎲 Get Question Now", callback_data="next")],
-                [InlineKeyboardButton("⚙️ Change Settings", callback_data="settings")]
+                [InlineKeyboardButton("🌍 Change Language", callback_data="change_lang")],
             ]
             reply_markup = InlineKeyboardMarkup(keyboard)
             
             await update.message.reply_text(welcome_msg, reply_markup=reply_markup)
             
         else:
-            # New user or incomplete setup
+            # Returning user
+            lang = user_data['lang'].upper()
+            timezone = user_data['timezone']
+            tz_str = f"UTC{timezone:+d}" if timezone != 0 else "UTC"
+            
             welcome_msg = (
-                "🎉 Welcome to the Daily Question Bot!\n\n"
-                "I'll send you a thought-provoking question every day at 7 PM your local time.\n\n"
-                "Let's get started by selecting your language:"
+                f"🎉 Welcome back!\n\n"
+                f"Your current settings:\n"
+                f"🌍 Language: {lang}\n"
+                f"🕐 Timezone: {tz_str}\n\n"
+                f"You're receiving daily questions at 7 PM your local time!\n\n"
+                f"Use `/question` for a question now, or `/settimezone` to change your timezone."
             )
             
-            languages = await fetch_languages()
-            keyboard = []
-            
-            # Create language selection buttons (2 per row)
-            for i in range(0, len(languages), 2):
-                row = []
-                for j in range(2):
-                    if i + j < len(languages):
-                        lang = languages[i + j]
-                        row.append(InlineKeyboardButton(
-                            f"{lang['name']}", 
-                            callback_data=f"lang_{lang['language_id']}"
-                        ))
-                keyboard.append(row)
-            
+            keyboard = [
+                [InlineKeyboardButton("🎲 Get Question Now", callback_data="next")],
+                [InlineKeyboardButton("⚙️ Settings", callback_data="settings")]
+            ]
             reply_markup = InlineKeyboardMarkup(keyboard)
+            
             await update.message.reply_text(welcome_msg, reply_markup=reply_markup)
             
     except Exception as e:
         logger.error(f"Error in start command: {e}")
         await update.message.reply_text(
             "Sorry, something went wrong. Please try again later."
+        )
+
+
+async def language_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Handle /language command to change language."""
+    try:
+        languages = await fetch_languages()
+        keyboard = []
+        
+        # Create language selection buttons (2 per row)
+        for i in range(0, len(languages), 2):
+            row = []
+            for j in range(2):
+                if i + j < len(languages):
+                    lang = languages[i + j]
+                    row.append(InlineKeyboardButton(
+                        f"{lang['name']}", 
+                        callback_data=f"lang_{lang['language_id']}"
+                    ))
+            keyboard.append(row)
+        
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        await update.message.reply_text(
+            "🌍 Select your preferred language:",
+            reply_markup=reply_markup
+        )
+        
+    except Exception as e:
+        logger.error(f"Error in language command: {e}")
+        await update.message.reply_text(
+            "Sorry, couldn't load languages. Please try again later."
+        )
+
+
+async def question_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Handle /question command for on-demand questions."""
+    user_id = update.effective_user.id
+    
+    try:
+        user_data = user_manager.get_user_data(user_id)
+        chosen_lang = user_data.get('lang', DEFAULT_LANGUAGE)
+        
+        # Initialize question queue if needed
+        if 'questions' not in context.user_data:
+            context.user_data['questions'] = []
+        
+        question_obj = get_next_question(context, chosen_lang)
+        question_content = question_obj['question']['content']
+        
+        formatted_message = (
+            f"🤔 **Question for You**\n\n"
+            f"{question_content}\n\n"
+            f"💭 Take your time to reflect!"
+        )
+        
+        keyboard = [
+            [InlineKeyboardButton("🎲 Another Question", callback_data="next")]
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        
+        await update.message.reply_text(
+            formatted_message, 
+            reply_markup=reply_markup, 
+            parse_mode='Markdown'
+        )
+        
+        logger.info(f"Served on-demand question to user {user_id} in {chosen_lang}")
+        
+    except Exception as e:
+        logger.error(f"Error getting question for user {user_id}: {e}")
+        await update.message.reply_text(
+            "Sorry, I couldn't get a question right now. Please try again later."
         )
 
 
@@ -310,29 +405,36 @@ async def handle_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
             languages = await fetch_languages()
             lang_name = next((lang['name'] for lang in languages if lang['language_id'] == language_id), language_id.upper())
             
-            timezone_msg = (
+            success_msg = (
                 f"✅ Language set to {lang_name}!\n\n"
-                f"Now, please set your timezone using the command:\n"
-                f"`/settimezone +3` (for UTC+3)\n"
-                f"`/settimezone -5` (for UTC-5)\n"
-                f"`/settimezone 0` (for UTC)\n\n"
-                f"This ensures you get your daily question at 7 PM your local time."
+                f"Your daily questions will now be in {lang_name}.\n\n"
+                f"Use `/settimezone +3` to set your timezone for daily delivery."
             )
             
-            await query.edit_message_text(timezone_msg, parse_mode='Markdown')
+            keyboard = [
+                [InlineKeyboardButton("🎲 Get Question Now", callback_data="next")],
+                [InlineKeyboardButton("🕐 Set Timezone", callback_data="set_tz")]
+            ]
+            reply_markup = InlineKeyboardMarkup(keyboard)
+            
+            await query.edit_message_text(success_msg, reply_markup=reply_markup)
             
         elif data == "next":
             # Get next question
             user_data = user_manager.get_user_data(user_id)
-            language_id = user_data.get('lang', 'en')
+            chosen_lang = user_data.get('lang', DEFAULT_LANGUAGE)
             
-            question_data = await get_next_question(language_id)
-            question_text = question_data['question']['content']
+            # Initialize question queue if needed
+            if 'questions' not in context.user_data:
+                context.user_data['questions'] = []
+            
+            question_obj = get_next_question(context, chosen_lang)
+            question_text = question_obj['question']['content']
             
             formatted_message = (
-                f"🤔 **Question of the Day**\n\n"
+                f"🤔 **Question for You**\n\n"
                 f"{question_text}\n\n"
-                f"Take your time to think about it! 💭"
+                f"💭 Take your time to think about it!"
             )
             
             keyboard = [
@@ -343,35 +445,67 @@ async def handle_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
             
             await query.edit_message_text(formatted_message, reply_markup=reply_markup, parse_mode='Markdown')
             
+            logger.info(f"Served callback question to user {user_id} in {chosen_lang}")
+            
+        elif data == "change_lang":
+            # Show language selection
+            languages = await fetch_languages()
+            keyboard = []
+            
+            for i in range(0, len(languages), 2):
+                row = []
+                for j in range(2):
+                    if i + j < len(languages):
+                        lang = languages[i + j]
+                        row.append(InlineKeyboardButton(
+                            f"{lang['name']}", 
+                            callback_data=f"lang_{lang['language_id']}"
+                        ))
+                keyboard.append(row)
+            
+            reply_markup = InlineKeyboardMarkup(keyboard)
+            await query.edit_message_text(
+                "🌍 Select your preferred language:",
+                reply_markup=reply_markup
+            )
+            
         elif data == "settings":
             # Show settings menu
             user_data = user_manager.get_user_data(user_id)
-            lang = user_data.get('lang', 'Not set')
-            timezone = user_data.get('timezone', 'Not set')
+            lang = user_data.get('lang', DEFAULT_LANGUAGE)
+            timezone = user_data.get('timezone', DEFAULT_TIMEZONE)
             
-            if timezone != 'Not set':
-                tz_str = f"UTC{timezone:+d}" if timezone != 0 else "UTC"
-            else:
-                tz_str = timezone
+            tz_str = f"UTC{timezone:+d}" if timezone != 0 else "UTC"
             
             settings_msg = (
                 f"⚙️ **Your Settings**\n\n"
-                f"🌍 Language: {lang.upper() if lang != 'Not set' else lang}\n"
-                f"🕐 Timezone: {tz_str}\n\n"
-                f"Use /settimezone to change your timezone."
+                f"🌍 Language: {lang.upper()}\n"
+                f"🕐 Timezone: {tz_str}\n"
+                f"📅 Daily questions at 7 PM your local time\n\n"
+                f"Use `/language` or `/settimezone` to change settings."
             )
             
             keyboard = [
                 [InlineKeyboardButton("🎲 Get Question", callback_data="next")],
-                [InlineKeyboardButton("🏠 Main Menu", callback_data="main_menu")]
+                [InlineKeyboardButton("🌍 Change Language", callback_data="change_lang")]
             ]
             reply_markup = InlineKeyboardMarkup(keyboard)
             
             await query.edit_message_text(settings_msg, reply_markup=reply_markup, parse_mode='Markdown')
             
-        elif data == "main_menu":
-            # Return to main menu
-            await start(update, context)
+        elif data == "set_tz":
+            # Timezone setting instructions
+            tz_msg = (
+                f"🕐 **Set Your Timezone**\n\n"
+                f"Use the command: `/settimezone <offset>`\n\n"
+                f"Examples:\n"
+                f"• `/settimezone +3` for UTC+3\n"
+                f"• `/settimezone -5` for UTC-5\n"
+                f"• `/settimezone 0` for UTC\n\n"
+                f"This ensures you get daily questions at 7 PM your local time."
+            )
+            
+            await query.edit_message_text(tz_msg, parse_mode='Markdown')
             
     except Exception as e:
         logger.error(f"Error handling callback {data}: {e}")
@@ -422,7 +556,7 @@ async def set_timezone(update: Update, context: ContextTypes.DEFAULT_TYPE):
         success_msg = (
             f"✅ Timezone set to {tz_str}!\n\n"
             f"🎯 You'll receive daily questions at 7 PM your local time.\n\n"
-            f"Use /newquestion to get a question right now!"
+            f"Use `/question` to get a question right now!"
         )
         
         await update.message.reply_text(success_msg)
@@ -431,37 +565,6 @@ async def set_timezone(update: Update, context: ContextTypes.DEFAULT_TYPE):
         logger.error(f"Error setting timezone: {e}")
         await update.message.reply_text(
             "Sorry, something went wrong while setting your timezone. Please try again."
-        )
-
-
-async def new_question(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Handle /newquestion command."""
-    user_id = update.effective_user.id
-    
-    try:
-        user_data = user_manager.get_user_data(user_id)
-        language_id = user_data.get('lang', 'en')
-        
-        question_data = await get_next_question(language_id)
-        question_text = question_data['question']['content']
-        
-        formatted_message = (
-            f"🤔 **Question for You**\n\n"
-            f"{question_text}\n\n"
-            f"Take your time to reflect! 💭"
-        )
-        
-        keyboard = [
-            [InlineKeyboardButton("🎲 Another Question", callback_data="next")]
-        ]
-        reply_markup = InlineKeyboardMarkup(keyboard)
-        
-        await update.message.reply_text(formatted_message, reply_markup=reply_markup, parse_mode='Markdown')
-        
-    except Exception as e:
-        logger.error(f"Error getting new question: {e}")
-        await update.message.reply_text(
-            "Sorry, I couldn't get a question right now. Please try again later."
         )
 
 
@@ -476,7 +579,7 @@ async def setup_daily_questions_for_user(context: ContextTypes.DEFAULT_TYPE, use
             job.schedule_removal()
         
         # Calculate UTC time for 7 PM local time
-        local_hour = 19  # 7 PM
+        local_hour = DEFAULT_DAILY_TIME  # 7 PM
         utc_hour = (local_hour - timezone_offset) % 24
         
         # Schedule daily job
@@ -503,7 +606,7 @@ async def broadcast_question(context: ContextTypes.DEFAULT_TYPE):
             logger.warning(f"No user data found for user {user_id}, skipping broadcast")
             return
         
-        language_id = user_data.get('lang', 'en')
+        language_id = user_data.get('lang', DEFAULT_LANGUAGE)
         question_content = await fetch_question_in_language(language_id)
         
         # Format the daily question message
@@ -535,21 +638,54 @@ async def broadcast_question(context: ContextTypes.DEFAULT_TYPE):
         # Don't re-raise to avoid job failure
 
 
+async def inline_query(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Handle inline queries for questions."""
+    try:
+        user_id = update.inline_query.from_user.id
+        user_data = user_manager.get_user_data(user_id)
+        chosen_lang = user_data.get('lang', DEFAULT_LANGUAGE)
+        
+        # Initialize question queue if needed
+        if 'questions' not in context.user_data:
+            context.user_data['questions'] = []
+        
+        question_obj = get_next_question(context, chosen_lang)
+        
+        if question_obj:
+            question_content = question_obj['question']['content']
+            results = [
+                InlineQueryResultArticle(
+                    id=str(uuid4()),
+                    title="Random Question",
+                    input_message_content=InputTextMessageContent(question_content)
+                )
+            ]
+            await update.inline_query.answer(results)
+            logger.info(f"Served inline query question in {chosen_lang} to user {user_id}")
+        else:
+            logger.error(f"Failed to fetch inline query question for user {user_id}")
+            await update.inline_query.answer([])
+            
+    except Exception as e:
+        logger.error(f"Error handling inline query: {e}")
+        await update.inline_query.answer([])
+
+
 async def restore_user_jobs(application):
     """Restore daily question jobs for all users on bot startup."""
     try:
-        users_with_timezone = user_manager.get_all_users_with_timezone()
+        users_with_data = user_manager.get_all_users_with_timezone()
         
-        if not users_with_timezone:
-            logger.info("No users with timezone data found")
+        if not users_with_data:
+            logger.info("No users found for job restoration")
             return
         
-        logger.info(f"Restoring jobs for {len(users_with_timezone)} users")
+        logger.info(f"Restoring jobs for {len(users_with_data)} users")
         
-        for user_id_str, user_data in users_with_timezone.items():
+        for user_id_str, user_data in users_with_data.items():
             try:
                 user_id = int(user_id_str)
-                timezone_offset = user_data['timezone']
+                timezone_offset = user_data.get('timezone', DEFAULT_TIMEZONE)
                 
                 # Create a mock context for job setup
                 mock_context = type('MockContext', (), {
@@ -572,15 +708,22 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     help_text = (
         "🤖 **Daily Question Bot Help**\n\n"
         "**Commands:**\n"
-        "• `/start` - Start the bot and set up your preferences\n"
-        "• `/newquestion` - Get a question right now\n"
+        "• `/start` - Start the bot (automatic setup with defaults)\n"
+        "• `/question` - Get a question right now\n"
+        "• `/language` - Change your language preference\n"
         "• `/settimezone +3` - Set your timezone (e.g., +3 for UTC+3)\n"
         "• `/help` - Show this help message\n\n"
         "**Features:**\n"
-        "• Daily questions delivered at 7 PM your local time\n"
-        "• Multiple language support\n"
-        "• Personalized experience\n\n"
-        "**Need help?** Just use /start to begin!"
+        "• 🎯 **Automatic daily questions** at 7 PM your local time\n"
+        "• 🎲 **On-demand questions** anytime you want\n"
+        "• 🌍 **Multiple language support**\n"
+        "• ⚙️ **Easy customization** of language and timezone\n"
+        "• 💬 **Inline queries** - type @botname in any chat\n\n"
+        "**Default Settings:**\n"
+        "• Language: English\n"
+        "• Timezone: UTC (7 PM UTC)\n\n"
+        "You're automatically set up to receive daily questions!\n"
+        "Customize your settings anytime with the commands above."
     )
     
     await update.message.reply_text(help_text, parse_mode='Markdown')
@@ -598,10 +741,12 @@ def main():
         
         # Add handlers
         application.add_handler(CommandHandler("start", start))
+        application.add_handler(CommandHandler("question", question_command))
+        application.add_handler(CommandHandler("language", language_command))
         application.add_handler(CommandHandler("settimezone", set_timezone))
-        application.add_handler(CommandHandler("newquestion", new_question))
         application.add_handler(CommandHandler("help", help_command))
         application.add_handler(CallbackQueryHandler(handle_callback))
+        application.add_handler(InlineQueryHandler(inline_query))
         
         # Restore user jobs on startup
         async def post_init(application):
@@ -609,7 +754,7 @@ def main():
         
         application.post_init = post_init
         
-        logger.info("Starting Daily Question Bot...")
+        logger.info("Starting Daily Question Bot with automatic setup...")
         
         # Run the bot
         application.run_polling(allowed_updates=Update.ALL_TYPES)
