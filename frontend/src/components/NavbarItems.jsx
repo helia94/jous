@@ -1,6 +1,11 @@
 // src/components/NavbarItems.js
 import React from "react";
-import { FaBell, FaUser, FaFilter, FaBug } from 'react-icons/fa';
+import {
+  FaBell,
+  FaUser,
+  FaFilter,
+  FaBug,
+} from 'react-icons/fa';
 
 function NavbarItems({
   notify,

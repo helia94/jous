@@ -2,7 +2,16 @@
 import React, { useState, useEffect, Suspense, lazy, useCallback } from "react";
 import ReactGA from 'react-ga4';
 // Icons from a lightweight library
-import { FaLanguage, FaFilter, FaBars, FaBug, FaRandom, FaUser, FaBell } from 'react-icons/fa';
+// Import only the icons we use from Font Awesome
+import {
+  FaLanguage,
+  FaFilter,
+  FaBars,
+  FaBug,
+  FaRandom,
+  FaUser,
+  FaBell,
+} from 'react-icons/fa';
 import { getCurrentUser } from "../login";
 import { useLanguage } from "./LanguageContext";
 import "./NavbarCritical.css"; // Import critical CSS
