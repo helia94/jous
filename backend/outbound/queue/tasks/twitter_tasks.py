@@ -1,6 +1,5 @@
 import os
 import requests
-from requests_oauthlib import OAuth1
 
 from celery.schedules import crontab
 
@@ -18,15 +17,11 @@ def fetch_question() -> str:
 
 
 def tweet(text: str) -> None:
-    """Post a tweet using OAuth1 user context."""
-    auth = OAuth1(
-        os.getenv("TWITTER_API_KEY"),
-        os.getenv("TWITTER_API_SECRET_KEY"),
-        os.getenv("TWITTER_ACCESS_TOKEN"),
-        os.getenv("TWITTER_ACCESS_TOKEN_SECRET"),
-    )
+    """Post to X using OAuth 2.0 bearer token."""
+    token = os.getenv("TWITTER_ACCESS_TOKEN")
+    headers = {"Authorization": f"Bearer {token}"}
     resp = requests.post(
-        "https://api.twitter.com/2/tweets", json={"text": text}, auth=auth
+        "https://api.twitter.com/2/tweets", json={"text": text}, headers=headers
     )
     if resp.status_code not in (200, 201):
         raise Exception(f"Tweet failed: {resp.status_code} {resp.text}")
