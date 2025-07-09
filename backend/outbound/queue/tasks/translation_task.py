@@ -51,6 +51,9 @@ def create_app() -> Flask:
 app = create_app()
 celery = app.extensions["celery"]
 
+# Import additional task modules so Celery registers them
+from . import twitter_tasks  # noqa: E402,F401
+
 env = os.environ.get("FLASK_ENV", "dev")
 if env == "test":
     translator = Translator(TestLMM())
