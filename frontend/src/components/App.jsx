@@ -13,7 +13,6 @@ import Navbar from "./Navbar";
 
 // Styles
 import './customSemantic.less';
-import 'semantic-ui-css/semantic.min.css';
 import "./theme.css";
 import DatabaseBlogData from "./DatabaseBlogData";
 

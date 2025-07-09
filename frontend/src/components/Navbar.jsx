@@ -1,7 +1,8 @@
 // src/components/Navbar.js
 import React, { useState, useEffect, Suspense, lazy, useCallback } from "react";
 import ReactGA from 'react-ga4';
-import { Button, Icon } from "semantic-ui-react"; // Import Icon from Semantic UI
+// Icons from a lightweight library
+import { FaLanguage, FaFilter, FaBars, FaBug, FaRandom, FaUser, FaBell } from 'react-icons/fa';
 import { getCurrentUser } from "../login";
 import { useLanguage } from "./LanguageContext";
 import "./NavbarCritical.css"; // Import critical CSS
@@ -128,20 +129,20 @@ function Navbar() {
   // Additional Buttons for Mobile View
   const mobileExtraButtons = (
     <>
-      <Button
+      <button
         className="nav-button"
         onClick={openLanguageModal}
         title="Language"
       >
-        <Icon name="language" />
-      </Button>
-      <Button
+        <FaLanguage />
+      </button>
+      <button
         className="nav-button"
         onClick={() => setOpenFilterModal(true)}
         title="Filter"
       >
-        <Icon name="filter" />
-      </Button>
+        <FaFilter />
+      </button>
     </>
   );
 
@@ -151,43 +152,43 @@ function Navbar() {
         Jous
       </div>
       <div className="menu-items">
-        <Button
+        <button
           className="nav-button"
           onClick={() => route("random")}
           title="Random Questions"
         >
-          <Icon name="random" />
-        </Button>
+          <FaRandom />
+        </button>
 
         {/* Conditionally render additional buttons on mobile */}
         {isCollapsed && (
-          <>
-            <Button
+          <> 
+            <button
               className="nav-button"
               onClick={openLanguageModal}
               title="Language"
             >
-              <Icon name="language" />
-            </Button>
-            <Button
+              <FaLanguage />
+            </button>
+            <button
               className="nav-button"
               onClick={() => setOpenFilterModal(true)}
               title="Filter"
             >
-              <Icon name="filter" />
-            </Button>
+              <FaFilter />
+            </button>
           </>
         )}
 
         {isCollapsed ? (
           <Suspense fallback={null}>
-            <Button
+            <button
               className="nav-button"
               title="Menu"
               onClick={() => setOpenMenu(true)}
             >
-              <Icon name="bars" />
-            </Button>
+              <FaBars />
+            </button>
           </Suspense>
         ) : (
           navbarItems

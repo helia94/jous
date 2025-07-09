@@ -3,9 +3,7 @@ import React, { Component } from "react";
 import Alert from "./Alert";
 import { login, check } from "../login";
 import { Helmet } from 'react-helmet';
-import { Form, Button, Segment, Container } from 'semantic-ui-react';
-import 'semantic-ui-css/semantic.min.css';
-import './Auth.css'; // Ensure this file exists with the provided styles
+import './Auth.css';
 import ProductHuntBadge from './ProductHuntBadge';
 
 class Login extends Component {
@@ -26,7 +24,8 @@ class Login extends Component {
         }
     }
 
-    handleChange = (e, { name, value }) => {
+    handleChange = (e) => {
+        const { name, value } = e.target;
         this.setState({ [name]: value });
     };
 
@@ -66,16 +65,14 @@ class Login extends Component {
                     <title>Login</title>
                     <link rel="canonical" href="https://jous.app/login" />
                 </Helmet>
-                <Container textAlign="center">
-                    <Segment padded="very" className="auth-segment">
+                <div className="auth-container">
+                    <div className="auth-segment">
                         <h2>Login</h2>
                         {this.state.err && (
                             <Alert message={`Check your form and try again! (${this.state.err})`} />
                         )}
-                        <Form onSubmit={this.loginUser}>
-                            <Form.Input
-                                fluid
-                                label="Email"
+                        <form onSubmit={this.loginUser}>
+                            <input
                                 placeholder="Email"
                                 type="text"
                                 name="email"
@@ -83,9 +80,7 @@ class Login extends Component {
                                 onChange={this.handleChange}
                                 required
                             />
-                            <Form.Input
-                                fluid
-                                label="Password"
+                            <input
                                 placeholder="Password"
                                 type="password"
                                 name="password"
@@ -93,17 +88,15 @@ class Login extends Component {
                                 onChange={this.handleChange}
                                 required
                             />
-                            <Button type="submit" color="blue" fluid>
-                                Login
-                            </Button>
-                        </Form>
+                            <button type="submit">Login</button>
+                        </form>
                         <div style={{ marginTop: '1em' }}>
                             Don't have an account? <a href="/register">Register here</a>
                         </div>
-                    </Segment>
+                    </div>
                     <br/>
                     <ProductHuntBadge/>
-                </Container>
+                </div>
             </div>
         );
     }
