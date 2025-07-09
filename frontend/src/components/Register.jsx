@@ -4,9 +4,7 @@ import axios from "axios";
 import Alert from "./Alert";
 import { check } from "../login";
 import { Helmet } from 'react-helmet';
-import { Form, Button, Segment, Container } from 'semantic-ui-react';
-import 'semantic-ui-css/semantic.min.css';
-import './Auth.css'; // Ensure this file exists with the provided styles
+import './Auth.css';
 
 class Register extends Component {
     state = {
@@ -24,7 +22,8 @@ class Register extends Component {
         });
     }
 
-    handleChange = (e, { name, value }) => {
+    handleChange = (e) => {
+        const { name, value } = e.target;
         this.setState({ [name]: value });
     };
 
@@ -69,25 +68,21 @@ class Register extends Component {
                     <title>Register</title>
                     <link rel="canonical" href="https://jous.app/register" />
                 </Helmet>
-                <Container textAlign="center">
-                    <Segment padded="very" className="auth-segment">
+                <div className="auth-container">
+                    <div className="auth-segment">
                         <h2>Register</h2>
                         {this.state.err && (
                             <Alert message={`Check your form and try again! (${this.state.err})`} />
                         )}
-                        <Form onSubmit={this.register}>
-                            <Form.Input
-                                fluid
-                                label="Email (optional for resetting password)"
-                                placeholder="Email"
+                        <form onSubmit={this.register}>
+                            <input
+                                placeholder="Email (optional for resetting password)"
                                 type="email"
                                 name="email"
                                 value={this.state.email}
                                 onChange={this.handleChange}
                             />
-                            <Form.Input
-                                fluid
-                                label="Username"
+                            <input
                                 placeholder="Username"
                                 type="text"
                                 name="username"
@@ -95,9 +90,7 @@ class Register extends Component {
                                 onChange={this.handleChange}
                                 required
                             />
-                            <Form.Input
-                                fluid
-                                label="Password"
+                            <input
                                 placeholder="Password"
                                 type="password"
                                 name="password"
@@ -105,15 +98,13 @@ class Register extends Component {
                                 onChange={this.handleChange}
                                 required
                             />
-                            <Button type="submit" color="blue" fluid>
-                                Register
-                            </Button>
-                        </Form>
+                            <button type="submit">Register</button>
+                        </form>
                         <div style={{ marginTop: '1em' }}>
                             Already have an account? <a href="/login">Login here</a>
                         </div>
-                    </Segment>
-                </Container>
+                    </div>
+                </div>
             </div>
         );
     }
