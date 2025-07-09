@@ -8,7 +8,6 @@ import { Helmet } from 'react-helmet';
 import { LanguageContext } from "./LanguageContext";
 import { FilterContext } from "./FilterContext";
 import ConfettiBackground from "./ConfettiBackground"
-import SearchBar from "./SearchBar";
 
 class MainPage extends React.Component {
   static contextType = LanguageContext;
@@ -147,7 +146,6 @@ class MainPage extends React.Component {
             }}
           >
             <h1  className="c-heading" >Home</h1>
-            <SearchBar />
             {!this.state.showAddQuestion && (
               <button className="c-button" onClick={this.toggleShowAddQuestion}>
                 Add a question

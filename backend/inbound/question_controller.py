@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from backend.inbound.transaction_utils import transactional
 from backend.inbound.utils import to_lower, to_lower_list, filter_none
-from backend.inbound.service_factory import question_service, answer_service, search_service
+from backend.inbound.service_factory import question_service, answer_service
 from backend.outbound.queue.tasks.translation_task import translate_all_questions
 
 question_api = Blueprint("question_api", __name__)
@@ -46,13 +46,6 @@ def get_random_questions():
     if "error" in random_questions:
         return jsonify(random_questions), 404
     return jsonify(random_questions), 200
-
-@question_api.route("/search", methods=["GET"])
-def search_questions():
-    query = request.args.get("q", type=str, default="")
-    limit = request.args.get("limit", type=int, default=20)
-    results = search_service.search(query, limit)
-    return jsonify(results), 200
 
 @question_api.route("/addquestion", methods=["POST"])
 @jwt_required(optional=True)

@@ -7,7 +7,6 @@ from backend.domain.services.utils import check_uid_equal
 from backend.domain.supported_languages import is_supported_language, DEFAULT_LANGUSGE_ID
 from backend.outbound.llm.gpt import GPT
 from backend.outbound.queue.tasks.translation_task import process_question_translation, process_question_filters
-from backend.outbound.queue.tasks.embedding_task import process_question_embedding
 from backend.api.core.logger import logger
 
 
@@ -37,7 +36,6 @@ class QuestionService:
         logger.info(f"going to add translation {question_id}")
         process_question_translation.delay(question_id, content)
         process_question_filters.delay(question_id, content)
-        process_question_embedding.delay(question_id, content)
 
         return {"success": True}, 200
 

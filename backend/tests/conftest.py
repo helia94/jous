@@ -6,23 +6,19 @@ from sqlalchemy import event
 from sqlalchemy.orm import scoped_session, sessionmaker
 import sys
 import os
-os.environ.setdefault("OPENAI_API_KEY", "test")
 from unittest.mock import patch, call
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from backend.app import create_app 
 from backend.api.models.base import db 
 from backend.service_registry import registry
 from backend.tests.test_llm import TestLMM
 from backend.outbound.queue.tasks.translation_task import process_question_translation
-from backend.outbound.queue.tasks.embedding_task import process_question_embedding
 
 
 # Apply mock globally
 patcher = patch("backend.outbound.queue.tasks.translation_task.process_question_translation")
 mock_run = patcher.start()
-patcher_embedding = patch("backend.outbound.queue.tasks.embedding_task.process_question_embedding")
-mock_embed = patcher_embedding.start()
 
 @pytest.fixture(scope="session")
 def test_app():
