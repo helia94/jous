@@ -1,7 +1,6 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react';
 import ReactGA from 'react-ga4';
 import { Helmet } from 'react-helmet';
-import { Button } from 'semantic-ui-react';
 import { Cloudinary } from '@cloudinary/url-gen';
 import { fill } from '@cloudinary/url-gen/actions/resize';
 import { AdvancedImage, responsive, placeholder } from '@cloudinary/react';
@@ -10,7 +9,6 @@ import { focusOn } from "@cloudinary/url-gen/qualifiers/gravity";
 import { FocusOn } from "@cloudinary/url-gen/qualifiers/focusOn";
 import { webp } from "@cloudinary/url-gen/qualifiers/format";
 import FloatingPhrases from './FloatingPhrases';
-import 'semantic-ui-css/semantic.min.css';
 import './Homev2Critical.css';
 import './Homev2Full.css';
 
@@ -96,8 +94,7 @@ function Homev2() {
         {cldImage}
         <FloatingPhrases />
         <div className="grid-buttons-position">
-          <Button
-            fluid
+          <button
             style={buttonStyle}
             onClick={() => {
               setShowAbout(true);
@@ -109,7 +106,7 @@ function Homev2() {
             }}
           >
             Start Here
-          </Button>
+          </button>
         </div>
       </div>
       <Suspense fallback={<div style={{ color: 'white' }}>Loading...</div>}>
