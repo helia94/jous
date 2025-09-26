@@ -42,27 +42,52 @@ function AboutModal({ open, onClose }) {
       <Modal.Content scrolling>
         <Modal.Description>
           <section style={{ padding: '1em', fontSize: '1.1em' }}>
-            <h3 style={{ marginTop: '1.5em' }}>Welcome to Jous!</h3>
-            <p style={{ lineHeight: '1.6' }}>
-              <strong>Jous</strong> is a collection of thousands of personal questions to ask your friends and family. It is a fun excuse to share what we normally <strong>hesitate to mention</strong>.
+            <h3 style={{ marginTop: '1.5em' }}>A short story</h3>
+        <p style={{ lineHeight: '1.6' }}>
+          Naomi Wei is an educator who one day was teaching 8th grade boys how to conduct interviews. 
+          She made herself their first interview subject and told them they could ask her anything.
+        </p>
 
-              Each question is a subtle invitation to see one another anew and find relief in <strong>discovering the individuality in each other</strong>. It should not be storming the walls of someone’s privacy, but helping us knock gently on the door.
-            </p>
+        <p style={{ lineHeight: '1.6' }}>
+          Here’s how one of those interviews went.
+          <br /><br />
+          <strong>Student A:</strong> Are you married? <br />
+          <strong>Wei:</strong> No. <br />
+          <strong>Student B:</strong> Are you divorced? <br />
+          <strong>Wei:</strong> Yes. <br />
+          <strong>Student C:</strong> Do you still love him? <br />
+          <strong>Wei:</strong> <em>Deep gasp of breath.</em> <br />
+          <strong>Student D:</strong> Does he know that you still love him? Does he know? <br />
+          <strong>Wei:</strong> <em>Tears in her eyes.</em> <br />
+          <strong>Student E:</strong> Do your children know?
+        </p>
+
+        <p style={{ lineHeight: '1.6' }}>
+          Kids aren't afraid to ask blunt questions. But at some point during late childhood or adolescence, many of us begin to withdraw from intimacy.
+        </p>
+
+                <p style={{ fontSize: '0.9em', fontStyle: 'italic', textAlign: 'center' }}>
+          —David Brooks, <em>How to Know a Person</em>
+        </p>
             <p style={{ lineHeight: '1.6' }}>
-              Do not get me wrong—I am not against small talk. The need to get comfortable before jumping into a serious conversation is a sign of sanity and health. It is <strong>when we are stuck in small talk </strong>after four years of working together and twenty years of living together that it becomes alarming.
+              <strong>Jous is a collection of thousands of personal questions to ask your friends and family.</strong>
             </p>
-            <p style={{ lineHeight: '1.6' }}>
-              Constant small talk makes me numb, makes me not care about the person talking to me, and makes me be somewhere else while I am eating here. <strong>There is no intimacy here, and there is no magic in the now—it is totally forgettable.</strong>
-            </p>
-              <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-                <Button
-                  color="black"
-                  onClick={() => setIsModalOpen(true)}
-                >
-                  Take the Small Talk Personality Quiz
-                </Button>
-                <QuizModal open={isModalOpen} onClose={() => setIsModalOpen(false)} />
-              </div>
+            <div style={{ display: 'flex', justifyContent: 'center', margin: '1.5em 0' }}>
+              <Button
+                color="yellow"
+                onClick={() => {
+
+                  ReactGA.event({
+                    category: 'navigate',
+                    action: 'button',
+                    label: 'about-random',
+                  });
+                  (window.location = `/random?lang=${language}`)
+                }}
+              >
+                To +1000 Random Questions
+              </Button>
+            </div>
 
             <h3 style={{ marginTop: '1.5em' }}>How to Use Jous</h3>
             <p style={{ lineHeight: '1.6', textAlign: 'center' }}>
@@ -72,7 +97,7 @@ function AboutModal({ open, onClose }) {
               <strong>Step Two: </strong>Be brave. It takes a bit of energy and friction to step outside the usual conversation. Suggest to your friends that you have a new idea to make conversations easy and juicy.
             </p>
             <p style={{ lineHeight: '1.6', textAlign: 'center' }}>
-              <strong>Step Three: </strong>Use the <strong>random page</strong> and then pick a language that fits. Read the question out loud; if it fits well with the group, each person can take turns adding their answer. If the question does not fit, skip it without any fuss. If you want to avoid some questions use the filters.
+              <strong>Step Three: </strong>Use the <strong>random page</strong> and then pick a language that fits. Each person can take turns adding their answer. If you want to avoid some questions use the filters.
             </p>
 
             <p style={{ lineHeight: '1.6', textAlign: 'center' }}>

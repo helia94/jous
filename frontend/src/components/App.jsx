@@ -38,7 +38,7 @@ const tracker = new Tracker({
   projectKey: "p4f5Wf1LmOEoNTPy1o1Q",  
 });
 
-tracker.start()
+// tracker.start()
 
 function App() {
     const [login, setLogin] = useState(false);
