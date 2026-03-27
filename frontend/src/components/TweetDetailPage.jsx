@@ -7,6 +7,7 @@ import { Helmet } from 'react-helmet';
 import { LanguageContext } from "./LanguageContext";
 import { getFontClassForCards } from './FontUtils';
 import ConfettiBackground from "./ConfettiBackground"
+import VoiceTranscribeButton from "./VoiceTranscribeButton"
 
 class TweetDetailPage extends React.Component {
   static contextType = LanguageContext;
@@ -59,11 +60,7 @@ class TweetDetailPage extends React.Component {
         });
       }
     }, 20);
-
-    window.addEventListener('resize', this.updateDimensions);
-    this.setState({ width: window.innerWidth, height: window.innerHeight });
   }
-
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.updateDimensions);
@@ -72,6 +69,13 @@ class TweetDetailPage extends React.Component {
   updateDimensions = () => {
     this.setState({ width: window.innerWidth, height: window.innerHeight });
   };
+
+  appendAnswerTranscript = (transcript) => {
+    this.setState((prevState) => ({
+      newAnswer: prevState.newAnswer ? `${prevState.newAnswer} ${transcript}` : transcript,
+      formErr: ""
+    }));
+  }
 
   handleFormSubmit = (e) => {
     e.preventDefault();
@@ -108,13 +112,6 @@ class TweetDetailPage extends React.Component {
     this.setState({ newAnswer: e.target.value });
   }
 
-  updateDimensions = () => {
-    this.setState({ width: window.innerWidth, height: window.innerHeight });
-  };
-
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.updateDimensions);
-  }
 
   renderTweetItem(item) {
     return (
@@ -174,6 +171,10 @@ class TweetDetailPage extends React.Component {
             })}
           </div>
           <form className="c-form" onSubmit={this.handleFormSubmit} id="submit-form">
+            <VoiceTranscribeButton
+              onTranscription={this.appendAnswerTranscript}
+              placeholder="Record your answer, then edit before posting."
+            />
             <div className="c-field">
               <textarea
                 className={getFontClassForCards(this.state.newAnswer)}
