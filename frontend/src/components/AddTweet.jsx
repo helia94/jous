@@ -2,6 +2,7 @@
 import React from "react";
 import Axios from "axios";
 import { getFontClassForCards } from "./FontUtils";
+import VoiceTranscribeButton from "./VoiceTranscribeButton";
 
 class AddTweet extends React.Component {
     state = { 
@@ -32,6 +33,14 @@ class AddTweet extends React.Component {
         this.setState({
             content: e.target.value
         });
+    }
+
+    appendTranscript = (transcript) => {
+        this.setState((prevState) => ({
+            content: prevState.content ? `${prevState.content} ${transcript}` : transcript,
+            contentErr: "",
+            formErr: ""
+        }));
     }
 
     submitForm = (e) => {
@@ -76,6 +85,10 @@ class AddTweet extends React.Component {
               Add a question
             </div>
             <form className="c-form" onSubmit={this.submitForm} id="submit-form">
+              <VoiceTranscribeButton
+                onTranscription={this.appendTranscript}
+                placeholder="Record your question, then edit before posting."
+              />
               <div className="c-field">
                 <textarea
                   className={getFontClassForCards(this.state.content)}
