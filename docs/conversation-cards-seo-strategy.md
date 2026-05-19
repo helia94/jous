@@ -657,10 +657,25 @@ The long-term bet is to own **open-source random conversation cards** first, the
 
 ## Current Todos
 
+### Programmatic / Coding
+
 - [x] Complete the English `/conversation-cards` hub foundation.
-- [ ] Submit and monitor the hub page in Google Search Console.
-- [ ] Build the English long-tail spoke pages.
-- [ ] Build localized SEO pages for existing supported languages.
-- [ ] Publish shareable/exportable assets and dataset pages.
-- [ ] Run outreach and link-building around the open-source angle.
-- [ ] Refresh and expand pages using Search Console performance data.
+- [ ] Add a Search Console script for sitemap submission and URL inspection. Dependency: Google Cloud project, Search Console API access, OAuth/service credentials, verified `jous.app` property.
+- [ ] Add a Search Console reporting script for queries, pages, CTR, and average position. Dependency: same API access as above, plus enough post-deploy data to query.
+- [ ] Build the English long-tail spoke page template. Dependency: final URL list and shared content pattern for hub/spoke internal links.
+- [ ] Build the first English spoke page. Dependency: spoke page template.
+- [ ] Build localized SEO page support for existing languages. Dependency: English spoke template and final locale URL map.
+- [ ] Publish the open-source card dataset page. Dependency: decide whether the public source is database export, JSONL, API endpoint, or repo file.
+- [ ] Build shareable/exportable card assets. Dependency: choose asset format: printable PDF, static page, image export, or dataset download.
+- [ ] Add tracking for SEO landing page CTA clicks and card draws. Dependency: confirm analytics event names and where conversion data should be read.
+
+### Non-Coding / Manual
+
+- [ ] Deploy the `/conversation-cards` hub page. Dependency: merge and release current implementation.
+- [ ] Submit and monitor the hub page in Google Search Console. Dependency: deployed page and verified Search Console access.
+- [ ] Decide the first long-tail spoke page to publish. Dependency: priority keyword choice from the strategy.
+- [ ] Write/edit copy for English spoke pages. Dependency: final spoke order and example questions.
+- [ ] Write/edit localized copy for supported languages. Dependency: native review for Spanish, German, and Persian tone.
+- [ ] Submit updated sitemap after new pages are deployed. Dependency: generated sitemap includes new URLs.
+- [ ] Run outreach and link-building around the open-source angle. Dependency: public hub page, source link, and preferably dataset page.
+- [ ] Refresh and expand pages using Search Console performance data. Dependency: at least a few weeks of impressions and query data.
