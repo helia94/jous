@@ -29,6 +29,21 @@ TOKEN_URL = "https://oauth2.googleapis.com/token"
 WEBMASTERS_SCOPE = "https://www.googleapis.com/auth/webmasters.readonly"
 
 
+def load_env_file(path: str) -> None:
+    if not path or not os.path.exists(path):
+        return
+
+    with open(path, "r", encoding="utf-8") as fh:
+        for raw_line in fh:
+            line = raw_line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            key, value = line.split("=", 1)
+            key = key.strip()
+            value = value.strip().strip('"').strip("'")
+            os.environ.setdefault(key, value)
+
+
 def default_previous_month() -> tuple[str, str]:
     today = dt.date.today()
     first_this_month = today.replace(day=1)
@@ -205,12 +220,28 @@ def print_report(
 
 
 def parse_args() -> argparse.Namespace:
+    env_parser = argparse.ArgumentParser(add_help=False)
+    env_parser.add_argument("--env-file", default=".env", help="Optional env file to load before auth.")
+    env_args, _ = env_parser.parse_known_args()
+    load_env_file(env_args.env_file)
+
     default_start, default_end = default_previous_month()
-    parser = argparse.ArgumentParser(description="Report Search Console SEO metrics for Jous.")
-    parser.add_argument("--site-url", default="https://jous.app/", help="Search Console property URL.")
+    parser = argparse.ArgumentParser(
+        description="Report Search Console SEO metrics for Jous.",
+        parents=[env_parser],
+    )
+    parser.add_argument(
+        "--site-url",
+        default=os.getenv("SEARCH_CONSOLE_SITE_URL", "https://jous.app/"),
+        help="Search Console property URL.",
+    )
     parser.add_argument("--start-date", default=default_start, help="Start date in YYYY-MM-DD format.")
     parser.add_argument("--end-date", default=default_end, help="End date in YYYY-MM-DD format.")
-    parser.add_argument("--query-contains", default="conversation cards", help="Query substring to report.")
+    parser.add_argument(
+        "--query-contains",
+        default=os.getenv("SEARCH_CONSOLE_QUERY_CONTAINS", "conversation cards"),
+        help="Query substring to report.",
+    )
     parser.add_argument("--row-limit", type=int, default=100, help="Maximum rows per API query.")
     parser.add_argument("--min-impressions", type=int, default=50, help="Minimum impressions for page flags.")
     parser.add_argument("--max-ctr", type=float, default=0.02, help="CTR at or below this value is flagged.")
