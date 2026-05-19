@@ -661,7 +661,8 @@ The long-term bet is to own **open-source random conversation cards** first, the
 
 - [x] Complete the English `/conversation-cards` hub foundation.
 - [ ] Add a Search Console script for sitemap submission and URL inspection. Dependency: Google Cloud project, Search Console API access, OAuth/service credentials, verified `jous.app` property.
-- [ ] Add a Search Console reporting script for queries, pages, CTR, and average position. Dependency: same API access as above, plus enough post-deploy data to query.
+- [x] Add a Search Console reporting script for monthly `conversation cards` queries and pages with impressions but low CTR/ranking.
+- [ ] Run the Search Console reporting script monthly. Dependency: Search Console API access, deployed pages, and enough post-deploy data to query.
 - [ ] Build the English long-tail spoke page template. Dependency: final URL list and shared content pattern for hub/spoke internal links.
 - [ ] Build the first English spoke page. Dependency: spoke page template.
 - [ ] Build localized SEO page support for existing languages. Dependency: English spoke template and final locale URL map.
