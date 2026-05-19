@@ -657,8 +657,10 @@ The long-term bet is to own **open-source random conversation cards** first, the
 
 ## Current Todos
 
-- [x] Build and publish the `/conversation-cards` landing page in the app.
-- [x] Add real Jous question examples from the question dataset.
-- [x] Add sitemap, metadata, FAQ schema, card count, random preview, and source link.
-- [ ] Submit `/conversation-cards` in Google Search Console after deployment.
-- [ ] Start the first long-tail spoke page.
+- [x] Complete the English `/conversation-cards` hub foundation.
+- [ ] Submit and monitor the hub page in Google Search Console.
+- [ ] Build the English long-tail spoke pages.
+- [ ] Build localized SEO pages for existing supported languages.
+- [ ] Publish shareable/exportable assets and dataset pages.
+- [ ] Run outreach and link-building around the open-source angle.
+- [ ] Refresh and expand pages using Search Console performance data.
