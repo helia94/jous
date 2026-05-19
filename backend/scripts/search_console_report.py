@@ -26,6 +26,7 @@ from typing import Any, Dict, List, Optional
 from urllib.parse import quote
 
 SEARCH_ANALYTICS_URL = "https://www.googleapis.com/webmasters/v3/sites/{site_url}/searchAnalytics/query"
+SITES_URL = "https://www.googleapis.com/webmasters/v3/sites"
 TOKEN_URL = "https://oauth2.googleapis.com/token"
 WEBMASTERS_SCOPE = "https://www.googleapis.com/auth/webmasters.readonly"
 
@@ -141,6 +142,21 @@ def search_analytics_query(
     )
     response.raise_for_status()
     return response.json().get("rows", [])
+
+
+def list_sites(token: str) -> List[Dict[str, Any]]:
+    try:
+        import requests
+    except ImportError as exc:
+        raise RuntimeError("Search Console API calls require requests. Install project requirements.") from exc
+
+    response = requests.get(
+        SITES_URL,
+        headers={"Authorization": f"Bearer {token}"},
+        timeout=30,
+    )
+    response.raise_for_status()
+    return response.json().get("siteEntry", [])
 
 
 def metrics_body(
@@ -270,6 +286,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--max-ctr", type=float, default=0.02, help="CTR at or below this value is flagged.")
     parser.add_argument("--min-position", type=float, default=10.0, help="Average position at or above this value is flagged.")
     parser.add_argument("--credentials", help="Path to service-account JSON credentials.")
+    parser.add_argument("--list-sites", action="store_true", help="List Search Console properties visible to this token.")
     parser.add_argument("--json", action="store_true", help="Print JSON instead of Markdown.")
     return parser.parse_args()
 
@@ -278,6 +295,18 @@ def main() -> int:
     args = parse_args()
     try:
         token = get_access_token(args.credentials)
+        if args.list_sites:
+            sites = list_sites(token)
+            if args.json:
+                print(json.dumps({"sites": sites}, indent=2))
+            else:
+                print("# Search Console Properties")
+                if not sites:
+                    print("No properties returned for this token.")
+                for site in sites:
+                    print(f"- {site.get('siteUrl')} | permission: {site.get('permissionLevel')}")
+            return 0
+
         query_rows = render_rows(
             search_analytics_query(
                 token,
