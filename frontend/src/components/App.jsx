@@ -1,21 +1,16 @@
 import React, { useEffect, Suspense, lazy, useState } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import ReactGA from 'react-ga4';
-import Tracker from '@openreplay/tracker';
 
 // Providers
 import { LanguageProvider } from "./LanguageContext";
 import { FilterProvider } from "./FilterContext";
-import { check } from "../login";
+import { initAnalytics } from "./analytics";
 
 // Eagerly Loaded Components
 import Navbar from "./Navbar";
 
 // Styles
-import './customSemantic.less';
-import 'semantic-ui-css/semantic.min.css';
 import "./theme.css";
-import DatabaseBlogData from "./DatabaseBlogData";
 
 // Lazy-loaded Components
 const Homev2 = lazy(() => import("./Homev2"));
@@ -32,24 +27,25 @@ const TweetDetailPage = lazy(() => import("./TweetDetailPage"));
 const Imprint = lazy(() => import("./Imprint"));
 const Blog = lazy(() => import("./Blog"));
 const DatabaseBlogList = lazy(() => import("./DatabaseBlogList"));
-const DatabaseBlog = lazy(() => import("./DatabaseBlog"));
-
-const tracker = new Tracker({
-  projectKey: "p4f5Wf1LmOEoNTPy1o1Q",  
-});
-
-// tracker.start()
+const BlogRoutes = lazy(() => import("./BlogRoutes"));
 
 function App() {
-    const [login, setLogin] = useState(false);
+    const [login, setLogin] = useState(() => Boolean(localStorage.getItem("token")));
 
     useEffect(() => {
-        // Initialize Google Analytics
-        ReactGA.initialize('G-21G3CNF1CB');
-        ReactGA.send('pageview');
+        window.setTimeout(() => {
+            initAnalytics().catch(() => {});
+        }, 2500);
 
-        // Check authentication status
-        check().then(r => setLogin(r));
+        if (!localStorage.getItem("token")) {
+            setLogin(false);
+            return;
+        }
+
+        import("../login")
+            .then(({ check }) => check())
+            .then(r => setLogin(r))
+            .catch(() => setLogin(false));
     }, []);
 
     return (
@@ -76,13 +72,7 @@ function App() {
                                 <Route path="/impressum" exact component={Imprint} />
                                 <Route path="/blog" exact component={Blog} />
                                 <Route path="/more-blogs" exact component={DatabaseBlogList} />
-                                {DatabaseBlogData.map((post) => (
-                                    <Route
-                                        key={post.URL}
-                                        path={`/blog/${post.URL}`}
-                                        render={() => <DatabaseBlog url={post.URL} />}
-                                    />
-                                ))}
+                                <Route path="/blog/:url" component={BlogRoutes} />
                                 <Route component={NotFound} />
                             </Switch>
                         </Suspense>

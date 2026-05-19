@@ -1,6 +1,6 @@
 // src/components/ActivitiesModal.js
 import React, { useEffect, useState } from "react";
-import { Button, Modal } from "semantic-ui-react";
+import { Button, Modal } from "./ui";
 
 const activityMessage = {
   answer: "answered your question",

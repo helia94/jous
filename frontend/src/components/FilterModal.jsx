@@ -1,6 +1,6 @@
 // src/components/FilterModal.js
 import React, { useEffect, useState, useCallback, Suspense, lazy } from "react";
-import { Modal, Button } from "semantic-ui-react";
+import { Modal, Button } from "./ui";
 import { useFilter } from "./FilterContext";
 import "./FilterModalCritical.css";
 

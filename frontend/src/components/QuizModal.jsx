@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Modal, Header, Icon } from "semantic-ui-react";
+import { Modal, Header, Icon } from "./ui";
 import QuizQuestion from "./QuizQuestion";
 import QuizResult from "./QuizResult";
 import { quizData } from "./quizData";

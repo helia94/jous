@@ -1,0 +1,270 @@
+.jb-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35em;
+  min-height: 2.57em;
+  margin: 0.25em;
+  padding: 0.8em 1.5em;
+  border: 1px solid transparent;
+  border-radius: 0.285714rem;
+  background: #e0e1e2;
+  color: rgba(0, 0, 0, 0.8);
+  font: 700 1rem/1 Helvetica, Arial, sans-serif;
+  text-align: center;
+  cursor: pointer;
+  user-select: none;
+  transition: opacity 0.1s ease, background-color 0.1s ease, color 0.1s ease;
+}
+
+.jb-btn:hover {
+  opacity: 0.9;
+}
+
+.jb-btn--yellow {
+  background: #fbbd08;
+  color: #000;
+}
+
+.jb-btn--black {
+  background: #1b1c1d;
+  color: #fff;
+}
+
+.jb-btn--blue {
+  background: #2185d0;
+  color: #fff;
+}
+
+.jb-btn--red {
+  background: #db2828;
+  color: #fff;
+}
+
+.jb-btn--basic {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px currentColor;
+}
+
+.jb-btn--basic.jb-btn--red {
+  color: #db2828;
+}
+
+.jb-btn--fluid {
+  width: 100%;
+  display: flex;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.jb-icon {
+  width: 1.18em;
+  height: 1.18em;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vertical-align: -0.18em;
+}
+
+.jb-icon--large {
+  width: 1.45em;
+  height: 1.45em;
+}
+
+.jb-icon--huge {
+  width: 2.1em;
+  height: 2.1em;
+}
+
+.jb-icon--yellow {
+  color: #fbbd08;
+}
+
+.jb-icon--outline {
+  fill: none;
+}
+
+.jb-modal-dimmer {
+  position: fixed;
+  inset: 0;
+  z-index: 5000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  overflow: auto;
+  background: rgba(0, 0, 0, 0.85);
+  font-family: Helvetica, Arial, sans-serif;
+}
+
+.jb-modal-dimmer--top {
+  align-items: flex-start;
+}
+
+.jb-modal {
+  position: relative;
+  width: min(92vw, 720px);
+  max-height: calc(100vh - 2rem);
+  margin: auto;
+  background: #fff;
+  border-radius: 0.28rem;
+  box-shadow: 1px 3px 3px 0 rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(34, 36, 38, 0.15);
+  color: rgba(0, 0, 0, 0.87);
+  outline: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.jb-modal--top {
+  margin-top: 5vh;
+}
+
+.jb-modal--tiny {
+  width: min(92vw, 360px);
+}
+
+.jb-modal--small {
+  width: min(92vw, 520px);
+}
+
+.jb-modal--medium {
+  width: min(92vw, 720px);
+}
+
+.jb-modal-close {
+  position: absolute;
+  top: 0.65rem;
+  right: 0.65rem;
+  z-index: 1;
+  width: 2.1rem;
+  height: 2.1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background: transparent;
+  color: #555;
+  cursor: pointer;
+}
+
+.jb-modal-header {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid rgba(34, 36, 38, 0.15);
+  font-size: 1.428571rem;
+  font-weight: 700;
+}
+
+.jb-modal-content {
+  padding: 1.5rem;
+  overflow: auto;
+}
+
+.jb-modal-content--scrolling {
+  max-height: min(70vh, 680px);
+}
+
+.jb-modal-description {
+  line-height: 1.45;
+}
+
+.jb-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid rgba(34, 36, 38, 0.15);
+  background: #f9fafb;
+}
+
+.jb-form {
+  font-family: Helvetica, Arial, sans-serif;
+}
+
+.jb-form-field {
+  display: block;
+  margin: 0 0 1rem;
+  text-align: left;
+  font-weight: 700;
+}
+
+.jb-form-field span {
+  display: block;
+  margin-bottom: 0.35rem;
+}
+
+.jb-form-field input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.7rem 1rem;
+  border: 1px solid rgba(34, 36, 38, 0.2);
+  border-radius: 0.285714rem;
+  font: 400 1rem Helvetica, Arial, sans-serif;
+}
+
+.jb-form-field input:focus {
+  border-color: #85b7d9;
+  outline: 0;
+}
+
+.jb-container {
+  width: min(100%, 1127px);
+  margin: 0 auto;
+}
+
+.jb-text-center {
+  text-align: center;
+}
+
+.jb-segment {
+  position: relative;
+  margin: 1rem 0;
+  padding: 1rem;
+  background: #fff;
+  border: 1px solid rgba(34, 36, 38, 0.15);
+  border-radius: 0.285714rem;
+  box-shadow: 0 1px 2px 0 rgba(34, 36, 38, 0.15);
+}
+
+.jb-segment--padded {
+  padding: 1.5rem;
+}
+
+.jb-segment--padded-very {
+  padding: 3rem;
+}
+
+.jb-header {
+  font-family: Helvetica, Arial, sans-serif;
+  font-weight: 700;
+}
+
+.ui.feed .summary,
+.ui.comments,
+.ui.list,
+.ui.message,
+.ui.card,
+.ui.segment {
+  font-family: Helvetica, Arial, sans-serif;
+}
+
+.ui.feed .summary {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(34, 36, 38, 0.12);
+}
+
+.ui.feed .date {
+  margin-top: 0.25rem;
+  color: rgba(0, 0, 0, 0.5);
+  font-size: 0.9rem;
+}
+
+.ui.card,
+.ui.segment,
+.ui.message {
+  border: 1px solid rgba(34, 36, 38, 0.15);
+  border-radius: 0.285714rem;
+  background: #fff;
+  padding: 1rem;
+}

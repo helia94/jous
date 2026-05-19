@@ -1,35 +1,61 @@
-/* LanguageContext.css */
+.lang-modal {
+  width: min(92vw, 420px);
+}
+
+.lang-modal-title {
+  margin: 0;
+  padding-right: 1.75rem;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: left;
+}
+
 .lang-modal-container {
   display: flex;
   flex-direction: column;
-  width: 80%;
-  max-width: 600px; /* Optional: Limit width for better responsiveness */
-  margin: auto; /* Center horizontally */
-
-  text-align: center;
-  font-family: 'Montserrat'
+  gap: 0.5rem;
+  width: 100%;
+  margin: 0;
+  text-align: left;
+  font-family: Helvetica, Arial, sans-serif;
 }
 
 .long {
-  aspect-ratio: 4 / 1;
+  min-height: 2.75rem;
 }
 
 .other-langs-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
-  gap: 0;
+  gap: 0.5rem;
 }
 
 .lang-button {
-  margin: 0.0 !important;
-  border-radius: 0 !important;
-  font-size: clamp(15px, 4vw, 30px) !important;
+  cursor: pointer;
+  min-height: 2.75rem;
+  margin: 0 !important;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid rgba(34, 36, 38, 0.18);
+  border-radius: 6px !important;
+  background: #fff;
+  color: #111;
+  font-size: 1rem !important;
+  font-weight: 700;
+  line-height: 1.15;
   font-family: inherit !important;
+  text-align: center;
+  transition: background-color 0.12s ease, border-color 0.12s ease, transform 0.12s ease;
+}
+
+.lang-button:hover {
+  border-color: rgba(34, 36, 38, 0.45);
+  background: #f7f7f7;
 }
 
 .fat {
-  aspect-ratio: 2 / 1;
+  min-height: 4rem;
 }
 
 .active-lang {
@@ -38,6 +64,27 @@
 }
 
 .yellow-button {
+  cursor: pointer;
+  border: 1px solid rgba(34, 36, 38, 0.25);
+  border-radius: 4px;
+  padding: 0.65rem 1.1rem;
   background-color: #fbbd08 !important;
   color: black !important;
+  font: 700 1rem/1 Helvetica, Arial, sans-serif;
+}
+
+.lang-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0;
+}
+
+@media screen and (max-width: 420px) {
+  .other-langs-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .fat {
+    min-height: 2.75rem;
+  }
 }

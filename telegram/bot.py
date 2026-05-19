@@ -283,7 +283,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
             ]
             reply_markup = InlineKeyboardMarkup(keyboard)
             
-            await update.message.reply_text(welcome_msg, reply_markup=reply_markup)
+            await update.message.reply_text(welcome_msg, reply_markup=reply_markup, parse_mode='Markdown')
             
         else:
             # Returning user
@@ -306,7 +306,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
             ]
             reply_markup = InlineKeyboardMarkup(keyboard)
             
-            await update.message.reply_text(welcome_msg, reply_markup=reply_markup)
+            await update.message.reply_text(welcome_msg, reply_markup=reply_markup, parse_mode='Markdown')
             
     except Exception as e:
         logger.error(f"Error in start command: {e}")
@@ -559,7 +559,7 @@ async def set_timezone(update: Update, context: ContextTypes.DEFAULT_TYPE):
             f"Use `/question` to get a question right now!"
         )
         
-        await update.message.reply_text(success_msg)
+        await update.message.reply_text(success_msg, parse_mode='Markdown')
         
     except Exception as e:
         logger.error(f"Error setting timezone: {e}")
@@ -568,30 +568,33 @@ async def set_timezone(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
 
 
+def _schedule_daily_questions(job_queue: JobQueue, user_id: int, timezone_offset: int):
+    """Schedule daily question delivery for a user."""
+    job_name = f"daily_question_{user_id}"
+
+    # Remove existing jobs for this user
+    current_jobs = job_queue.get_jobs_by_name(job_name)
+    for job in current_jobs:
+        job.schedule_removal()
+
+    # Calculate UTC time for 7 PM local time
+    local_hour = DEFAULT_DAILY_TIME
+    utc_hour = (local_hour - timezone_offset) % 24
+
+    job_queue.run_daily(
+        broadcast_question,
+        time=time(hour=utc_hour, minute=0),
+        data={'user_id': user_id},
+        name=job_name
+    )
+
+    logger.info(f"Scheduled daily questions for user {user_id} at {utc_hour:02d}:00 UTC (7 PM local)")
+
+
 async def setup_daily_questions_for_user(context: ContextTypes.DEFAULT_TYPE, user_id: int, timezone_offset: int):
     """Set up daily question delivery for a user with error handling."""
     try:
-        job_name = f"daily_question_{user_id}"
-        
-        # Remove existing jobs for this user
-        current_jobs = context.job_queue.get_jobs_by_name(job_name)
-        for job in current_jobs:
-            job.schedule_removal()
-        
-        # Calculate UTC time for 7 PM local time
-        local_hour = DEFAULT_DAILY_TIME  # 7 PM
-        utc_hour = (local_hour - timezone_offset) % 24
-        
-        # Schedule daily job
-        context.job_queue.run_daily(
-            broadcast_question,
-            time=time(hour=utc_hour, minute=0),
-            context={'user_id': user_id},
-            name=job_name
-        )
-        
-        logger.info(f"Scheduled daily questions for user {user_id} at {utc_hour:02d}:00 UTC (7 PM local)")
-        
+        _schedule_daily_questions(context.job_queue, user_id, timezone_offset)
     except Exception as e:
         logger.error(f"Error setting up daily questions for user {user_id}: {e}")
 
@@ -599,7 +602,7 @@ async def setup_daily_questions_for_user(context: ContextTypes.DEFAULT_TYPE, use
 async def broadcast_question(context: ContextTypes.DEFAULT_TYPE):
     """Broadcast daily question to a user with error handling."""
     try:
-        user_id = context.job.context['user_id']
+        user_id = context.job.data['user_id']
         user_data = user_manager.get_user_data(user_id)
         
         if not user_data:
@@ -687,12 +690,7 @@ async def restore_user_jobs(application):
                 user_id = int(user_id_str)
                 timezone_offset = user_data.get('timezone', DEFAULT_TIMEZONE)
                 
-                # Create a mock context for job setup
-                mock_context = type('MockContext', (), {
-                    'job_queue': application.job_queue
-                })()
-                
-                await setup_daily_questions_for_user(mock_context, user_id, timezone_offset)
+                _schedule_daily_questions(application.job_queue, user_id, timezone_offset)
                 
             except Exception as e:
                 logger.error(f"Error restoring job for user {user_id_str}: {e}")
@@ -765,4 +763,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-

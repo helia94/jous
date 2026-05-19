@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import ReactGA from 'react-ga4';
-import { Modal, Button } from 'semantic-ui-react';
+import { trackEvent } from './analytics';
+import { Modal } from './ui';
 import './LanguageContext.css';
 
 export const LanguageContext = createContext();
@@ -41,7 +41,7 @@ export const LanguageProvider = ({ children }) => {
     urlParams.set('lang', newLang);
     window.history.replaceState({}, '', `${window.location.pathname}?${urlParams}`);
 
-    ReactGA.event({
+    trackEvent({
       category: 'settings',
       action: 'language',
       label: newLang, 
@@ -72,11 +72,19 @@ export const LanguageProvider = ({ children }) => {
     >
       {children}
 
-      <Modal open={isLanguageModalOpen} onClose={closeLanguageModal}>
-        <Modal.Header>Select Language</Modal.Header>
+      <Modal
+        open={isLanguageModalOpen}
+        onClose={closeLanguageModal}
+        size="tiny"
+        closeIcon
+        className="lang-modal"
+      >
+        <Modal.Header>
+          <h2 id="language-modal-title" className="lang-modal-title">Select Language</h2>
+        </Modal.Header>
         <Modal.Content>
           <div className="lang-modal-container">
-            <Button
+            <button
               className={`lang-button long ${language === 'original' ? 'active-lang' : ''}`}
               onClick={() => {
                 changeLanguage('original');
@@ -84,9 +92,9 @@ export const LanguageProvider = ({ children }) => {
               }}
             >
               Original
-            </Button>
+            </button>
             <div className="other-langs-grid">
-              <Button
+              <button
                 className={`lang-button fat ${language === 'en' ? 'active-lang' : ''}`}
                 onClick={() => {
                   changeLanguage('en');
@@ -94,8 +102,8 @@ export const LanguageProvider = ({ children }) => {
                 }}
               >
                 Enhanced English
-              </Button>
-              <Button
+              </button>
+              <button
                 className={`lang-button fat ${language === 'de' ? 'active-lang' : ''}`}
                 onClick={() => {
                   changeLanguage('de');
@@ -103,8 +111,8 @@ export const LanguageProvider = ({ children }) => {
                 }}
               >
                 German
-              </Button>
-              <Button
+              </button>
+              <button
                 className={`lang-button fat ${language === 'fa' ? 'active-lang' : ''}`}
                 onClick={() => {
                   changeLanguage('fa');
@@ -112,8 +120,8 @@ export const LanguageProvider = ({ children }) => {
                 }}
               >
                 Persian
-              </Button>
-              <Button
+              </button>
+              <button
                 className={`lang-button fat ${language === 'es' ? 'active-lang' : ''}`}
                 onClick={() => {
                   changeLanguage('es');
@@ -121,14 +129,14 @@ export const LanguageProvider = ({ children }) => {
                 }}
               >
                 Spanish
-              </Button>
+              </button>
             </div>
           </div>
         </Modal.Content>
-        <Modal.Actions>
-          <Button className="yellow-button" onClick={closeLanguageModal}>
+        <Modal.Actions className="lang-modal-actions">
+          <button className="yellow-button" onClick={closeLanguageModal}>
             Close
-          </Button>
+          </button>
         </Modal.Actions>
       </Modal>
     </LanguageContext.Provider>

@@ -1,4 +1,18 @@
 /* Homev2Critical.css - minimal critical styles */
+.home-shell {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  background: #111;
+}
+
+.home-hero-image {
+  display: block;
+  width: 100%;
+  height: 100vh;
+  object-fit: cover;
+  object-position: center;
+}
 
 .huge-header {
   margin-top: 0;
@@ -8,7 +22,7 @@
   color: #D6BFA8;
 }
 
-.ui.center.aligned.inverted.segment.transparent-black {
+.home-title-panel {
   background-color: rgba(0, 0, 0, 0.8);
   border: none;
   box-shadow: none;
@@ -20,7 +34,7 @@
 }
 
 @media screen and (max-height: 500px) and (orientation: landscape) {
-  .ui.center.aligned.inverted.segment.transparent-black {
+  .home-title-panel {
     top: 15%;
   }
 
@@ -36,4 +50,11 @@
   bottom: 15%;
   left: 50%;
   transform: translateX(-50%);
+}
+
+.home-start-button {
+  cursor: pointer;
+  width: min(78vw, 360px);
+  border: 1px solid rgba(214, 191, 168, 0.8);
+  border-radius: 4px;
 }

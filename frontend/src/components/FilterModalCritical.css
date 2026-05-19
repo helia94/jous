@@ -16,7 +16,6 @@
     color: black !important;
     font-weight: bold !important;
 }
-  
-  .filter-modal .ui.modal {
+.filter-modal {
     z-index: 5000 !important;
-  }
+}

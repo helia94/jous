@@ -1,6 +1,6 @@
 // src/components/FilterOptionButton.js
 import React from "react";
-import { Button } from "semantic-ui-react";
+import { Button } from "./ui";
 import { getFontClassForCards } from "./FontUtils";
 
 const FilterOptionButton = React.memo(({ isChosen, onClick, children }) => {

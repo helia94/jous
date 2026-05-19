@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import ReactGA from 'react-ga4';
-import { Modal, Button, Icon } from 'semantic-ui-react';
+import { trackEvent } from './analytics';
+import { Modal, Button, Icon } from './ui';
 import { useLanguage } from './LanguageContext';
 import ProductHuntBadge from './ProductHuntBadge';
 import InstagramBadge from './InstagramBadge';
-import QuizModal from "./QuizModal";
 
 function AboutModal({ open, onClose }) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const { language } = useLanguage();
   const [stats, setStats] = useState({
     questions: 0,
@@ -77,7 +75,7 @@ function AboutModal({ open, onClose }) {
                 color="yellow"
                 onClick={() => {
 
-                  ReactGA.event({
+                  trackEvent({
                     category: 'navigate',
                     action: 'button',
                     label: 'about-random',
@@ -107,7 +105,7 @@ function AboutModal({ open, onClose }) {
                 color="yellow"
                 onClick={() => {
 
-                  ReactGA.event({
+                  trackEvent({
                     category: 'navigate',
                     action: 'button',
                     label: 'about-random',
@@ -126,7 +124,7 @@ function AboutModal({ open, onClose }) {
                 color="black"
                 onClick={() => {
 
-                  ReactGA.event({
+                  trackEvent({
                     category: 'navigate',
                     action: 'button',
                     label: 'about-telegram',
@@ -157,7 +155,7 @@ function AboutModal({ open, onClose }) {
               color="black"
               onClick={() => {
 
-                ReactGA.event({
+                trackEvent({
                   category: 'navigate',
                   action: 'button',
                   label: 'about-all-questions',
@@ -173,7 +171,7 @@ function AboutModal({ open, onClose }) {
               color="black"
               onClick={() => {
 
-                ReactGA.event({
+                trackEvent({
                   category: 'navigate',
                   action: 'button',
                   label: 'about-blog',

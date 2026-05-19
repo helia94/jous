@@ -1,6 +1,6 @@
 // src/components/NavbarItems.js
-import React, { useEffect, useState } from "react";
-import { Button } from "semantic-ui-react";
+import React from "react";
+import { Icon } from "./ui";
 
 function NavbarItems({
   notify,
@@ -11,63 +11,49 @@ function NavbarItems({
   setOpenFilterModal,
   setOpenActivities,
 }) {
-  const [Icon, setIcon] = useState(null);
-
-  useEffect(() => {
-    if (!Icon) {
-      import("semantic-ui-react/dist/commonjs/elements/Icon/Icon").then((module) =>
-        setIcon(() => module.default)
-      );
-    }
-  }, [Icon]);
-
-  if (!Icon) {
-    return null; // Or a loader/spinner
-  }
-
   return (
     <>
-      <Button
+      <button
         className="nav-button"
         title="notifications"
         onClick={() => setOpenActivities(true)}
       >
-        <i className={`lemon ${notify ? "yellow" : "outline"} icon`} />
-      </Button>
+        <Icon name="lemon" color={notify ? "yellow" : undefined} outline={!notify} />
+      </button>
       {token && (
-        <Button
+        <button
           className="nav-button"
           title="profile"
           onClick={() => route(`user/${user}`)}
         >
-          <i className="user outline icon" />
-        </Button>
+          <Icon name="user" outline />
+        </button>
       )}
-      <Button
+      <button
         className="nav-button"
         onClick={() => setOpenFilterModal(true)}
         title="Filters"
       >
-        <i className="filter icon" />
-      </Button>
-      <Button className="nav-button" onClick={openLanguageModal}>
-        Language
-      </Button>
-      <Button className="nav-button" onClick={() => route("blog")}>
+        <Icon name="filter" />
+      </button>
+      <button className="nav-button" onClick={openLanguageModal} title="Language">
+        <Icon name="language" />
+      </button>
+      <button className="nav-button" onClick={() => route("blog")}>
         Blog
-      </Button>
+      </button>
       {!token ? (
-        <Button className="nav-button" onClick={() => route("login")}>
+        <button className="nav-button" onClick={() => route("login")}>
           Login
-        </Button>
+        </button>
       ) : (
-        <Button className="nav-button" onClick={() => route("logout")}>
+        <button className="nav-button" onClick={() => route("logout")}>
           Logout
-        </Button>
+        </button>
       )}
-      <Button className="nav-button" onClick={() => route("bug")}>
-        <i className="bug icon" />
-      </Button>
+      <button className="nav-button" onClick={() => route("bug")}>
+        <Icon name="bug" />
+      </button>
     </>
   );
 }

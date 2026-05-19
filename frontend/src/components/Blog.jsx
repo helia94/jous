@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 
 import { Helmet } from "react-helmet";
-import { Icon } from "semantic-ui-react";
+import { Icon } from "./ui";
 
 import { Cloudinary } from '@cloudinary/url-gen';
 import {AdvancedImage, responsive, placeholder} from '@cloudinary/react';

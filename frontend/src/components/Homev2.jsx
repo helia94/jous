@@ -1,20 +1,13 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react';
-import ReactGA from 'react-ga4';
 import { Helmet } from 'react-helmet';
-import { Button } from 'semantic-ui-react';
-import { Cloudinary } from '@cloudinary/url-gen';
-import { fill } from '@cloudinary/url-gen/actions/resize';
-import { AdvancedImage, responsive, placeholder } from '@cloudinary/react';
-import { autoEco } from "@cloudinary/url-gen/qualifiers/quality";
-import { focusOn } from "@cloudinary/url-gen/qualifiers/gravity";
-import { FocusOn } from "@cloudinary/url-gen/qualifiers/focusOn";
-import { webp } from "@cloudinary/url-gen/qualifiers/format";
-import FloatingPhrases from './FloatingPhrases';
-import 'semantic-ui-css/semantic.min.css';
+import { trackEvent } from './analytics';
+import { shouldUseMinimalExperience } from './performanceMode';
+import { Button } from './ui';
 import './Homev2Critical.css';
 import './Homev2Full.css';
 
 const AboutModal = lazy(() => import('./AboutModal'));
+const FloatingPhrases = lazy(() => import('./FloatingPhrases'));
 
 function Homev2() {
   const [windowSize, setWindowSize] = useState({
@@ -22,6 +15,8 @@ function Homev2() {
     height: window.innerHeight
   });
   const [showAbout, setShowAbout] = useState(false);
+  const [showDecorations, setShowDecorations] = useState(false);
+  const minimalExperience = shouldUseMinimalExperience();
 
   useEffect(() => {
     const handleResize = () => setWindowSize({
@@ -32,31 +27,15 @@ function Homev2() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const cld = new Cloudinary({ cloud: { cloudName: 'dl9xg597r' } });
+  useEffect(() => {
+    if (minimalExperience) {
+      return undefined;
+    }
 
-  const imgPublicId = '9dced400-e81c-4256-baa6-0daac025b21b_ehh68a'
-
-  const img = cld
-    .image(imgPublicId)
-    .format(webp())
-    .quality(autoEco())
-    .resize(fill()
-      .width(windowSize.width)
-      .height(windowSize.height)
-      .gravity(focusOn(FocusOn.faces()))
-    );
-
-  const backgroundStyle = {
-    //backgroundSize: 'cover',
-    //backgroundPosition: 'center',
-    height: '100vh',
-    //width: '100vw',
-    //position: 'relative',
-    //padding: '15px 20px 5px 10px',
-  };
-
-
-  const cldImage = <AdvancedImage cldImg={img} plugins={[responsive({ steps: 200 }), placeholder({ mode: 'blur' })]} style={backgroundStyle} />
+    const delay = windowSize.width < 768 ? 3500 : 2500;
+    const timer = window.setTimeout(() => setShowDecorations(true), delay);
+    return () => window.clearTimeout(timer);
+  }, [minimalExperience, windowSize.width]);
 
   const buttonStyle = {
     backgroundColor: 'rgba(0, 0, 0, 0.35)',
@@ -89,19 +68,31 @@ function Homev2() {
         <link rel="canonical" href="https://www.jous.app/" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </Helmet>
-      <div>
-        <div className="ui center aligned inverted segment transparent-black">
+      <div className="home-shell">
+        <div className="home-title-panel">
           <h1 className="huge-header">Jous</h1>
         </div>
-        {cldImage}
-        <FloatingPhrases />
+        <picture>
+          <source srcSet="/jous-awkwart-mobile.webp" media="(max-width: 767px)" />
+          <img
+            className="home-hero-image"
+            src="/jous-awkwart.webp"
+            alt=""
+            fetchPriority="high"
+          />
+        </picture>
+        {showDecorations && (
+          <Suspense fallback={null}>
+            <FloatingPhrases />
+          </Suspense>
+        )}
         <div className="grid-buttons-position">
           <Button
-            fluid
+            className="home-start-button"
             style={buttonStyle}
             onClick={() => {
               setShowAbout(true);
-              ReactGA.event({
+              trackEvent({
                 category: 'learn',
                 action: 'button',
                 label: 'about',

@@ -4,8 +4,7 @@ import axios from "axios";
 import Alert from "./Alert";
 import { check } from "../login";
 import { Helmet } from 'react-helmet';
-import { Form, Button, Segment, Container } from 'semantic-ui-react';
-import 'semantic-ui-css/semantic.min.css';
+import { Form, Button, Segment, Container } from './ui';
 import './Auth.css'; // Ensure this file exists with the provided styles
 
 class Register extends Component {
