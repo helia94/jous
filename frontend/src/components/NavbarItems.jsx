@@ -42,6 +42,9 @@ function NavbarItems({
       <button className="nav-button" onClick={() => route("blog")}>
         Blog
       </button>
+      <button className="nav-button" onClick={() => route("conversation-cards")}>
+        Cards
+      </button>
       {!token ? (
         <button className="nav-button" onClick={() => route("login")}>
           Login

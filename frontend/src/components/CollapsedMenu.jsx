@@ -122,6 +122,15 @@ function CollapsedMenu({
         <div
           style={menuItemStyle}
           onClick={() => {
+            route("conversation-cards");
+            onClose();
+          }}
+        >
+          Conversation Cards
+        </div>
+        <div
+          style={menuItemStyle}
+          onClick={() => {
             route("bug");
             onClose();
           }}

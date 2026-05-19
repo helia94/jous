@@ -28,6 +28,7 @@ const Imprint = lazy(() => import("./Imprint"));
 const Blog = lazy(() => import("./Blog"));
 const DatabaseBlogList = lazy(() => import("./DatabaseBlogList"));
 const BlogRoutes = lazy(() => import("./BlogRoutes"));
+const ConversationCards = lazy(() => import("./ConversationCards"));
 
 function App() {
     const [login, setLogin] = useState(() => Boolean(localStorage.getItem("token")));
@@ -62,6 +63,7 @@ function App() {
                                 </Route>
                                 <Route path="/home" component={MainPage} />
                                 <Route path="/random" component={Random} />
+                                <Route path="/conversation-cards" exact component={ConversationCards} />
                                 <Route path="/user/:username" component={UserPage} />
                                 <Route path="/group/:groupname" component={GroupHome} />
                                 <Route path="/question/:question" component={TweetDetailPage} />

@@ -17,6 +17,7 @@ const paths = [
     { url: '/home?lang=fa', changefreq: 'daily', priority: 0.8 },
     { url: '/home/?lang=de', changefreq: 'daily', priority: 0.8 },
     { url: '/random', changefreq: 'daily', priority: 0.6 },
+    { url: '/conversation-cards', changefreq: 'weekly', priority: 0.9 },
     { url: '/blog', changefreq: 'daily', priority: 0.6 },
     { url: '/more-blogs', changefreq: 'daily', priority: 0.6 },
     { url: '/random', changefreq: 'daily', priority: 0.6 },
