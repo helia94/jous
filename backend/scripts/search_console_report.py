@@ -11,6 +11,7 @@ Examples:
 
 Auth:
   - Set GOOGLE_ACCESS_TOKEN to an OAuth token with the webmasters scope, or
+  - Set GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, and GOOGLE_REFRESH_TOKEN, or
   - Set GOOGLE_APPLICATION_CREDENTIALS to a service-account JSON file that has
     been added to the Search Console property.
 """
@@ -57,10 +58,32 @@ def get_access_token(credentials_path: Optional[str]) -> str:
     if env_token:
         return env_token
 
+    refresh_token = os.getenv("GOOGLE_REFRESH_TOKEN")
+    client_id = os.getenv("GOOGLE_CLIENT_ID")
+    client_secret = os.getenv("GOOGLE_CLIENT_SECRET")
+    if refresh_token and client_id and client_secret:
+        try:
+            import requests
+        except ImportError as exc:
+            raise RuntimeError("Search Console API calls require requests. Install project requirements.") from exc
+
+        response = requests.post(
+            TOKEN_URL,
+            data={
+                "client_id": client_id,
+                "client_secret": client_secret,
+                "refresh_token": refresh_token,
+                "grant_type": "refresh_token",
+            },
+            timeout=30,
+        )
+        response.raise_for_status()
+        return response.json()["access_token"]
+
     credentials_path = credentials_path or os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
     if not credentials_path:
         raise RuntimeError(
-            "Missing auth. Set GOOGLE_ACCESS_TOKEN or GOOGLE_APPLICATION_CREDENTIALS."
+            "Missing auth. Set GOOGLE_ACCESS_TOKEN, GOOGLE_REFRESH_TOKEN credentials, or GOOGLE_APPLICATION_CREDENTIALS."
         )
 
     try:
