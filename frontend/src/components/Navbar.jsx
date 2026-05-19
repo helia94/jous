@@ -26,14 +26,7 @@ function Navbar() {
 
   // Function to load full CSS asynchronously
   const loadFullCSS = useCallback(() => {
-    const existingLink = document.getElementById("navbar-full-css");
-    if (!existingLink) {
-      const link = document.createElement("link");
-      link.rel = "stylesheet";
-      link.href = "./NavbarFull.css"; // Adjust the path as needed
-      link.id = "navbar-full-css";
-      document.head.appendChild(link);
-    }
+    import("./NavbarFull.css");
   }, []);
 
   // Load full CSS after initial render

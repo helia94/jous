@@ -1,7 +1,6 @@
 @font-face {
     font-family: "BreamcatcherRegular";
-    src: url('%PUBLIC_URL%/webFonts/BreamcatcherRegular/font.woff2') format('woff2'), url('%PUBLIC_URL%/webFonts/BreamcatcherRegular/font.woff') format('woff');
+    src: url('/webFonts/BreamcatcherRegular/font.woff2') format('woff2'), url('/webFonts/BreamcatcherRegular/font.woff') format('woff');
     font-weight: normal;
     font-style: normal;
   }
-  

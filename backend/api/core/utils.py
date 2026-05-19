@@ -2,6 +2,7 @@ import logging
 from typing import Tuple
 from flask import current_app, jsonify
 from flask.wrappers import Response
+from werkzeug.exceptions import HTTPException
 
 logger = logging.getLogger(__name__)
 
@@ -24,6 +25,9 @@ def all_exception_handler(error: Exception) -> Tuple[Response, int]:
     """
     A general catch-all error handler.
     """
+    if isinstance(error, HTTPException):
+        return create_response(message=error.description, status=error.code or 500)
+
     logger.exception("Unhandled exception occurred")
     return create_response(message=str(error), status=500)
 

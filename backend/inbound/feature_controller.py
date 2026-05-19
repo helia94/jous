@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, current_app, jsonify, request
 from werkzeug.utils import secure_filename
 from backend.inbound.service_factory import feature_service
 from backend.outbound.llm.audio_transcription import audio_transcription_client
@@ -52,8 +52,14 @@ def transcribe_audio():
     language = request.form.get("language", type=str, default=None)
 
     try:
-        transcript = audio_transcription_client.transcribe(audio_file, language=language)
-    except Exception:
+        transcript = audio_transcription_client.transcribe(
+            audio_file.stream,
+            filename=filename,
+            mimetype=audio_file.mimetype,
+            language=language,
+        )
+    except Exception as exc:
+        current_app.logger.exception("Audio transcription failed: %s", exc)
         return jsonify({"error": "Transcription service is currently unavailable."}), 502
 
     return jsonify({"transcript": transcript.strip()}), 200

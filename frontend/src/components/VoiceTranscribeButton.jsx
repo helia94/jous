@@ -72,11 +72,7 @@ function VoiceTranscribeButton({ onTranscription, placeholder = "Tap and speak" 
     try {
       setIsLoading(true);
       setError("");
-      const response = await Axios.post("/api/audio/transcribe", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data"
-        }
-      });
+      const response = await Axios.post("/api/audio/transcribe", formData);
 
       const transcript = response?.data?.transcript || "";
       if (!transcript.trim()) {
