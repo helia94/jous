@@ -24,8 +24,13 @@ def kill_process(process, name):
 def main():
     telegram_process = start_process("telegram_bot", [sys.executable, "telegram/bot.py"])
     slack_process = start_process("slack_bot", [sys.executable, "slack/bot.py"])
+    shutdown_requested = False
+    shutdown_started_at = None
 
     def handle_signal(signum, _frame):
+        nonlocal shutdown_requested, shutdown_started_at
+        shutdown_requested = True
+        shutdown_started_at = time.monotonic()
         print(f"[runner] received signal {signum}, shutting down", flush=True)
         terminate_process(telegram_process, "telegram_bot")
         terminate_process(slack_process, "slack_bot")
@@ -39,16 +44,20 @@ def main():
     }
 
     while True:
-        for name, process in processes.items():
+        for name, process in list(processes.items()):
             exit_code = process.poll()
             if exit_code is not None:
                 print(f"[runner] {name} exited with code {exit_code}", flush=True)
-                other_name = "slack_bot" if name == "telegram_bot" else "telegram_bot"
-                other_process = processes[other_name]
-                terminate_process(other_process, other_name)
-                time.sleep(5)
-                kill_process(other_process, other_name)
-                return exit_code
+                del processes[name]
+
+        if not processes:
+            return 0 if shutdown_requested else 1
+
+        if shutdown_requested and shutdown_started_at is not None:
+            if time.monotonic() - shutdown_started_at >= 5:
+                for name, process in processes.items():
+                    kill_process(process, name)
+
         time.sleep(1)
 
 
