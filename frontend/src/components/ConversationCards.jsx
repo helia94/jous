@@ -2,13 +2,15 @@ import React, { useEffect, useState } from "react";
 import Axios from "axios";
 import { Helmet } from "react-helmet";
 import { Button } from "./ui";
+import { trackEvent } from "./analytics";
+import { conversationCardSpokeLinks } from "./conversationCardSeoPages";
 import "./ConversationCards.css";
 
 const fallbackCards = [
-  "Who do you like walking with?",
+  "Who in your life has (in your view) the perfect combination of being nice and being honest?",
   "Do you often listen to sad music?",
-  "What grownup thing are you still failing to do or understand?",
-  "What do you buy to become a slightly different person?",
+  "What was your last failure? ",
+  "What's the closest thing to magic for you?",
 ];
 
 const comparisons = [
@@ -73,25 +75,55 @@ function ConversationCards() {
   const [loading, setLoading] = useState(false);
 
   const fetchRandomCard = async () => {
+    trackEvent({
+      category: "SEO landing page",
+      action: "draw_card_click",
+      label: "/conversation-cards",
+    });
+
     setLoading(true);
     try {
       const res = await Axios.get("/api/question/random");
       const question = res.data?.questions?.[0]?.question?.content;
       if (question) {
         setCurrentCard(question);
+        trackEvent({
+          category: "SEO landing page",
+          action: "card_draw_success",
+          label: "/conversation-cards",
+        });
         return;
       }
     } catch (error) {
       const nextIndex = (cardIndex + 1) % fallbackCards.length;
       setCardIndex(nextIndex);
       setCurrentCard(fallbackCards[nextIndex]);
+      trackEvent({
+        category: "SEO landing page",
+        action: "card_draw_fallback",
+        label: "/conversation-cards",
+      });
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchRandomCard();
+    setLoading(true);
+    Axios.get("/api/question/random")
+      .then((res) => {
+        const question = res.data?.questions?.[0]?.question?.content;
+        if (question) {
+          setCurrentCard(question);
+          trackEvent({
+            category: "SEO landing page",
+            action: "card_draw_success",
+            label: "/conversation-cards",
+          });
+        }
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -131,7 +163,17 @@ function ConversationCards() {
               <Button onClick={fetchRandomCard} disabled={loading}>
                 {loading ? "Drawing..." : "Draw a random card"}
               </Button>
-              <a className="conversation-cards-secondary" href="/random">
+              <a
+                className="conversation-cards-secondary"
+                href="/random"
+                onClick={() =>
+                  trackEvent({
+                    category: "SEO landing page",
+                    action: "random_app_cta_click",
+                    label: "/conversation-cards",
+                  })
+                }
+              >
                 Open the random card app
               </a>
             </div>
@@ -197,6 +239,21 @@ function ConversationCards() {
           <a href="https://github.com/helia94/jous" rel="noreferrer" target="_blank">
             View the source repository
           </a>
+        </section>
+
+        <section className="conversation-cards-section">
+          <div className="conversation-cards-section-heading">
+            <h2>Other doors</h2>
+            <p>Same pile of cards. Different ways in.</p>
+          </div>
+          <div className="conversation-cards-link-grid">
+            {conversationCardSpokeLinks.map((link) => (
+              <a className="conversation-cards-link-card" href={link.href} key={link.href}>
+                <strong>{link.label}</strong>
+                <span>{link.description}</span>
+              </a>
+            ))}
+          </div>
         </section>
 
         <section className="conversation-cards-section conversation-cards-faq">

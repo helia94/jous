@@ -52,9 +52,10 @@ class QuestionService:
 
 
     # In question_service.py, add:
-    def get_random_questions(self, language_id=DEFAULT_LANGUSGE_ID, occasion=None, level=None):
+    def get_random_questions(self, language_id=DEFAULT_LANGUSGE_ID, occasion=None, level=None, limit=20):
+        limit = max(1, min(int(limit or 20), 48))
         if language_id == DEFAULT_LANGUSGE_ID:
-            questions = self.question_repository.get_random_questions(occasion, level, limit=20)
+            questions = self.question_repository.get_random_questions(occasion, level, limit=limit)
             if not questions:
                 return {"error": "No questions available"}
             result = []
@@ -69,7 +70,7 @@ class QuestionService:
         if not is_supported_language(language_id):
             return {"error": "Invalid language"}, 400
             
-        translations = self.question_repository.get_random_questions_in_language(language_id, occasion, level, limit=20)
+        translations = self.question_repository.get_random_questions_in_language(language_id, occasion, level, limit=limit)
         if not translations:
             return {"error": "No questions available"}
             

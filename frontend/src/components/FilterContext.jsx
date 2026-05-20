@@ -4,9 +4,26 @@ import Axios from "axios";
 
 export const FilterContext = createContext();
 
+const getInitialFilters = () => {
+  const storedFilters = JSON.parse(sessionStorage.getItem("chosenFilters"));
+  const queryFilters = {};
+
+  if (typeof window !== "undefined") {
+    const params = new URLSearchParams(window.location.search);
+    ["occasion", "level"].forEach((name) => {
+      const value = params.get(name);
+      if (value !== null) {
+        queryFilters[name] = value;
+      }
+    });
+  }
+
+  return Object.keys(queryFilters).length > 0 ? queryFilters : storedFilters || {};
+};
+
 export const FilterProvider = ({ children }) => {
   const [filters, setFilters] = useState([]);
-  const [chosenFilters, setChosenFilters] = useState({});
+  const [chosenFilters, setChosenFilters] = useState(getInitialFilters);
   const [fetched, setFetched] = useState(false);
 
   const fetchFilters = async (languageId) => {
@@ -21,11 +38,13 @@ export const FilterProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    const storedFilters = JSON.parse(sessionStorage.getItem("chosenFilters"));
-    if (storedFilters) {
-      setChosenFilters(storedFilters);
+    if (Object.keys(chosenFilters).length === 0) {
+      sessionStorage.removeItem("chosenFilters");
+      return;
     }
-  }, []);
+
+    sessionStorage.setItem("chosenFilters", JSON.stringify(chosenFilters));
+  }, [chosenFilters]);
   
   const chooseFilterOption = (queryName, optionKey) => {
     setChosenFilters((prev) => {

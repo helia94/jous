@@ -3,6 +3,7 @@ import ReactGA from 'react-ga4';
 import Axios from "axios";
 import TweetItem2 from "./TweetItem2";
 import { Helmet } from "react-helmet";
+import { useLocation } from "react-router-dom";
 import { LanguageContext } from "./LanguageContext";
 import { FilterContext } from "./FilterContext";
 import { getFontClassForCards } from "./FontUtils";
@@ -13,8 +14,9 @@ import "./Random.css";
 import ConfettiBackground from "./ConfettiBackground"
 
 const Random = () => {
+  const location = useLocation();
   const { availableLanguages, language } = useContext(LanguageContext);
-  const { chosenFilters } = useContext(FilterContext);
+  const { chosenFilters, chooseFilterOption } = useContext(FilterContext);
 
   const selectedLanguage =
     availableLanguages.find((lang) => lang.frontend_code === language) || {
@@ -27,6 +29,16 @@ const Random = () => {
   const [showNoQuestion, setShowNoQuestion] = useState(false);
   const isMobile = window.innerWidth < 768;  
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    ["occasion", "level"].forEach((name) => {
+      const value = params.get(name);
+      if (value !== null && chosenFilters[name] !== value) {
+        chooseFilterOption(name, value);
+      }
+    });
+  }, [location.search, chosenFilters, chooseFilterOption]);
 
 
   const fetchQuestions = async () => {

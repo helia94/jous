@@ -193,9 +193,44 @@
 
 .conversation-cards-source a {
   color: #161616;
+  display: inline-block;
   font-weight: 800;
+  margin: 0 18px 10px 0;
   text-decoration: underline;
   text-underline-offset: 4px;
+}
+
+.conversation-cards-link-grid {
+  display: grid;
+  gap: 0 34px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.conversation-cards-link-card {
+  color: #161616;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: minmax(120px, 0.35fr) minmax(0, 1fr);
+  min-height: 0;
+  padding: 15px 0;
+  text-decoration: none;
+  border-top: 1px solid #111;
+}
+
+.conversation-cards-link-card strong,
+.conversation-cards-link-card span {
+  display: block;
+}
+
+.conversation-cards-link-card strong {
+  font-size: 1rem;
+  margin-bottom: 0;
+}
+
+.conversation-cards-link-card span {
+  font-size: 0.96rem;
+  line-height: 1.35;
+  opacity: 0.78;
 }
 
 .conversation-cards-faq {
@@ -211,6 +246,84 @@
 .conversation-cards-faq article {
   border-top: 1px solid #111;
   padding-top: 16px;
+}
+
+.printable-cards-hero {
+  align-items: end;
+  min-height: 430px;
+}
+
+.printable-cards-controls {
+  background: #fff;
+  border: 2px solid #111;
+  border-radius: 8px;
+  box-shadow: 8px 8px 0 #111;
+  display: grid;
+  gap: 18px;
+  padding: 24px;
+}
+
+.printable-cards-controls label,
+.printable-cards-controls span {
+  display: block;
+}
+
+.printable-cards-controls span {
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.printable-cards-controls select {
+  background: #fff;
+  border: 2px solid #111;
+  border-radius: 6px;
+  color: #161616;
+  font: inherit;
+  min-height: 48px;
+  padding: 0 12px;
+  width: 100%;
+}
+
+.printable-cards-sheet-header {
+  align-items: baseline;
+  border-bottom: 2px solid #111;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 18px;
+  padding-bottom: 12px;
+}
+
+.printable-cards-sheet-header h2,
+.printable-cards-sheet-header p {
+  margin: 0;
+}
+
+.printable-cards-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.printable-card {
+  background: #fff;
+  border: 2px solid #111;
+  border-radius: 8px;
+  min-height: 170px;
+  padding: 16px;
+}
+
+.printable-card span {
+  display: block;
+  font-weight: 800;
+  margin-bottom: 16px;
+}
+
+.printable-card p {
+  font-family: "Poiret One", "Vazirmatn RD", sans-serif;
+  font-size: 1.55rem;
+  font-weight: 800;
+  line-height: 1.14;
+  margin: 0;
 }
 
 @media screen and (max-width: 860px) {
@@ -234,7 +347,12 @@
 
   .conversation-cards-stats,
   .conversation-cards-example-grid,
-  .conversation-cards-comparison-grid {
+  .conversation-cards-comparison-grid,
+  .conversation-cards-link-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .conversation-cards-link-card {
     grid-template-columns: 1fr;
   }
 
@@ -242,7 +360,67 @@
     min-height: 130px;
   }
 
+  .printable-cards-grid {
+    grid-template-columns: 1fr;
+  }
+
   .conversation-cards-faq h2 {
     grid-row: auto;
+  }
+}
+
+@media print {
+  @page {
+    margin: 12mm;
+    size: A4;
+  }
+
+  body {
+    background: #fff;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  .printable-cards-sheet,
+  .printable-cards-sheet * {
+    visibility: visible;
+  }
+
+  .printable-cards-sheet {
+    left: 0;
+    margin: 0;
+    max-width: none;
+    position: absolute;
+    top: 0;
+    width: 100%;
+  }
+
+  .printable-cards-sheet-header {
+    break-after: avoid;
+  }
+
+  .printable-cards-sheet-header h2 {
+    font-family: Georgia, serif;
+    font-size: 22pt;
+  }
+
+  .printable-cards-grid {
+    gap: 8mm;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .printable-card {
+    break-inside: avoid;
+    box-shadow: none;
+    min-height: 52mm;
+    padding: 6mm;
+  }
+
+  .printable-card p {
+    font-family: Georgia, serif;
+    font-size: 15pt;
+    line-height: 1.2;
   }
 }

@@ -38,7 +38,8 @@ def get_random_questions():
     query_params = {
         'language_id': request.args.get('language_id', type=str, default=None),
         'occasion': request.args.get('occasion', type=int, default=None),
-        'level': request.args.get('level', type=int, default=None)
+        'level': request.args.get('level', type=int, default=None),
+        'limit': request.args.get('limit', type=int, default=None)
     }
     
     query_params = to_lower_list(filter_none(query_params))

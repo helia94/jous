@@ -613,28 +613,28 @@ Track product metrics:
 
 ### Months 3-4: Long-Tail Pages
 
-- [ ] Publish `/online-conversation-cards`.
-- [ ] Publish `/random-conversation-cards`.
-- [ ] Publish `/open-source-conversation-cards`.
-- [ ] Publish `/free-conversation-cards`.
-- [ ] Internally link all pages to the hub.
+- [x] Publish `/online-conversation-cards`.
+- [x] Publish `/random-conversation-cards`.
+- [x] Publish `/open-source-conversation-cards`.
+- [x] Publish `/free-conversation-cards`.
+- [x] Internally link all pages to the hub.
 
 ### Months 5-6: Use-Case Pages
 
-- [ ] Publish `/conversation-cards-for-friends`.
-- [ ] Publish `/conversation-cards-for-couples`.
-- [ ] Publish `/conversation-cards-for-date-night`.
-- [ ] Publish `/weird-conversation-cards`.
-- [ ] Publish `/non-cringe-conversation-starters`.
+- [x] Publish `/conversation-cards-for-friends`.
+- [x] Publish `/conversation-cards-for-couples`.
+- [x] Publish `/conversation-cards-for-date-night`.
+- [x] Publish `/weird-conversation-cards`.
+- [x] Publish `/non-cringe-conversation-starters`.
 
 ### Months 7-9: Assets and Links
 
-- [ ] Publish a free printable or exportable set.
-- [ ] Publish the open-source card dataset page.
+- [x] Publish a free printable or exportable set.
+- [x] Publish the open-source card dataset page.
 - [ ] Launch or relaunch on Product Hunt.
 - [ ] Pitch open-source newsletters.
 - [ ] Pitch relevant blogs and resource pages.
-- [ ] Add comparison content against physical decks and printable PDFs.
+- [x] Add comparison content against physical decks and printable PDFs.
 
 ### Months 10-12: Improve Winners
 
@@ -663,12 +663,12 @@ The long-term bet is to own **open-source random conversation cards** first, the
 - [ ] Add a Search Console script for sitemap submission and URL inspection. Dependency: Google Cloud project, Search Console API access, OAuth/service credentials, verified `jous.app` property.
 - [x] Add a Search Console reporting script for monthly `conversation cards` queries and pages with impressions but low CTR/ranking.
 - [ ] Run the Search Console reporting script monthly. Dependency: Search Console API access, deployed pages, and enough post-deploy data to query.
-- [ ] Build the English long-tail spoke page template. Dependency: final URL list and shared content pattern for hub/spoke internal links.
-- [ ] Build the first English spoke page. Dependency: spoke page template.
+- [x] Build the English long-tail spoke page template. Dependency: final URL list and shared content pattern for hub/spoke internal links.
+- [x] Build the first English spoke page. Dependency: spoke page template.
 - [ ] Build localized SEO page support for existing languages. Dependency: English spoke template and final locale URL map.
-- [ ] Publish the open-source card dataset page. Dependency: decide whether the public source is database export, JSONL, API endpoint, or repo file.
-- [ ] Build shareable/exportable card assets. Dependency: choose asset format: printable PDF, static page, image export, or dataset download.
-- [ ] Add tracking for SEO landing page CTA clicks and card draws. Dependency: confirm analytics event names and where conversion data should be read.
+- [x] Publish the open-source card dataset page. Dependency: decide whether the public source is database export, JSONL, API endpoint, or repo file.
+- [x] Build shareable/exportable card assets. Dependency: choose asset format: printable PDF, static page, image export, or dataset download.
+- [x] Add tracking for SEO landing page CTA clicks and card draws. Dependency: confirm analytics event names and where conversion data should be read.
 
 ### Non-Coding / Manual
 

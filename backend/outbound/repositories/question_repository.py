@@ -21,7 +21,7 @@ class QuestionRepository:
         limit = 20
         query = db.session.query(Question)
 
-        if occasion:
+        if occasion is not None:
             query = query.join(QuestionOccasions, Question.id == QuestionOccasions.question_id)
             query = query.filter(occasion == QuestionOccasions.occasion_ids.any_())
         if level is not None:
@@ -38,7 +38,7 @@ class QuestionRepository:
     def get_random_questions(self, occasion, level, limit=20):
         try:
             query = db.session.query(Question)
-            if occasion:
+            if occasion is not None:
                 query = query.join(QuestionOccasions, Question.id == QuestionOccasions.question_id)
                 query = query.filter(occasion == QuestionOccasions.occasion_ids.any_())
             if level is not None:
@@ -55,9 +55,9 @@ class QuestionRepository:
                 Question,
                 QuestionTranslation.question_id == Question.id
             )
-            if occasion:
+            if occasion is not None:
                 query = query.join(QuestionOccasions, Question.id == QuestionOccasions.question_id)
-                query = query.filter(QuestionOccasions.occasion_ids.any_() == occasion)
+                query = query.filter(occasion == QuestionOccasions.occasion_ids.any_())
             if level is not None:
                 query = query.join(QuestionLevel, Question.id == QuestionLevel.question_id)
                 query = query.filter(QuestionLevel.level_id == level)

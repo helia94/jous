@@ -1,10 +1,11 @@
 import React, { useEffect, Suspense, lazy, useState } from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Redirect, Route, Switch } from "react-router-dom";
 
 // Providers
 import { LanguageProvider } from "./LanguageContext";
 import { FilterProvider } from "./FilterContext";
 import { initAnalytics } from "./analytics";
+import { conversationCardSpokePages } from "./conversationCardSeoPages";
 
 // Eagerly Loaded Components
 import Navbar from "./Navbar";
@@ -29,6 +30,9 @@ const Blog = lazy(() => import("./Blog"));
 const DatabaseBlogList = lazy(() => import("./DatabaseBlogList"));
 const BlogRoutes = lazy(() => import("./BlogRoutes"));
 const ConversationCards = lazy(() => import("./ConversationCards"));
+const ConversationCardSpoke = lazy(() => import("./ConversationCardSpoke"));
+const PrintableConversationCards = lazy(() => import("./PrintableConversationCards"));
+const conversationCardSpokePaths = Object.keys(conversationCardSpokePages);
 
 function App() {
     const [login, setLogin] = useState(() => Boolean(localStorage.getItem("token")));
@@ -64,6 +68,14 @@ function App() {
                                 <Route path="/home" component={MainPage} />
                                 <Route path="/random" component={Random} />
                                 <Route path="/conversation-cards" exact component={ConversationCards} />
+                                <Route path="/conversation-cards-for-friends" exact>
+                                    <Redirect to="/random?occasion=0" />
+                                </Route>
+                                <Route path="/conversation-cards-for-couples" exact>
+                                    <Redirect to="/random?occasion=3" />
+                                </Route>
+                                <Route path="/printable-conversation-cards" exact component={PrintableConversationCards} />
+                                <Route path={conversationCardSpokePaths} exact component={ConversationCardSpoke} />
                                 <Route path="/user/:username" component={UserPage} />
                                 <Route path="/group/:groupname" component={GroupHome} />
                                 <Route path="/question/:question" component={TweetDetailPage} />
