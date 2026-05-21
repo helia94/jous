@@ -87,6 +87,9 @@ html, body {
 }
 
 .c-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
   border: 2px solid #000;
   background: #000;
@@ -100,7 +103,6 @@ html, body {
 .c-button:hover {
   color: #000;
   background: #fff;
-  padding: 0.3rem;
 }
 
 .c-form .c-field {

@@ -5,6 +5,7 @@ import Axios from "axios";
 import moment from "moment";
 import "./TweetItem2.css";
 import { getFontClassForCards } from "./FontUtils";
+import { Icon } from "./ui";
 
 const ShareModal = lazy(() => import("./ShareModal"));
 
@@ -93,20 +94,20 @@ export default class TweetItem2 extends React.Component {
           <div className="tweet-footer">
             <div className="action-buttons">
               <div className="action-btn" onClick={this.likeTweet}>
-                <i className="heart icon"></i><span>{this.state.likes}</span>
+                <Icon name="heart" /><span>{this.state.likes}</span>
               </div>
               <div className="action-btn" onClick={this.routeToQuestion}>
-                <i className="reply icon"></i><span>{this.props.answers}</span>
+                <Icon name="reply" /><span>{this.props.answers}</span>
               </div>
               <div className="action-btn" onClick={this.toggleShareModal}>
-                <i className="share alternate icon"></i>
+                <Icon name="share alternate" />
               </div>
               <div className="action-btn" onClick={this.copyQuestionContent}>
-                <i className="copy icon"></i>
+                <Icon name="copy" />
               </div>
               {this.props.isOwner && (
                 <div className="action-btn" onClick={this.deleteTweet}>
-                  <i className="trash alternate outline icon"></i>
+                  <Icon name="trash" />
                 </div>
               )}
             </div>

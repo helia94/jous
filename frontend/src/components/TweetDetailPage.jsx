@@ -8,6 +8,7 @@ import { LanguageContext } from "./LanguageContext";
 import { getFontClassForCards } from './FontUtils';
 import ConfettiBackground from "./ConfettiBackground"
 import VoiceTranscribeButton from "./VoiceTranscribeButton"
+import { Icon } from "./ui";
 
 class TweetDetailPage extends React.Component {
   static contextType = LanguageContext;
@@ -77,7 +78,7 @@ class TweetDetailPage extends React.Component {
     }));
   }
 
-  handleFormSubmit = (e) => {
+  handleFormSubmit = (e, anon = this.state.anon) => {
     e.preventDefault();
     const config = {
       headers: {}
@@ -88,7 +89,7 @@ class TweetDetailPage extends React.Component {
 
     Axios.post("/api/addanswer", {
       content: this.state.newAnswer,
-      anon: this.state.anon,
+      anon,
       question: this.props.match.params.question
     }, config).then(res => {
       if (res.data.success) {
@@ -185,20 +186,24 @@ class TweetDetailPage extends React.Component {
             <div>
               {this.state.isLoggedIn && (
                 <button
-                  type="submit"
+                  type="button"
                   className="c-button"
-                  onClick={() => this.setState({ anon: "False" })}
+                  onClick={(e) => this.handleFormSubmit(e, "False")}
                   style={{ marginRight: "0.5rem" }}
+                  aria-label="Submit answer"
+                  title="Submit answer"
                 >
-                  <i className="icon edit"></i>
+                  <Icon name="edit" />
                 </button>
               )}
               <button
-                type="submit"
+                type="button"
                 className="c-button"
-                onClick={() => this.setState({ anon: "True" })}
+                onClick={(e) => this.handleFormSubmit(e, "True")}
+                aria-label="Submit answer anonymously"
+                title="Submit answer anonymously"
               >
-                <i className="user secret icon"></i>
+                <Icon name="user secret" />
               </button>
             </div>
           </form>

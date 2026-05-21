@@ -3,6 +3,7 @@ import React from "react";
 import Axios from "axios";
 import { getFontClassForCards } from "./FontUtils";
 import VoiceTranscribeButton from "./VoiceTranscribeButton";
+import { Icon } from "./ui";
 
 class AddTweet extends React.Component {
     state = { 
@@ -43,7 +44,7 @@ class AddTweet extends React.Component {
         }));
     }
 
-    submitForm = (e) => {
+    submitForm = (e, anon = this.state.anon) => {
         e.preventDefault()
         if (this.state.content.trim().length === 0) {
             this.setState({ contentErr: "Add some data to the content!" })
@@ -58,10 +59,10 @@ class AddTweet extends React.Component {
         }
         Axios.post("/api/addquestion", {
             content: this.state.content,
-            anon: this.state.anon
+            anon
         }, config).then(res => {
             if (res.data.success) {
-                this.props.onAdd(this.state.content, this.state.anon);
+                this.props.onAdd(this.state.content, anon);
             } else {
                 this.setState({ formErr: res.data.error })
             }
@@ -102,19 +103,23 @@ class AddTweet extends React.Component {
               <div>
                 {this.state.isLoggedIn && (
                   <button
-                    type="submit"
+                    type="button"
                     className="c-button"
-                    onClick={() => this.setState({ anon: "False" })}
+                    onClick={(e) => this.submitForm(e, "False")}
+                    aria-label="Submit question"
+                    title="Submit question"
                   >
-                    <i className="icon edit"></i>
+                    <Icon name="edit" />
                   </button>
                 )}
                 <button
-                  type="submit"
+                  type="button"
                   className="c-button"
-                  onClick={() => this.setState({ anon: "True" })}
+                  onClick={(e) => this.submitForm(e, "True")}
+                  aria-label="Submit question anonymously"
+                  title="Submit question anonymously"
                 >
-                  <i className="user secret icon"></i>
+                  <Icon name="user secret" />
                 </button>
               </div>
             </form>
