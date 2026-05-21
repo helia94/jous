@@ -4,7 +4,7 @@ import json
 import requests
 import threading
 from uuid import uuid4
-from datetime import time, datetime
+from datetime import time
 from telegram import Update, InlineQueryResultArticle, InputTextMessageContent, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
     Application, CommandHandler, CallbackQueryHandler,
@@ -21,6 +21,7 @@ USER_DATA_FILE = 'user_data.json'
 DEFAULT_LANGUAGE = 'en'
 DEFAULT_TIMEZONE = 0  # UTC
 DEFAULT_DAILY_TIME = 19  # 7 PM
+DEFAULT_DAILY_QUESTIONS_ENABLED = True
 
 # Logging setup
 logging.basicConfig(
@@ -75,6 +76,8 @@ class UserDataManager:
                 user_data['lang'] = DEFAULT_LANGUAGE
             if 'timezone' not in user_data:
                 user_data['timezone'] = DEFAULT_TIMEZONE
+            if 'daily_questions_enabled' not in user_data:
+                user_data['daily_questions_enabled'] = DEFAULT_DAILY_QUESTIONS_ENABLED
             return user_data
     
     def set_user_data(self, user_id, key, value):
@@ -260,26 +263,27 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if str(user_id) not in user_manager.data:
             user_manager.set_user_data(user_id, 'lang', DEFAULT_LANGUAGE)
             user_manager.set_user_data(user_id, 'timezone', DEFAULT_TIMEZONE)
+            user_manager.set_user_data(user_id, 'daily_questions_enabled', True)
             
             # Automatically set up daily questions with defaults
             await setup_daily_questions_for_user(context, user_id, DEFAULT_TIMEZONE)
             
             welcome_msg = (
-                f"🎉 Welcome to the Daily Question Bot!\n\n"
-                f"I've automatically set you up with:\n"
-                f"🌍 Language: English\n"
-                f"🕐 Timezone: UTC (daily questions at 7 PM UTC)\n\n"
-                f"✨ You'll now receive daily questions automatically!\n\n"
+                f"Welcome to the Daily Question Bot.\n\n"
+                f"I've set you up with:\n"
+                f"Language: English\n"
+                f"Timezone: UTC (daily questions at 7 PM UTC)\n\n"
+                f"You'll receive one question each day.\n\n"
                 f"**Commands to customize:**\n"
                 f"• `/language` - Change your language\n"
                 f"• `/settimezone +3` - Set your timezone\n"
                 f"• `/question` - Get a question right now\n\n"
-                f"Click below to get your first question!"
+                f"Use the button below to get your first question."
             )
             
             keyboard = [
-                [InlineKeyboardButton("🎲 Get Question Now", callback_data="next")],
-                [InlineKeyboardButton("🌍 Change Language", callback_data="change_lang")],
+                [InlineKeyboardButton("Get Question Now", callback_data="next")],
+                [InlineKeyboardButton("Change Language", callback_data="change_lang")],
             ]
             reply_markup = InlineKeyboardMarkup(keyboard)
             
@@ -289,20 +293,27 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
             # Returning user
             lang = user_data['lang'].upper()
             timezone = user_data['timezone']
+            daily_enabled = user_data.get('daily_questions_enabled', DEFAULT_DAILY_QUESTIONS_ENABLED)
             tz_str = f"UTC{timezone:+d}" if timezone != 0 else "UTC"
+            daily_status = (
+                "You're receiving daily questions at 7 PM your local time!"
+                if daily_enabled
+                else "Daily questions are currently turned off."
+            )
             
             welcome_msg = (
-                f"🎉 Welcome back!\n\n"
+                f"Welcome back.\n\n"
                 f"Your current settings:\n"
-                f"🌍 Language: {lang}\n"
-                f"🕐 Timezone: {tz_str}\n\n"
-                f"You're receiving daily questions at 7 PM your local time!\n\n"
-                f"Use `/question` for a question now, or `/settimezone` to change your timezone."
+                f"Language: {lang}\n"
+                f"Timezone: {tz_str}\n\n"
+                f"{daily_status}\n\n"
+                f"Use `/question` for a question now, `/settimezone` to change your timezone, "
+                f"or `/unsubscribe` to turn daily questions off."
             )
             
             keyboard = [
-                [InlineKeyboardButton("🎲 Get Question Now", callback_data="next")],
-                [InlineKeyboardButton("⚙️ Settings", callback_data="settings")]
+                [InlineKeyboardButton("Get Question Now", callback_data="next")],
+                [InlineKeyboardButton("Settings", callback_data="settings")]
             ]
             reply_markup = InlineKeyboardMarkup(keyboard)
             
@@ -335,7 +346,7 @@ async def language_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
         reply_markup = InlineKeyboardMarkup(keyboard)
         await update.message.reply_text(
-            "🌍 Select your preferred language:",
+            "Select your preferred language:",
             reply_markup=reply_markup
         )
         
@@ -362,13 +373,12 @@ async def question_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         question_content = question_obj['question']['content']
         
         formatted_message = (
-            f"🤔 **Question for You**\n\n"
-            f"{question_content}\n\n"
-            f"💭 Take your time to reflect!"
+            f"**Question**\n\n"
+            f"{question_content}"
         )
         
         keyboard = [
-            [InlineKeyboardButton("🎲 Another Question", callback_data="next")]
+            [InlineKeyboardButton("Another Question", callback_data="next")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         
@@ -400,20 +410,27 @@ async def handle_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
             # Language selection
             language_id = data.split("_", 1)[1]
             user_manager.set_user_data(user_id, 'lang', language_id)
+            user_data = user_manager.get_user_data(user_id)
+            daily_enabled = user_data.get('daily_questions_enabled', DEFAULT_DAILY_QUESTIONS_ENABLED)
             
             # Get language name for display
             languages = await fetch_languages()
             lang_name = next((lang['name'] for lang in languages if lang['language_id'] == language_id), language_id.upper())
+            daily_message = (
+                f"Your daily questions will now be in {lang_name}."
+                if daily_enabled
+                else "Daily questions are currently turned off."
+            )
             
             success_msg = (
-                f"✅ Language set to {lang_name}!\n\n"
-                f"Your daily questions will now be in {lang_name}.\n\n"
+                f"Language set to {lang_name}.\n\n"
+                f"{daily_message}\n\n"
                 f"Use `/settimezone +3` to set your timezone for daily delivery."
             )
             
             keyboard = [
-                [InlineKeyboardButton("🎲 Get Question Now", callback_data="next")],
-                [InlineKeyboardButton("🕐 Set Timezone", callback_data="set_tz")]
+                [InlineKeyboardButton("Get Question Now", callback_data="next")],
+                [InlineKeyboardButton("Set Timezone", callback_data="set_tz")]
             ]
             reply_markup = InlineKeyboardMarkup(keyboard)
             
@@ -432,14 +449,13 @@ async def handle_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
             question_text = question_obj['question']['content']
             
             formatted_message = (
-                f"🤔 **Question for You**\n\n"
-                f"{question_text}\n\n"
-                f"💭 Take your time to think about it!"
+                f"**Question**\n\n"
+                f"{question_text}"
             )
             
             keyboard = [
-                [InlineKeyboardButton("🎲 Another Question", callback_data="next")],
-                [InlineKeyboardButton("⚙️ Settings", callback_data="settings")]
+                [InlineKeyboardButton("Another Question", callback_data="next")],
+                [InlineKeyboardButton("Settings", callback_data="settings")]
             ]
             reply_markup = InlineKeyboardMarkup(keyboard)
             
@@ -465,7 +481,7 @@ async def handle_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
             
             reply_markup = InlineKeyboardMarkup(keyboard)
             await query.edit_message_text(
-                "🌍 Select your preferred language:",
+                "Select your preferred language:",
                 reply_markup=reply_markup
             )
             
@@ -474,29 +490,41 @@ async def handle_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
             user_data = user_manager.get_user_data(user_id)
             lang = user_data.get('lang', DEFAULT_LANGUAGE)
             timezone = user_data.get('timezone', DEFAULT_TIMEZONE)
+            daily_enabled = user_data.get('daily_questions_enabled', DEFAULT_DAILY_QUESTIONS_ENABLED)
             
             tz_str = f"UTC{timezone:+d}" if timezone != 0 else "UTC"
+            daily_status = "On at 7 PM your local time" if daily_enabled else "Off"
             
             settings_msg = (
-                f"⚙️ **Your Settings**\n\n"
-                f"🌍 Language: {lang.upper()}\n"
-                f"🕐 Timezone: {tz_str}\n"
-                f"📅 Daily questions at 7 PM your local time\n\n"
-                f"Use `/language` or `/settimezone` to change settings."
+                f"**Your Settings**\n\n"
+                f"Language: {lang.upper()}\n"
+                f"Timezone: {tz_str}\n"
+                f"Daily questions: {daily_status}\n\n"
+                f"Use `/language`, `/settimezone`, or `/unsubscribe` to change settings."
             )
             
             keyboard = [
-                [InlineKeyboardButton("🎲 Get Question", callback_data="next")],
-                [InlineKeyboardButton("🌍 Change Language", callback_data="change_lang")]
+                [InlineKeyboardButton("Get Question", callback_data="next")],
+                [InlineKeyboardButton("Change Language", callback_data="change_lang")],
             ]
+            if daily_enabled:
+                keyboard.append([InlineKeyboardButton("Unsubscribe", callback_data="unsubscribe")])
             reply_markup = InlineKeyboardMarkup(keyboard)
             
             await query.edit_message_text(settings_msg, reply_markup=reply_markup, parse_mode='Markdown')
             
+        elif data == "unsubscribe":
+            await unsubscribe_user(context, user_id)
+            await query.edit_message_text(
+                "Daily questions are now turned off.\n\n"
+                "You can still use `/question` anytime for an on-demand question.",
+                parse_mode='Markdown'
+            )
+            
         elif data == "set_tz":
             # Timezone setting instructions
             tz_msg = (
-                f"🕐 **Set Your Timezone**\n\n"
+                f"**Set Your Timezone**\n\n"
                 f"Use the command: `/settimezone <offset>`\n\n"
                 f"Examples:\n"
                 f"• `/settimezone +3` for UTC+3\n"
@@ -522,7 +550,7 @@ async def set_timezone(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
         if not context.args:
             help_msg = (
-                "🕐 **Set Your Timezone**\n\n"
+                "**Set Your Timezone**\n\n"
                 "Usage: `/settimezone <offset>`\n\n"
                 "Examples:\n"
                 "• `/settimezone +3` for UTC+3\n"
@@ -538,7 +566,7 @@ async def set_timezone(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
         if timezone_offset is None:
             error_msg = (
-                "❌ Invalid timezone format.\n\n"
+                "Invalid timezone format.\n\n"
                 "Please use: `/settimezone +3` or `/settimezone -5`\n"
                 "Valid range: -12 to +14"
             )
@@ -548,14 +576,21 @@ async def set_timezone(update: Update, context: ContextTypes.DEFAULT_TYPE):
         # Save timezone
         user_manager.set_user_data(user_id, 'timezone', timezone_offset)
         
-        # Set up daily questions
-        await setup_daily_questions_for_user(context, user_id, timezone_offset)
+        user_data = user_manager.get_user_data(user_id)
+        daily_enabled = user_data.get('daily_questions_enabled', DEFAULT_DAILY_QUESTIONS_ENABLED)
+        if daily_enabled:
+            await setup_daily_questions_for_user(context, user_id, timezone_offset)
         
         # Confirmation message
         tz_str = f"UTC{timezone_offset:+d}" if timezone_offset != 0 else "UTC"
+        daily_status = (
+            "You'll receive daily questions at 7 PM your local time."
+            if daily_enabled
+            else "Daily questions are still turned off."
+        )
         success_msg = (
-            f"✅ Timezone set to {tz_str}!\n\n"
-            f"🎯 You'll receive daily questions at 7 PM your local time.\n\n"
+            f"Timezone set to {tz_str}.\n\n"
+            f"{daily_status}\n\n"
             f"Use `/question` to get a question right now!"
         )
         
@@ -565,6 +600,39 @@ async def set_timezone(update: Update, context: ContextTypes.DEFAULT_TYPE):
         logger.error(f"Error setting timezone: {e}")
         await update.message.reply_text(
             "Sorry, something went wrong while setting your timezone. Please try again."
+        )
+
+
+def remove_daily_question_job(job_queue: JobQueue, user_id: int):
+    """Remove scheduled daily question delivery for a user."""
+    job_name = f"daily_question_{user_id}"
+    current_jobs = job_queue.get_jobs_by_name(job_name)
+    for job in current_jobs:
+        job.schedule_removal()
+    logger.info(f"Removed {len(current_jobs)} daily question job(s) for user {user_id}")
+
+
+async def unsubscribe_user(context: ContextTypes.DEFAULT_TYPE, user_id: int):
+    """Turn off daily questions for a user and remove their scheduled job."""
+    user_manager.set_user_data(user_id, 'daily_questions_enabled', False)
+    remove_daily_question_job(context.job_queue, user_id)
+
+
+async def unsubscribe_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Handle /unsubscribe command to turn off daily questions."""
+    user_id = update.effective_user.id
+
+    try:
+        await unsubscribe_user(context, user_id)
+        await update.message.reply_text(
+            "Daily questions are now turned off.\n\n"
+            "You can still use `/question` anytime for an on-demand question.",
+            parse_mode='Markdown'
+        )
+    except Exception as e:
+        logger.error(f"Error unsubscribing user {user_id}: {e}")
+        await update.message.reply_text(
+            "Sorry, something went wrong while unsubscribing. Please try again."
         )
 
 
@@ -594,6 +662,7 @@ def _schedule_daily_questions(job_queue: JobQueue, user_id: int, timezone_offset
 async def setup_daily_questions_for_user(context: ContextTypes.DEFAULT_TYPE, user_id: int, timezone_offset: int):
     """Set up daily question delivery for a user with error handling."""
     try:
+        user_manager.set_user_data(user_id, 'daily_questions_enabled', True)
         _schedule_daily_questions(context.job_queue, user_id, timezone_offset)
     except Exception as e:
         logger.error(f"Error setting up daily questions for user {user_id}: {e}")
@@ -608,22 +677,23 @@ async def broadcast_question(context: ContextTypes.DEFAULT_TYPE):
         if not user_data:
             logger.warning(f"No user data found for user {user_id}, skipping broadcast")
             return
+
+        if not user_data.get('daily_questions_enabled', DEFAULT_DAILY_QUESTIONS_ENABLED):
+            logger.info(f"Daily questions disabled for user {user_id}, skipping broadcast")
+            return
         
         language_id = user_data.get('lang', DEFAULT_LANGUAGE)
         question_content = await fetch_question_in_language(language_id)
         
         # Format the daily question message
-        current_time = datetime.now()
         formatted_message = (
-            f"🌅 **Good Evening! Your Daily Question**\n\n"
-            f"🤔 {question_content}\n\n"
-            f"💭 Take a moment to reflect on this...\n\n"
-            f"📅 {current_time.strftime('%B %d, %Y')}"
+            f"**Daily Question**\n\n"
+            f"{question_content}"
         )
         
         keyboard = [
-            [InlineKeyboardButton("🎲 Another Question", callback_data="next")],
-            [InlineKeyboardButton("⚙️ Settings", callback_data="settings")]
+            [InlineKeyboardButton("Another Question", callback_data="next")],
+            [InlineKeyboardButton("Settings", callback_data="settings")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         
@@ -687,6 +757,10 @@ async def restore_user_jobs(application):
         
         for user_id_str, user_data in users_with_data.items():
             try:
+                if not user_data.get('daily_questions_enabled', DEFAULT_DAILY_QUESTIONS_ENABLED):
+                    logger.info(f"Daily questions disabled for user {user_id_str}, skipping job restoration")
+                    continue
+
                 user_id = int(user_id_str)
                 timezone_offset = user_data.get('timezone', DEFAULT_TIMEZONE)
                 
@@ -704,19 +778,20 @@ async def restore_user_jobs(application):
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Handle /help command."""
     help_text = (
-        "🤖 **Daily Question Bot Help**\n\n"
+        "**Daily Question Bot Help**\n\n"
         "**Commands:**\n"
         "• `/start` - Start the bot (automatic setup with defaults)\n"
         "• `/question` - Get a question right now\n"
         "• `/language` - Change your language preference\n"
         "• `/settimezone +3` - Set your timezone (e.g., +3 for UTC+3)\n"
+        "• `/unsubscribe` - Turn off daily questions\n"
         "• `/help` - Show this help message\n\n"
         "**Features:**\n"
-        "• 🎯 **Automatic daily questions** at 7 PM your local time\n"
-        "• 🎲 **On-demand questions** anytime you want\n"
-        "• 🌍 **Multiple language support**\n"
-        "• ⚙️ **Easy customization** of language and timezone\n"
-        "• 💬 **Inline queries** - type @botname in any chat\n\n"
+        "• **Automatic daily questions** at 7 PM your local time\n"
+        "• **On-demand questions** anytime you want\n"
+        "• **Multiple language support**\n"
+        "• **Customization** of language and timezone\n"
+        "• **Inline queries** - type @botname in any chat\n\n"
         "**Default Settings:**\n"
         "• Language: English\n"
         "• Timezone: UTC (7 PM UTC)\n\n"
@@ -742,6 +817,7 @@ def main():
         application.add_handler(CommandHandler("question", question_command))
         application.add_handler(CommandHandler("language", language_command))
         application.add_handler(CommandHandler("settimezone", set_timezone))
+        application.add_handler(CommandHandler("unsubscribe", unsubscribe_command))
         application.add_handler(CommandHandler("help", help_command))
         application.add_handler(CallbackQueryHandler(handle_callback))
         application.add_handler(InlineQueryHandler(inline_query))

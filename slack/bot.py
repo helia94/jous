@@ -2,7 +2,6 @@ import json
 import logging
 import os
 import threading
-from datetime import datetime
 
 import requests
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -223,19 +222,19 @@ def build_question_blocks(question_text):
     return [
         {
             "type": "section",
-            "text": {"type": "mrkdwn", "text": f"🤔 *Question for You*\n\n{question_text}\n\n💭 Take your time to reflect!"},
+            "text": {"type": "mrkdwn", "text": f"*Question*\n\n{question_text}"},
         },
         {
             "type": "actions",
             "elements": [
                 {
                     "type": "button",
-                    "text": {"type": "plain_text", "text": "🎲 Another Question"},
+                    "text": {"type": "plain_text", "text": "Another Question"},
                     "action_id": "next_question",
                 },
                 {
                     "type": "button",
-                    "text": {"type": "plain_text", "text": "⚙️ Settings"},
+                    "text": {"type": "plain_text", "text": "Settings"},
                     "action_id": "settings",
                 },
             ],
@@ -246,11 +245,11 @@ def build_question_blocks(question_text):
 def build_welcome_blocks(is_new_user):
     if is_new_user:
         text = (
-            "🎉 *Welcome to the Daily Question Bot!*\n\n"
-            "I've automatically set you up with:\n"
-            "🌍 Language: English\n"
-            "🕐 Timezone: UTC (daily questions at 7 PM UTC)\n\n"
-            "✨ You'll now receive daily questions automatically!\n\n"
+            "*Welcome to the Daily Question Bot.*\n\n"
+            "I've set you up with:\n"
+            "Language: English\n"
+            "Timezone: UTC (daily questions at 7 PM UTC)\n\n"
+            "You'll receive one question each day.\n\n"
             "*Commands to customize:*\n"
             "• `/language` - Change your language\n"
             "• `/settimezone +3` - Set your timezone\n"
@@ -258,7 +257,7 @@ def build_welcome_blocks(is_new_user):
         )
     else:
         text = (
-            "🎉 *Welcome back!*\n\n"
+            "*Welcome back.*\n\n"
             "You're receiving daily questions at 7 PM your local time.\n\n"
             "Use `/question` for a question now, or `/settimezone` to change your timezone."
         )
@@ -270,17 +269,17 @@ def build_welcome_blocks(is_new_user):
             "elements": [
                 {
                     "type": "button",
-                    "text": {"type": "plain_text", "text": "🎲 Get Question Now"},
+                    "text": {"type": "plain_text", "text": "Get Question Now"},
                     "action_id": "next_question",
                 },
                 {
                     "type": "button",
-                    "text": {"type": "plain_text", "text": "🌍 Change Language"},
+                    "text": {"type": "plain_text", "text": "Change Language"},
                     "action_id": "change_language",
                 },
                 {
                     "type": "button",
-                    "text": {"type": "plain_text", "text": "🕐 Set Timezone"},
+                    "text": {"type": "plain_text", "text": "Set Timezone"},
                     "action_id": "set_timezone",
                 },
             ],
@@ -294,10 +293,10 @@ def build_settings_blocks(user_data):
     tz_str = f"UTC{timezone:+d}" if timezone != 0 else "UTC"
 
     text = (
-        "⚙️ *Your Settings*\n\n"
-        f"🌍 Language: {lang.upper()}\n"
-        f"🕐 Timezone: {tz_str}\n"
-        "📅 Daily questions at 7 PM your local time\n\n"
+        "*Your Settings*\n\n"
+        f"Language: {lang.upper()}\n"
+        f"Timezone: {tz_str}\n"
+        "Daily questions at 7 PM your local time\n\n"
         "Use `/language` or `/settimezone` to change settings."
     )
 
@@ -308,17 +307,17 @@ def build_settings_blocks(user_data):
             "elements": [
                 {
                     "type": "button",
-                    "text": {"type": "plain_text", "text": "🎲 Get Question"},
+                    "text": {"type": "plain_text", "text": "Get Question"},
                     "action_id": "next_question",
                 },
                 {
                     "type": "button",
-                    "text": {"type": "plain_text", "text": "🌍 Change Language"},
+                    "text": {"type": "plain_text", "text": "Change Language"},
                     "action_id": "change_language",
                 },
                 {
                     "type": "button",
-                    "text": {"type": "plain_text", "text": "🕐 Set Timezone"},
+                    "text": {"type": "plain_text", "text": "Set Timezone"},
                     "action_id": "set_timezone",
                 },
             ],
@@ -327,7 +326,7 @@ def build_settings_blocks(user_data):
 
 
 def build_language_blocks(languages):
-    blocks = [{"type": "section", "text": {"type": "mrkdwn", "text": "🌍 Select your preferred language:"}}]
+    blocks = [{"type": "section", "text": {"type": "mrkdwn", "text": "Select your preferred language:"}}]
     for i in range(0, len(languages), 5):
         buttons = []
         for lang in languages[i : i + 5]:
@@ -382,12 +381,9 @@ def send_daily_question(user_id):
     language_id = user_data.get("lang", DEFAULT_LANGUAGE)
     question_content = fetch_question_in_language(language_id)
 
-    current_time = datetime.now()
     text = (
-        "🌅 *Good Evening! Your Daily Question*\n\n"
-        f"🤔 {question_content}\n\n"
-        "💭 Take a moment to reflect on this...\n\n"
-        f"📅 {current_time.strftime('%B %d, %Y')}"
+        "*Daily Question*\n\n"
+        f"{question_content}"
     )
 
     send_message_to_user(app.client, user_id, text, blocks=[{"type": "section", "text": {"type": "mrkdwn", "text": text}}])
@@ -467,7 +463,7 @@ def set_timezone_command(ack, respond, command):
     if not timezone_input:
         respond(
             text=(
-                "🕐 *Set Your Timezone*\n\n"
+                "*Set Your Timezone*\n\n"
                 "Usage: `/settimezone <offset>`\n\n"
                 "Examples:\n"
                 "• `/settimezone +3` for UTC+3\n"
@@ -483,7 +479,7 @@ def set_timezone_command(ack, respond, command):
     if timezone_offset is None:
         respond(
             text=(
-                "❌ Invalid timezone format.\n\n"
+                "Invalid timezone format.\n\n"
                 "Please use: `/settimezone +3` or `/settimezone -5`\n"
                 "Valid range: -12 to +14"
             ),
@@ -497,8 +493,8 @@ def set_timezone_command(ack, respond, command):
     tz_str = f"UTC{timezone_offset:+d}" if timezone_offset != 0 else "UTC"
     respond(
         text=(
-            f"✅ Timezone set to {tz_str}!\n\n"
-            "🎯 You'll receive daily questions at 7 PM your local time.\n\n"
+            f"Timezone set to {tz_str}.\n\n"
+            "You'll receive daily questions at 7 PM your local time.\n\n"
             "Use `/question` to get a question right now!"
         ),
         response_type="ephemeral",
@@ -510,7 +506,7 @@ def help_command(ack, respond, command):
     ack()
     respond(
         text=(
-            "🤖 *Daily Question Bot Help*\n\n"
+            "*Daily Question Bot Help*\n\n"
             "*Commands:*\n"
             "• `/start` - Start the bot (automatic setup with defaults)\n"
             "• `/question` - Get a question right now\n"
@@ -518,10 +514,10 @@ def help_command(ack, respond, command):
             "• `/settimezone +3` - Set your timezone (e.g., +3 for UTC+3)\n"
             "• `/help` - Show this help message\n\n"
             "*Features:*\n"
-            "• 🎯 *Automatic daily questions* at 7 PM your local time\n"
-            "• 🎲 *On-demand questions* anytime you want\n"
-            "• 🌍 *Multiple language support*\n"
-            "• ⚙️ *Easy customization* of language and timezone\n\n"
+            "• *Automatic daily questions* at 7 PM your local time\n"
+            "• *On-demand questions* anytime you want\n"
+            "• *Multiple language support*\n"
+            "• *Customization* of language and timezone\n\n"
             "*Default Settings:*\n"
             "• Language: English\n"
             "• Timezone: UTC (7 PM UTC)"
@@ -573,7 +569,7 @@ def select_language_action(ack, body, say):
 
     say(
         text=(
-            f"✅ Language set to {lang_name}!\n\n"
+            f"Language set to {lang_name}.\n\n"
             f"Your daily questions will now be in {lang_name}.\n\n"
             "Use `/settimezone +3` to set your timezone for daily delivery."
         )
@@ -585,7 +581,7 @@ def set_timezone_action(ack, body, say):
     ack()
     say(
         text=(
-            "🕐 *Set Your Timezone*\n\n"
+            "*Set Your Timezone*\n\n"
             "Use the command: `/settimezone <offset>`\n\n"
             "Examples:\n"
             "• `/settimezone +3` for UTC+3\n"
