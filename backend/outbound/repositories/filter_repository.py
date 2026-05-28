@@ -13,8 +13,16 @@ class FilterRepository:
     def add_filter_values(self, question_id, filter_values):
         for key, value in filter_values.items():
             try:
-                filter_model = (filter_to_model[key](question_id, value))
-                db.session.add(filter_model)
+                model = filter_to_model[key]
+                filter_model = model.query.filter_by(question_id=question_id).first()
+                if filter_model:
+                    if key == "level":
+                        filter_model.level_id = value
+                    elif key == "occasion":
+                        filter_model.occasion_ids = value
+                else:
+                    filter_model = model(question_id, value)
+                    db.session.add(filter_model)
                 db.session.commit()
             except Exception as e:
                 logger.error(f"adding {key} to db failed", e)

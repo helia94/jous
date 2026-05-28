@@ -135,12 +135,19 @@ class QuestionRepository:
     
     def add_question_translation(self, question_id, languse_iso2, translated_text):
         try:
-            t = QuestionTranslation(
+            t = QuestionTranslation.query.filter(
+                QuestionTranslation.question_id == question_id,
+                QuestionTranslation.language_id == languse_iso2
+            ).first()
+            if t:
+                t.translated_content = translated_text
+            else:
+                t = QuestionTranslation(
                         question_id=question_id,
                         language_id=languse_iso2,
                         translated_content=translated_text
                     )
-            db.session.add(t)
+                db.session.add(t)
             db.session.commit()
             logger.info("add_question_translation: translation upserted into db")
         except Exception as e:

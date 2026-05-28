@@ -70,8 +70,7 @@ blog_writer = BlogWriter(llm = GPT(model_name = 'o3-mini'))
 def translate_all_questions():
     with app.app_context():
         offset = 0
-        limit=20
-        questions = question_repository.get_all_questions(offset, limit=limit)
+        questions = question_repository.get_all_questions(offset, None, None)
         while questions:
             for question in questions:
                 for lang in supported_languages:
@@ -82,7 +81,7 @@ def translate_all_questions():
                         except Exception as e:
                             logger.warning("adding translation for question {question.id} in languge {lang.iso2} to db failed", e)
             offset += 1
-            questions = question_repository.get_all_questions(offset, limit=limit)
+            questions = question_repository.get_all_questions(offset, None, None)
 
 @shared_task(name = "backend.outbound.queue.tasks.translation_task.process_question_translation")
 def process_question_translation(question_id, question_content):
@@ -102,6 +101,47 @@ def process_question_filters(question_id, question_content):
     with app.app_context():
         filter_repository.add_filter_values(question_id, filter_values)
         logger.info(f"added filter values")
+
+
+@shared_task(name="backend.outbound.queue.tasks.translation_task.retry_missing_question_ai_outputs")
+def retry_missing_question_ai_outputs():
+    from backend.api.models.QuestionLevel import QuestionLevel
+    from backend.api.models.QuestionOccasions import QuestionOccasions
+
+    logger.info("Start retry_missing_question_ai_outputs")
+    with app.app_context():
+        offset = 0
+        translation_count = 0
+        filter_count = 0
+        questions = question_repository.get_all_questions(offset, None, None)
+
+        while questions:
+            for question in questions:
+                missing_translation = any(
+                    not question_repository.has_translation(question.id, lang.iso2)
+                    for lang in supported_languages
+                )
+                missing_filters = (
+                    QuestionLevel.query.filter_by(question_id=question.id).first() is None
+                    or QuestionOccasions.query.filter_by(question_id=question.id).first() is None
+                )
+
+                if missing_translation:
+                    process_question_translation.delay(question.id, question.content)
+                    translation_count += 1
+                if missing_filters:
+                    process_question_filters.delay(question.id, question.content)
+                    filter_count += 1
+
+            offset += 1
+            questions = question_repository.get_all_questions(offset, None, None)
+
+    logger.info(
+        "retry_missing_question_ai_outputs queued %s translation tasks and %s filter tasks",
+        translation_count,
+        filter_count,
+    )
+    return {"translation_tasks": translation_count, "filter_tasks": filter_count}
 
 
 @shared_task(name="backend.outbound.queue.tasks.translation_task.add_all_filters")
