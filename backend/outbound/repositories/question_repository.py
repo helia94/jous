@@ -35,6 +35,29 @@ class QuestionRepository:
                      .all())
         return list(reversed(questions))
 
+    def get_all_questions_in_language(self, offset, language_id, occasion, level):
+        pageSize = 20
+        limit = 20
+        query = db.session.query(QuestionTranslation).join(
+            Question,
+            QuestionTranslation.question_id == Question.id
+        )
+
+        if occasion is not None:
+            query = query.join(QuestionOccasions, Question.id == QuestionOccasions.question_id)
+            query = query.filter(occasion == QuestionOccasions.occasion_ids.any_())
+        if level is not None:
+            query = query.join(QuestionLevel, Question.id == QuestionLevel.question_id)
+            query = query.filter(QuestionLevel.level_id == level)
+
+        translations = (query
+                        .filter(QuestionTranslation.language_id == language_id)
+                        .order_by(Question.id.desc())
+                        .offset(pageSize * int(offset))
+                        .limit(limit)
+                        .all())
+        return list(reversed(translations))
+
     def get_random_questions(self, occasion, level, limit=20):
         try:
             query = db.session.query(Question)

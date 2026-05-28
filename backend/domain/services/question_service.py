@@ -40,15 +40,31 @@ class QuestionService:
         return {"success": True}, 200
 
     def get_questions(self, offset=0, language_id = DEFAULT_LANGUSGE_ID, occasion = None, level= None):
-        questions = self.question_repository.get_all_questions(offset, occasion, level)
-        json_questions =[self._serialize_question(q) for q in questions] 
         if language_id == DEFAULT_LANGUSGE_ID:
-            return json_questions
+            questions = self.question_repository.get_all_questions(offset, occasion, level)
+            return [self._serialize_question(q) for q in questions]
         
         if not is_supported_language(language_id):
             return {"error": "Invalid language"}, 400
         
-        return self._apply_translations(json_questions, language_id)
+        translations = self.question_repository.get_all_questions_in_language(
+            offset,
+            language_id,
+            occasion,
+            level
+        )
+
+        json_questions = []
+        for translated in translations:
+            question = self.question_repository.get_question_by_id(translated.question_id)
+            if not question:
+                continue
+
+            json_question = self._serialize_question(question)
+            json_question["content"] = translated.translated_content
+            json_questions.append(json_question)
+
+        return json_questions
 
 
     # In question_service.py, add:
