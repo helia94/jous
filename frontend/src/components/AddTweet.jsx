@@ -73,16 +73,18 @@ class AddTweet extends React.Component {
         const { onClose } = this.props;
     
         return (
-          <div className="c-card" id="addTweet">
-            <div style={{ textAlign: "right" }}>
-              <span 
-                style={{ cursor: "pointer", fontWeight: "bold" }}
+          <div className="c-card add-question-card" id="addTweet">
+            <div className="add-question-card__close-row">
+              <button
+                type="button"
+                className="add-question-card__close"
                 onClick={onClose}
+                aria-label="Close add question"
               >
                 X
-              </span>
+              </button>
             </div>
-            <div style={{ fontFamily: "Limelight", fontSize: "1.2rem", marginBottom: "1rem" }}>
+            <div className="add-question-card__title">
               Add a question
             </div>
             <form className="c-form" onSubmit={this.submitForm} id="submit-form">
@@ -100,7 +102,7 @@ class AddTweet extends React.Component {
               </div>
               {this.state.contentErr && <div className="c-form-error">{this.state.contentErr}</div>}
               {this.state.formErr && <div className="c-form-error">{this.state.formErr}</div>}
-              <div>
+              <div className="add-question-card__actions">
                 {this.state.isLoggedIn && (
                   <button
                     type="button"

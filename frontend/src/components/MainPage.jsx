@@ -136,15 +136,9 @@ class MainPage extends React.Component {
         })}
         </script>
       </Helmet> 
-      <div style={{ justifyItems: "center" }}>
+      <div className="home-feed-page">
           <ConfettiBackground />
-          <div
-            style={{
-              maxWidth: Math.min(this.state.width * 0.95, 768),
-              position: "relative",
-              zIndex: 1,
-            }}
-          >
+          <div className="home-feed">
             <h1  className="c-heading" >Home</h1>
             {!this.state.showAddQuestion && (
               <button className="c-button" onClick={this.toggleShowAddQuestion}>
@@ -171,7 +165,7 @@ class MainPage extends React.Component {
               height={Math.max(this.state.height - 200, 300)}
             >
               {this.state.tweets.map((item, index) => (
-                <div style={{ padding: "10px", margin: "0rem", marginBottom: "2rem" }} key={item.id || index}>
+                <div className="home-feed__item" key={item.id || index}>
                   <TweetItem2
                     id={item.id}
                     content={item.content}

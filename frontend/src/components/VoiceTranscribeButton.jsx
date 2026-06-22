@@ -144,22 +144,21 @@ function VoiceTranscribeButton({ onTranscription, placeholder = "Tap and speak" 
   };
 
   return (
-    <div style={{ marginBottom: "0.5rem" }}>
+    <div className="voice-input">
       <button
         type="button"
-        className="c-button"
+        className="c-button voice-input__button"
         onClick={isRecording ? stopRecording : startRecording}
         disabled={isLoading}
-        style={{ marginRight: "0.5rem" }}
       >
         <i className={`microphone icon ${isRecording ? "red" : ""}`}></i>
         {isRecording ? " Stop recording" : " Voice input"}
       </button>
-      <span style={{ opacity: 0.7, fontSize: "0.9rem" }}>
+      <span className="voice-input__hint">
         {isLoading ? "Transcribing..." : placeholder}
       </span>
       {error && (
-        <div className="c-form-error" style={{ marginTop: "0.4rem" }}>
+        <div className="c-form-error voice-input__error">
           {error}
         </div>
       )}

@@ -43,9 +43,31 @@ html, body {
   font-family: "Vazirmatn RD", sans-serif;
 }
 
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+.home-feed-page {
+  display: grid;
+  justify-items: center;
+  width: 100%;
+}
+
+.home-feed {
+  position: relative;
+  z-index: 1;
+  width: min(95vw, 768px);
+}
+
+.home-feed__item {
+  padding: 10px 0;
+  margin: 0 0 2rem;
+}
+
 /* Utility classes for general layout: cards, modals, forms, buttons */
 .c-card {
   position: relative;
+  width: 100%;
   max-width: 600px;
   margin: 1rem auto;
   background: #fff;
@@ -99,6 +121,7 @@ html, body {
   margin: 0.25rem;
   color: #fff;
   font-size: 1.3rem;
+  line-height: 1.2;
 }
 .c-button:hover {
   color: #000;
@@ -110,12 +133,14 @@ html, body {
 }
 .c-form textarea {
   width: 100%;
+  display: block;
   min-height: 80px;
   border: 2px solid #000;
   border-radius: 8px;
   padding: 0.5rem;
   font-family: "Poiret One", sans-serif;
   font-size: 1.5rem;
+  resize: vertical;
 }
 
 .c-form-error {
@@ -132,6 +157,73 @@ html, body {
   margin-top: 3rem;
   text-align: "center";
   padding: "0";
+}
+
+.add-question-card {
+  padding: 1.25rem;
+}
+
+.add-question-card__close-row {
+  position: absolute;
+  top: 0.9rem;
+  right: 0.9rem;
+}
+
+.add-question-card__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #000;
+  font: 700 1.5rem/1 Helvetica, Arial, sans-serif;
+  cursor: pointer;
+}
+
+.add-question-card__title {
+  padding-right: 2.5rem;
+  margin-bottom: 1rem;
+  font-family: "Limelight", sans-serif;
+  font-size: 1.2rem;
+}
+
+.add-question-card__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.add-question-card__actions .c-button {
+  margin: 0;
+}
+
+.voice-input {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.voice-input__button {
+  flex: 0 0 auto;
+  margin: 0;
+}
+
+.voice-input__hint {
+  flex: 1 1 14rem;
+  min-width: 0;
+  color: rgba(0, 0, 0, 0.7);
+  font-size: 0.9rem;
+  line-height: 1.35;
+}
+
+.voice-input__error {
+  flex-basis: 100%;
+  margin-top: -0.25rem;
 }
 
 /* Keep the ornamental deco style for general usage if needed */
@@ -162,10 +254,53 @@ body.dark {
 
 @media screen and (max-width: 600px) {
 
+  .home-feed {
+    width: 100%;
+    padding: 0 1rem;
+  }
+
+  .home-feed__item {
+    padding: 10px 0;
+  }
+
   .c-heading {
     font-size: 2rem;
     margin-top: 0.8rem;
     margin-bottom: 0rem;
+  }
+
+  .c-card {
+    width: 100%;
+    margin: 1rem 0;
+    border-radius: 10px;
+  }
+
+  .add-question-card {
+    padding: 1.25rem;
+  }
+
+  .add-question-card__title {
+    font-size: 1.5rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .voice-input {
+    align-items: stretch;
+    gap: 0.65rem;
+  }
+
+  .voice-input__button {
+    width: 100%;
+    min-height: 4.25rem;
+  }
+
+  .voice-input__hint {
+    flex-basis: 100%;
+    font-size: 1rem;
+  }
+
+  .c-form textarea {
+    min-height: 150px;
   }
 
 }
