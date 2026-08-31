@@ -1,5 +1,5 @@
 import React, { useEffect, Suspense, lazy, useState } from "react";
-import { BrowserRouter as Router, Redirect, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 // Providers
 import { LanguageProvider } from "./LanguageContext";
@@ -68,12 +68,6 @@ function App() {
                                 <Route path="/home" component={MainPage} />
                                 <Route path="/random" component={Random} />
                                 <Route path="/conversation-cards" exact component={ConversationCards} />
-                                <Route path="/conversation-cards-for-friends" exact>
-                                    <Redirect to="/random?occasion=0" />
-                                </Route>
-                                <Route path="/conversation-cards-for-couples" exact>
-                                    <Redirect to="/random?occasion=3" />
-                                </Route>
                                 <Route path="/printable-conversation-cards" exact component={PrintableConversationCards} />
                                 <Route path={conversationCardSpokePaths} exact component={ConversationCardSpoke} />
                                 <Route path="/user/:username" component={UserPage} />

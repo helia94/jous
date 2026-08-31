@@ -7,26 +7,22 @@ import { conversationCardSpokePages } from './src/components/conversationCardSeo
 // List of paths in your app
 const blogPaths = DatabaseBlogData.map((post) => ({
     url: `/blog/${post.URL}`,
-    changefreq: 'daily',
-    priority: 0.3,
-    lastmod: new Date().toISOString(),
+    changefreq: 'monthly',
+    priority: 0.4,
   }));
 
 const paths = [
-    { url: '/', changefreq: 'daily', priority: 1.0 },
+    { url: '/', changefreq: 'weekly', priority: 1.0 },
     { url: '/home', changefreq: 'daily', priority: 0.8 },
-    { url: '/home?lang=fa', changefreq: 'daily', priority: 0.8 },
-    { url: '/home/?lang=de', changefreq: 'daily', priority: 0.8 },
-    { url: '/random', changefreq: 'daily', priority: 0.6 },
+    { url: '/random', changefreq: 'weekly', priority: 0.6 },
     { url: '/conversation-cards', changefreq: 'weekly', priority: 0.9 },
     ...Object.values(conversationCardSpokePages).map((page) => ({
         url: page.path,
         changefreq: 'weekly',
         priority: 0.8,
     })),
-    { url: '/blog', changefreq: 'daily', priority: 0.6 },
-    { url: '/more-blogs', changefreq: 'daily', priority: 0.6 },
-    { url: '/random', changefreq: 'daily', priority: 0.6 },
+    { url: '/blog', changefreq: 'weekly', priority: 0.6 },
+    { url: '/more-blogs', changefreq: 'weekly', priority: 0.5 },
 ];
 
 const allPaths = paths.concat(blogPaths);
