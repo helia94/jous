@@ -5,6 +5,7 @@ import { Button } from "./ui";
 import { trackEvent } from "./analytics";
 import { conversationCardSpokeLinks } from "./conversationCardSeoPages";
 import { localizedSeoLinks, hreflangGroups } from "./localizedSeoPages";
+import { curatedListLinks } from "./curatedLists";
 import "./ConversationCards.css";
 
 const fallbackCards = [
@@ -253,6 +254,21 @@ function ConversationCards() {
           </div>
           <div className="conversation-cards-link-grid">
             {conversationCardSpokeLinks.map((link) => (
+              <a className="conversation-cards-link-card" href={link.href} key={link.href}>
+                <strong>{link.label}</strong>
+                <span>{link.description}</span>
+              </a>
+            ))}
+          </div>
+        </section>
+
+        <section className="conversation-cards-section">
+          <div className="conversation-cards-section-heading">
+            <h2>Hand-picked lists</h2>
+            <p>The whole pile is random on purpose. These are the exceptions: curated, best-of lists.</p>
+          </div>
+          <div className="conversation-cards-link-grid">
+            {curatedListLinks.map((link) => (
               <a className="conversation-cards-link-card" href={link.href} key={link.href}>
                 <strong>{link.label}</strong>
                 <span>{link.description}</span>

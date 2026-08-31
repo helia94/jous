@@ -47,9 +47,11 @@ Helmet.canUseDOM = false;
 
 const ConversationCards = require("./src/components/ConversationCards.jsx").default;
 const ConversationCardSpoke = require("./src/components/ConversationCardSpoke.jsx").default;
+const QuestionList = require("./src/components/QuestionList.jsx").default;
 const PrintableConversationCards = require("./src/components/PrintableConversationCards.jsx").default;
 const { conversationCardSpokePages } = require("./src/components/conversationCardSeoPages.js");
 const { localizedSeoPages } = require("./src/components/localizedSeoPages.js");
+const { curatedLists } = require("./src/components/curatedLists.js");
 
 const BUILD_DIR = path.join(__dirname, "build");
 const template = fs.readFileSync(path.join(BUILD_DIR, "index.html"), "utf8");
@@ -78,6 +80,7 @@ const pages = [
     .filter((routePath) => !dedicatedPages[routePath])
     .map((routePath) => ({ routePath, Component: ConversationCardSpoke })),
   ...Object.keys(localizedSeoPages).map((routePath) => ({ routePath, Component: ConversationCardSpoke })),
+  ...Object.keys(curatedLists).map((routePath) => ({ routePath, Component: QuestionList })),
 ];
 
 let written = 0;

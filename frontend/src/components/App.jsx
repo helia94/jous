@@ -7,6 +7,7 @@ import { FilterProvider } from "./FilterContext";
 import { initAnalytics } from "./analytics";
 import { conversationCardSpokePages } from "./conversationCardSeoPages";
 import { localizedSeoPages } from "./localizedSeoPages";
+import { curatedLists } from "./curatedLists";
 
 // Eagerly Loaded Components
 import Navbar from "./Navbar";
@@ -33,7 +34,9 @@ const BlogRoutes = lazy(() => import("./BlogRoutes"));
 const ConversationCards = lazy(() => import("./ConversationCards"));
 const ConversationCardSpoke = lazy(() => import("./ConversationCardSpoke"));
 const PrintableConversationCards = lazy(() => import("./PrintableConversationCards"));
+const QuestionList = lazy(() => import("./QuestionList"));
 const conversationCardSpokePaths = [...Object.keys(conversationCardSpokePages), ...Object.keys(localizedSeoPages)];
+const curatedListPaths = Object.keys(curatedLists);
 
 function App() {
     const [login, setLogin] = useState(() => Boolean(localStorage.getItem("token")));
@@ -71,6 +74,7 @@ function App() {
                                 <Route path="/conversation-cards" exact component={ConversationCards} />
                                 <Route path="/printable-conversation-cards" exact component={PrintableConversationCards} />
                                 <Route path={conversationCardSpokePaths} exact component={ConversationCardSpoke} />
+                                <Route path={curatedListPaths} exact component={QuestionList} />
                                 <Route path="/user/:username" component={UserPage} />
                                 <Route path="/group/:groupname" component={GroupHome} />
                                 <Route path="/question/:question" component={TweetDetailPage} />

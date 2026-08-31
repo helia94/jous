@@ -104,25 +104,30 @@ def seo_weekly():
     }
 
     if request.args.get("inspect") == "1":
-        inspections = {}
-        for url in INSPECT_URLS:
+        # Inspections run in parallel: 19 sequential calls exceeded the 30s
+        # gunicorn worker timeout (each Google call takes 1-3s).
+        from concurrent.futures import ThreadPoolExecutor
+
+        def inspect(url):
             try:
                 r = requests.post(
                     "https://searchconsole.googleapis.com/v1/urlInspection/index:inspect",
                     headers={"Authorization": f"Bearer {token}"},
                     json={"inspectionUrl": url, "siteUrl": PROPERTY},
-                    timeout=60,
+                    timeout=20,
                 )
                 r.raise_for_status()
                 status = r.json().get("inspectionResult", {}).get("indexStatusResult", {})
-                inspections[url] = {
+                return url, {
                     "verdict": status.get("verdict"),
                     "coverage": status.get("coverageState"),
                     "lastCrawl": status.get("lastCrawlTime"),
                     "googleCanonical": status.get("googleCanonical"),
                 }
             except Exception as exc:  # report the failure per URL, keep going
-                inspections[url] = {"error": str(exc)[:200]}
-        out["inspections"] = inspections
+                return url, {"error": str(exc)[:200]}
+
+        with ThreadPoolExecutor(max_workers=6) as pool:
+            out["inspections"] = dict(pool.map(inspect, INSPECT_URLS))
 
     return jsonify(out), 200

@@ -6,8 +6,8 @@ class RouteSpecificSyncWorker(SyncWorker):
         # Default timeout
         self.timeout = 30
 
-        # Route-specific timeout: 300s for /api/blog
-        if req.path.startswith('/api/blog'):
+        # Route-specific timeout: 300s for /api/blog and the SEO report
+        if req.path.startswith('/api/blog') or req.path.startswith('/api/seo'):
             self.timeout = 300
 
         # Continue handling request

@@ -4,6 +4,7 @@ import { SitemapStream, streamToPromise } from 'sitemap';
 import { Readable } from 'stream';
 import { conversationCardSpokePages } from './src/components/conversationCardSeoPages.js';
 import { localizedSeoPages } from './src/components/localizedSeoPages.js';
+import { curatedLists } from './src/components/curatedLists.js';
 
 // List of paths in your app
 const blogPaths = DatabaseBlogData.map((post) => ({
@@ -23,6 +24,11 @@ const paths = [
         priority: 0.8,
     })),
     ...Object.values(localizedSeoPages).map((page) => ({
+        url: page.path,
+        changefreq: 'weekly',
+        priority: 0.8,
+    })),
+    ...Object.values(curatedLists).map((page) => ({
         url: page.path,
         changefreq: 'weekly',
         priority: 0.8,
