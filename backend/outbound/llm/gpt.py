@@ -15,8 +15,11 @@ model_list = [
 
 class GPT(LLMInterface):
     def __init__(self, model_name: str | None = None):
+        # Fall back to a placeholder so the app can boot without an OpenAI key
+        # (self-hosted instances without AI features); API calls will then fail
+        # gracefully in get_response instead of crashing at startup.
         self.client = client = OpenAI(
-            api_key=os.environ.get("OPENAI_API_KEY"),
+            api_key=os.environ.get("OPENAI_API_KEY") or "not-configured",
         )
         self.model_name = model_name or os.environ.get("OPENAI_CHAT_MODEL", "gpt-4o")
 
