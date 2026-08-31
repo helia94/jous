@@ -9,11 +9,18 @@ Examples:
     --end-date 2026-05-31 \
     --query-contains "conversation cards"
 
-Auth:
-  - Set GOOGLE_ACCESS_TOKEN to an OAuth token with the webmasters scope, or
-  - Set GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, and GOOGLE_REFRESH_TOKEN, or
-  - Set GOOGLE_APPLICATION_CREDENTIALS to a service-account JSON file that has
-    been added to the Search Console property.
+Auth (checked in this order; the first one that is configured wins):
+  - GOOGLE_SERVICE_ACCOUNT_JSON: the service-account key file *contents* as one
+    string (for cloud jobs that cannot ship a file), or
+  - GOOGLE_APPLICATION_CREDENTIALS: path to a service-account JSON file, or
+  - GOOGLE_CLIENT_ID + GOOGLE_CLIENT_SECRET + GOOGLE_REFRESH_TOKEN, or
+  - GOOGLE_ACCESS_TOKEN: a short-lived OAuth token (expires after ~1h, last resort).
+  The service account (or OAuth user) must be a user/owner of the property.
+
+Other actions:
+  --list-sites                       show properties visible to the credentials
+  --submit-sitemap https://jous.app/sitemap.xml
+  --inspect https://jous.app/conversation-cards   (URL Inspection API: index status)
 """
 
 import argparse
@@ -27,8 +34,11 @@ from urllib.parse import quote
 
 SEARCH_ANALYTICS_URL = "https://www.googleapis.com/webmasters/v3/sites/{site_url}/searchAnalytics/query"
 SITES_URL = "https://www.googleapis.com/webmasters/v3/sites"
+SITEMAP_URL = "https://www.googleapis.com/webmasters/v3/sites/{site_url}/sitemaps/{feedpath}"
+URL_INSPECTION_URL = "https://searchconsole.googleapis.com/v1/urlInspection/index:inspect"
 TOKEN_URL = "https://oauth2.googleapis.com/token"
-WEBMASTERS_SCOPE = "https://www.googleapis.com/auth/webmasters.readonly"
+# Full (not read-only) scope so the same credentials can submit sitemaps and inspect URLs.
+WEBMASTERS_SCOPE = "https://www.googleapis.com/auth/webmasters"
 
 
 def load_env_file(path: str) -> None:
@@ -54,10 +64,57 @@ def default_previous_month() -> tuple[str, str]:
     return first_previous_month.isoformat(), last_previous_month.isoformat()
 
 
+def load_service_account(credentials_path: Optional[str]) -> Optional[Dict[str, Any]]:
+    inline = os.getenv("GOOGLE_SERVICE_ACCOUNT_JSON")
+    if inline:
+        return json.loads(inline)
+
+    credentials_path = credentials_path or os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
+    if credentials_path and os.path.exists(credentials_path):
+        with open(credentials_path, "r", encoding="utf-8") as fh:
+            return json.load(fh)
+    if credentials_path:
+        print(f"warning: GOOGLE_APPLICATION_CREDENTIALS file not found: {credentials_path}", file=sys.stderr)
+    return None
+
+
+def service_account_token(credentials: Dict[str, Any]) -> str:
+    try:
+        import jwt
+    except ImportError as exc:
+        raise RuntimeError(
+            "Service-account auth requires PyJWT. Install project requirements or use GOOGLE_ACCESS_TOKEN."
+        ) from exc
+    try:
+        import requests
+    except ImportError as exc:
+        raise RuntimeError("Search Console API calls require requests. Install project requirements.") from exc
+
+    now = int(time.time())
+    payload = {
+        "iss": credentials["client_email"],
+        "scope": WEBMASTERS_SCOPE,
+        "aud": TOKEN_URL,
+        "iat": now,
+        "exp": now + 3600,
+    }
+    assertion = jwt.encode(payload, credentials["private_key"], algorithm="RS256")
+    response = requests.post(
+        TOKEN_URL,
+        data={
+            "grant_type": "urn:ietf:params:oauth:grant-type:jwt-bearer",
+            "assertion": assertion,
+        },
+        timeout=30,
+    )
+    response.raise_for_status()
+    return response.json()["access_token"]
+
+
 def get_access_token(credentials_path: Optional[str]) -> str:
-    env_token = os.getenv("GOOGLE_ACCESS_TOKEN")
-    if env_token:
-        return env_token
+    credentials = load_service_account(credentials_path)
+    if credentials:
+        return service_account_token(credentials)
 
     refresh_token = os.getenv("GOOGLE_REFRESH_TOKEN")
     client_id = os.getenv("GOOGLE_CLIENT_ID")
@@ -81,46 +138,35 @@ def get_access_token(credentials_path: Optional[str]) -> str:
         response.raise_for_status()
         return response.json()["access_token"]
 
-    credentials_path = credentials_path or os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
-    if not credentials_path:
-        raise RuntimeError(
-            "Missing auth. Set GOOGLE_ACCESS_TOKEN, GOOGLE_REFRESH_TOKEN credentials, or GOOGLE_APPLICATION_CREDENTIALS."
-        )
+    env_token = os.getenv("GOOGLE_ACCESS_TOKEN")
+    if env_token:
+        return env_token
 
-    try:
-        import jwt
-    except ImportError as exc:
-        raise RuntimeError(
-            "Service-account auth requires PyJWT. Install project requirements or use GOOGLE_ACCESS_TOKEN."
-        ) from exc
+    raise RuntimeError(
+        "Missing auth. Set GOOGLE_SERVICE_ACCOUNT_JSON, GOOGLE_APPLICATION_CREDENTIALS, "
+        "GOOGLE_REFRESH_TOKEN credentials, or GOOGLE_ACCESS_TOKEN."
+    )
 
-    with open(credentials_path, "r", encoding="utf-8") as fh:
-        credentials = json.load(fh)
 
-    now = int(time.time())
-    payload = {
-        "iss": credentials["client_email"],
-        "scope": WEBMASTERS_SCOPE,
-        "aud": TOKEN_URL,
-        "iat": now,
-        "exp": now + 3600,
-    }
-    assertion = jwt.encode(payload, credentials["private_key"], algorithm="RS256")
-    try:
-        import requests
-    except ImportError as exc:
-        raise RuntimeError("Search Console API calls require requests. Install project requirements.") from exc
+def submit_sitemap(token: str, site_url: str, sitemap_url: str) -> None:
+    import requests
+
+    endpoint = SITEMAP_URL.format(site_url=quote(site_url, safe=""), feedpath=quote(sitemap_url, safe=""))
+    response = requests.put(endpoint, headers={"Authorization": f"Bearer {token}"}, timeout=30)
+    response.raise_for_status()
+
+
+def inspect_url(token: str, site_url: str, url: str) -> Dict[str, Any]:
+    import requests
 
     response = requests.post(
-        TOKEN_URL,
-        data={
-            "grant_type": "urn:ietf:params:oauth:grant-type:jwt-bearer",
-            "assertion": assertion,
-        },
-        timeout=30,
+        URL_INSPECTION_URL,
+        headers={"Authorization": f"Bearer {token}"},
+        json={"inspectionUrl": url, "siteUrl": site_url},
+        timeout=60,
     )
     response.raise_for_status()
-    return response.json()["access_token"]
+    return response.json().get("inspectionResult", {})
 
 
 def search_analytics_query(
@@ -287,6 +333,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--min-position", type=float, default=10.0, help="Average position at or above this value is flagged.")
     parser.add_argument("--credentials", help="Path to service-account JSON credentials.")
     parser.add_argument("--list-sites", action="store_true", help="List Search Console properties visible to this token.")
+    parser.add_argument("--submit-sitemap", metavar="SITEMAP_URL", help="Submit (or re-submit) a sitemap for --site-url and exit.")
+    parser.add_argument("--inspect", metavar="URL", action="append", help="Run URL Inspection for URL (repeatable) and exit.")
     parser.add_argument("--json", action="store_true", help="Print JSON instead of Markdown.")
     return parser.parse_args()
 
@@ -295,6 +343,23 @@ def main() -> int:
     args = parse_args()
     try:
         token = get_access_token(args.credentials)
+        if args.submit_sitemap:
+            submit_sitemap(token, args.site_url, args.submit_sitemap)
+            print(f"Submitted sitemap {args.submit_sitemap} for {args.site_url}")
+            return 0
+        if args.inspect:
+            results = {url: inspect_url(token, args.site_url, url) for url in args.inspect}
+            if args.json:
+                print(json.dumps(results, indent=2))
+            else:
+                print("# URL Inspection")
+                for url, result in results.items():
+                    status = result.get("indexStatusResult", {})
+                    print(
+                        f"- {url} | verdict: {status.get('verdict')} | coverage: {status.get('coverageState')} | "
+                        f"last crawl: {status.get('lastCrawlTime')} | canonical (Google): {status.get('googleCanonical')}"
+                    )
+            return 0
         if args.list_sites:
             sites = list_sites(token)
             if args.json:
