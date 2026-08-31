@@ -60,4 +60,4 @@ The easiest contribution is a good question — add it in the app. Code contribu
 
 ## License
 
-See the repository license file. The question set is open: use it, fork it, argue with it.
+No license file yet (the code is public; a formal open-source license is on the to-do list). The question set is open: use it, fork it, argue with it.
