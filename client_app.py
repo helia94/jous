@@ -1,8 +1,28 @@
+import logging
 from os import path
 
-from flask import Blueprint, send_from_directory
+from flask import Blueprint, Response, request, send_from_directory
+
+import seo_pages
 
 client = Blueprint("client", __name__, static_folder=path.join("frontend", "build"))
+log = logging.getLogger(__name__)
+
+
+def _db_rendered(file_name, id):
+    """Server-render question and blog pages from the database (best effort)."""
+    try:
+        if file_name == "question" and id.isdigit():
+            from backend.inbound.service_factory import question_service
+
+            return seo_pages.question_page(client.static_folder, question_service, int(id), request.args.get("lang"))
+        if file_name == "blog" and id:
+            from backend.inbound.service_factory import blog_service
+
+            return seo_pages.blog_page(client.static_folder, blog_service, id)
+    except Exception:  # never let SEO rendering break the app; fall back to the SPA shell
+        log.exception("seo render failed for /%s/%s", file_name, id)
+    return None
 
 def _prerendered(*parts):
     """Return the relative path of a pre-rendered page (build/<parts>/index.html) if it exists."""
@@ -25,7 +45,18 @@ def serve(file_name, id):
         if path.isfile(target):
             return send_from_directory(client.static_folder, file_name)
 
+        rendered = _db_rendered(file_name, id)
+        if rendered:
+            return Response(rendered, mimetype="text/html")
+
     return send_from_directory(client.static_folder, "index.html")
+
+
+@client.route("/sitemap-questions.xml")
+def sitemap_questions():
+    from backend.api.models import Question
+
+    return Response(seo_pages.questions_sitemap(Question), mimetype="application/xml")
 
 
 @client.route("/static/<path:path_to_file>/<string:file_name>")

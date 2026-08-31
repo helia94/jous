@@ -7,3 +7,5 @@ Disallow: /logout
 Disallow: /bug
 
 Sitemap: https://jous.app/sitemap.xml
+
+Sitemap: https://jous.app/sitemap-questions.xml
