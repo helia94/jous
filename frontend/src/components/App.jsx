@@ -6,6 +6,7 @@ import { LanguageProvider } from "./LanguageContext";
 import { FilterProvider } from "./FilterContext";
 import { initAnalytics } from "./analytics";
 import { conversationCardSpokePages } from "./conversationCardSeoPages";
+import { localizedSeoPages } from "./localizedSeoPages";
 
 // Eagerly Loaded Components
 import Navbar from "./Navbar";
@@ -32,7 +33,7 @@ const BlogRoutes = lazy(() => import("./BlogRoutes"));
 const ConversationCards = lazy(() => import("./ConversationCards"));
 const ConversationCardSpoke = lazy(() => import("./ConversationCardSpoke"));
 const PrintableConversationCards = lazy(() => import("./PrintableConversationCards"));
-const conversationCardSpokePaths = Object.keys(conversationCardSpokePages);
+const conversationCardSpokePaths = [...Object.keys(conversationCardSpokePages), ...Object.keys(localizedSeoPages)];
 
 function App() {
     const [login, setLogin] = useState(() => Boolean(localStorage.getItem("token")));

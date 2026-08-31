@@ -4,6 +4,7 @@ import { Helmet } from "react-helmet";
 import { Button } from "./ui";
 import { trackEvent } from "./analytics";
 import { conversationCardSpokeLinks } from "./conversationCardSeoPages";
+import { localizedSeoLinks, hreflangGroups } from "./localizedSeoPages";
 import "./ConversationCards.css";
 
 const fallbackCards = [
@@ -147,6 +148,10 @@ function ConversationCards() {
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://jous.app/conversation-cards" />
         <link rel="canonical" href="https://jous.app/conversation-cards" />
+        {Object.entries(hreflangGroups.hub).map(([code, href]) => (
+          <link rel="alternate" hreflang={code} href={`https://jous.app${href}`} key={code} />
+        ))}
+        <link rel="alternate" hreflang="x-default" href="https://jous.app/conversation-cards" />
         <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
       </Helmet>
 
@@ -249,6 +254,21 @@ function ConversationCards() {
           <div className="conversation-cards-link-grid">
             {conversationCardSpokeLinks.map((link) => (
               <a className="conversation-cards-link-card" href={link.href} key={link.href}>
+                <strong>{link.label}</strong>
+                <span>{link.description}</span>
+              </a>
+            ))}
+          </div>
+        </section>
+
+        <section className="conversation-cards-section">
+          <div className="conversation-cards-section-heading">
+            <h2>Conversation cards in other languages</h2>
+            <p>The whole card set is translated. Same pile, different language.</p>
+          </div>
+          <div className="conversation-cards-link-grid">
+            {localizedSeoLinks.map((link) => (
+              <a className="conversation-cards-link-card" href={link.href} key={link.href} lang={link.lang}>
                 <strong>{link.label}</strong>
                 <span>{link.description}</span>
               </a>

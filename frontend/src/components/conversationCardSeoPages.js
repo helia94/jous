@@ -23,7 +23,7 @@ const fallbackExamples = [
   "What's the closest thing to magic for you?",
 ];
 
-const buildPage = ({
+export const buildPage = ({
   path,
   title,
   description,

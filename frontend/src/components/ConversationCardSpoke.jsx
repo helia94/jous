@@ -5,9 +5,19 @@ import { useLocation } from "react-router-dom";
 import { Button } from "./ui";
 import { trackEvent } from "./analytics";
 import { conversationCardSpokePages } from "./conversationCardSeoPages";
+import { localizedSeoPages, hreflangGroups } from "./localizedSeoPages";
 import "./ConversationCards.css";
 
 const sourceUrl = "https://github.com/helia94/jous";
+const siteUrl = "https://jous.app";
+const allSpokePages = { ...conversationCardSpokePages, ...localizedSeoPages };
+const defaultUi = {
+  loading: "Drawing...",
+  backToHub: "Back to the conversation cards hub",
+  viewSource: "View the source repository",
+  faqHeading: null, // null -> `${h1} FAQ`
+  whyLabel: "Why use Jous",
+};
 
 function buildFaqSchema(faqs) {
   return {
@@ -34,7 +44,10 @@ function trackSeoEvent(action, pagePath) {
 
 function ConversationCardSpoke() {
   const location = useLocation();
-  const page = conversationCardSpokePages[location.pathname] || conversationCardSpokePages["/online-conversation-cards"];
+  const page = allSpokePages[location.pathname] || conversationCardSpokePages["/online-conversation-cards"];
+  const ui = { ...defaultUi, ...(page.ui || {}) };
+  const lang = page.lang || "en";
+  const alternates = page.group ? hreflangGroups[page.group] : null;
   const [currentCard, setCurrentCard] = useState(page.examples[0]);
   const [cardIndex, setCardIndex] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -77,7 +90,7 @@ function ConversationCardSpoke() {
 
   return (
     <>
-      <Helmet>
+      <Helmet htmlAttributes={{ lang, dir: page.dir || "ltr" }}>
         <title>{page.title}</title>
         <meta name="description" content={page.description} />
         <meta name="keywords" content={page.keywords} />
@@ -86,6 +99,11 @@ function ConversationCardSpoke() {
         <meta property="og:type" content="website" />
         <meta property="og:url" content={`https://jous.app${page.path}`} />
         <link rel="canonical" href={`https://jous.app${page.path}`} />
+        {alternates &&
+          Object.entries(alternates).map(([code, href]) => (
+            <link rel="alternate" hreflang={code} href={`${siteUrl}${href}`} key={code} />
+          ))}
+        {alternates && <link rel="alternate" hreflang="x-default" href={`${siteUrl}${alternates.en}`} />}
         <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
       </Helmet>
 
@@ -97,7 +115,7 @@ function ConversationCardSpoke() {
             <p className="conversation-cards-lede">{page.lede}</p>
             <div className="conversation-cards-actions">
               <Button onClick={() => fetchRandomCard()} disabled={loading}>
-                {loading ? "Drawing..." : page.primaryCta}
+                {loading ? ui.loading : page.primaryCta}
               </Button>
               <a className="conversation-cards-secondary" href={page.appHref} onClick={openRandomApp}>
                 {page.secondaryCta}
@@ -111,7 +129,7 @@ function ConversationCardSpoke() {
           </div>
         </section>
 
-        <section className="conversation-cards-stats" aria-label="Why use Jous">
+        <section className="conversation-cards-stats" aria-label={ui.whyLabel}>
           {page.statCards.map((item) => (
             <div key={item.value}>
               <strong>{item.value}</strong>
@@ -152,14 +170,14 @@ function ConversationCardSpoke() {
         <section className="conversation-cards-section conversation-cards-source">
           <h2>{page.sourceHeading}</h2>
           <p>{page.sourceText}</p>
-          <a href="/conversation-cards">Back to the conversation cards hub</a>
+          <a href={hreflangGroups.hub[lang] || "/conversation-cards"}>{ui.backToHub}</a>
           <a href={sourceUrl} rel="noreferrer" target="_blank">
-            View the source repository
+            {ui.viewSource}
           </a>
         </section>
 
         <section className="conversation-cards-section conversation-cards-faq">
-          <h2>{page.h1} FAQ</h2>
+          <h2>{ui.faqHeading || `${page.h1} FAQ`}</h2>
           {page.faqs.map((item) => (
             <article key={item.question}>
               <h3>{item.question}</h3>

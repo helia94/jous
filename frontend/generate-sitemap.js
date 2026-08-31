@@ -3,6 +3,7 @@ import fs from 'fs';
 import { SitemapStream, streamToPromise } from 'sitemap';
 import { Readable } from 'stream';
 import { conversationCardSpokePages } from './src/components/conversationCardSeoPages.js';
+import { localizedSeoPages } from './src/components/localizedSeoPages.js';
 
 // List of paths in your app
 const blogPaths = DatabaseBlogData.map((post) => ({
@@ -17,6 +18,11 @@ const paths = [
     { url: '/random', changefreq: 'weekly', priority: 0.6 },
     { url: '/conversation-cards', changefreq: 'weekly', priority: 0.9 },
     ...Object.values(conversationCardSpokePages).map((page) => ({
+        url: page.path,
+        changefreq: 'weekly',
+        priority: 0.8,
+    })),
+    ...Object.values(localizedSeoPages).map((page) => ({
         url: page.path,
         changefreq: 'weekly',
         priority: 0.8,

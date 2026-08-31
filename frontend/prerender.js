@@ -49,6 +49,7 @@ const ConversationCards = require("./src/components/ConversationCards.jsx").defa
 const ConversationCardSpoke = require("./src/components/ConversationCardSpoke.jsx").default;
 const PrintableConversationCards = require("./src/components/PrintableConversationCards.jsx").default;
 const { conversationCardSpokePages } = require("./src/components/conversationCardSeoPages.js");
+const { localizedSeoPages } = require("./src/components/localizedSeoPages.js");
 
 const BUILD_DIR = path.join(__dirname, "build");
 const template = fs.readFileSync(path.join(BUILD_DIR, "index.html"), "utf8");
@@ -76,6 +77,7 @@ const pages = [
   ...Object.keys(conversationCardSpokePages)
     .filter((routePath) => !dedicatedPages[routePath])
     .map((routePath) => ({ routePath, Component: ConversationCardSpoke })),
+  ...Object.keys(localizedSeoPages).map((routePath) => ({ routePath, Component: ConversationCardSpoke })),
 ];
 
 let written = 0;
@@ -95,7 +97,9 @@ for (const { routePath, Component } of pages) {
     seoCssLinks,
   ].join("");
 
+  const htmlAttrs = helmet.htmlAttributes.toString();
   let html = template
+    .replace('<html lang="en">', htmlAttrs ? `<html ${htmlAttrs}>` : '<html lang="en">')
     .replace(/<title>.*?<\/title>/, helmet.title.toString())
     // Remove the generic default description so the page-specific one wins.
     .replace(/<meta name="description"[^>]*>/, "")
