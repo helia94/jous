@@ -1,6 +1,6 @@
 # Weekly SEO routine (Claude Code cloud routine)
 
-Status 2026-08-31: **not yet created** — the API refused with
+Status: **created 2026-08-31** — id `trig_01PC4BQ264knL7SwEkTcE791`, https://claude.ai/code/routines/trig_01PC4BQ264knL7SwEkTcE791 . Originally the API refused with
 "Connect your GitHub account before saving a routine that uses a GitHub repository".
 Prerequisites for the owner: (1) install the Claude GitHub App on helia94/jous via
 https://claude.ai/code/onboarding?magic=github-app-setup ; (2) add the env var
