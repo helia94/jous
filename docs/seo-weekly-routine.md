@@ -1,6 +1,6 @@
 # Weekly SEO routine (Claude Code cloud routine)
 
-Status: **created 2026-08-31** — id `trig_01PC4BQ264knL7SwEkTcE791`, https://claude.ai/code/routines/trig_01PC4BQ264knL7SwEkTcE791 . Originally the API refused with
+Status: **created 2026-08-31**; end-to-end test same day: fetch->report->commit->GitHub-API-push all work, but the cloud sandbox egress proxy REFUSES connections to jous.app (connect_rejected, org policy) so the data fetch fails. Direct googleapis.com calls are likely blocked by the same allowlist (unverified). Fix pending: allowlist egress for the environment, or generate the report on Railway and let the routine only read the repo. Also note: in the sandbox `git push` gets HTTP 403 — push via the GitHub MCP `push_files` tool. — id `trig_01PC4BQ264knL7SwEkTcE791`, https://claude.ai/code/routines/trig_01PC4BQ264knL7SwEkTcE791 . Originally the API refused with
 "Connect your GitHub account before saving a routine that uses a GitHub repository".
 Prerequisites for the owner: (1) install the Claude GitHub App on helia94/jous via
 https://claude.ai/code/onboarding?magic=github-app-setup ; (2) add the env var
