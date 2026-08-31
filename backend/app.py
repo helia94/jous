@@ -53,6 +53,7 @@ def create_app(test_config=None):
     from backend.inbound.feature_controller import feature_api
     from backend.inbound.migration_controller import migration_api
     from backend.inbound.blog_controller import blog_api
+    from backend.inbound.seo_report_controller import seo_report_api
 
     # Register Blueprints
     app.register_blueprint(auth_api, url_prefix="/api")
@@ -62,6 +63,7 @@ def create_app(test_config=None):
     app.register_blueprint(feature_api, url_prefix="/api")
     app.register_blueprint(migration_api, url_prefix="/api")
     app.register_blueprint(blog_api, url_prefix="/api")
+    app.register_blueprint(seo_report_api, url_prefix="/api")
     
 
     # Setup logging (simplified)
