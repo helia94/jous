@@ -49,6 +49,9 @@ def serve(file_name, id):
         if rendered:
             return Response(rendered, mimetype="text/html")
 
+    home = _prerendered("_home")
+    if file_name == "" and home:
+        return send_from_directory(client.static_folder, home)
     return send_from_directory(client.static_folder, "index.html")
 
 

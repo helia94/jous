@@ -58,3 +58,19 @@
   border: 1px solid rgba(214, 191, 168, 0.8);
   border-radius: 4px;
 }
+
+/* Below-the-fold crawlable content (HomeSeoSection.jsx) */
+.home-seo { background: #fff; color: #111; padding: 2.5rem 1rem 3rem; }
+.home-seo-inner { max-width: 720px; margin: 0 auto; line-height: 1.55; }
+.home-seo h2 { font-size: 1.6rem; margin: 0 0 0.75rem; }
+.home-seo h3 { font-size: 1.1rem; margin: 1.75rem 0 0.5rem; }
+.home-seo p { margin: 0 0 0.9rem; }
+.home-seo ul { list-style: none; padding: 0; margin: 0; }
+.home-seo-links { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.home-seo-links li a { display: inline-block; border: 1px solid #ddd; border-radius: 4px; padding: 0.35rem 0.6rem; color: #222; text-decoration: none; }
+.home-seo-links li a:hover { border-color: #999; }
+.home-seo-cards li { padding: 0.5rem 0; border-bottom: 1px solid #eee; }
+.home-seo-cards li a { color: #111; text-decoration: none; }
+.home-seo-cards li a:hover { text-decoration: underline; }
+.home-seo-cta { display: inline-block; background: #111; color: #d6bfa8; padding: 0.6rem 1rem; border-radius: 4px; text-decoration: none; margin: 0.25rem 0.5rem 0.25rem 0; }
+.home-seo-cta-secondary { background: #fff; color: #111; border: 1px solid #111; }

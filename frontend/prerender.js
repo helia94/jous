@@ -45,6 +45,7 @@ const { StaticRouter } = require("react-router-dom");
 const { Helmet } = require("react-helmet");
 Helmet.canUseDOM = false;
 
+const Homev2 = require("./src/components/Homev2.jsx").default;
 const ConversationCards = require("./src/components/ConversationCards.jsx").default;
 const ConversationCardSpoke = require("./src/components/ConversationCardSpoke.jsx").default;
 const QuestionList = require("./src/components/QuestionList.jsx").default;
@@ -75,6 +76,9 @@ const dedicatedPages = {
   "/printable-conversation-cards": PrintableConversationCards,
 };
 const pages = [
+  // The homepage is written to build/_home/index.html (never over build/index.html, which stays the
+  // SPA shell for every non-prerendered route); client_app.py serves it for "/".
+  { routePath: "/", Component: Homev2, outPath: "_home" },
   ...Object.entries(dedicatedPages).map(([routePath, Component]) => ({ routePath, Component })),
   ...Object.keys(conversationCardSpokePages)
     .filter((routePath) => !dedicatedPages[routePath])
@@ -84,7 +88,7 @@ const pages = [
 ];
 
 let written = 0;
-for (const { routePath, Component } of pages) {
+for (const { routePath, Component, outPath } of pages) {
   const markup = renderToString(
     React.createElement(
       StaticRouter,
@@ -111,7 +115,7 @@ for (const { routePath, Component } of pages) {
     .replace("</head>", `${headTags}</head>`)
     .replace('<div id="root"></div>', `<div id="root">${markup}</div>`);
 
-  const outDir = path.join(BUILD_DIR, routePath.replace(/^\//, ""));
+  const outDir = path.join(BUILD_DIR, outPath || routePath.replace(/^\//, ""));
   fs.mkdirSync(outDir, { recursive: true });
   fs.writeFileSync(path.join(outDir, "index.html"), html);
   written += 1;

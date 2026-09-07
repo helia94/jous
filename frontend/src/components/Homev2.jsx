@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet';
 import { trackEvent } from './analytics';
 import { shouldUseMinimalExperience } from './performanceMode';
 import { Button } from './ui';
+import HomeSeoSection from './HomeSeoSection';
 import './Homev2Critical.css';
 import './Homev2Full.css';
 
@@ -49,23 +50,24 @@ function Homev2() {
 
     <>
       <Helmet>
-        <title>Jous - Deep Conversation Starters</title>
+        <title>Jous: Open-Source Conversation Cards, 1,600+ Random Questions</title>
         <meta
           name="description"
-          content="Ditch small talk and go deep. Discover 1000 personal questions to start meaningful conversations with friends, family, dates, and strangers. No signup required."
+          content="Free, open-source conversation cards. Draw one of 1,600+ random questions for friends, dates, family or strangers. Deep, funny and weird, never cringe. No signup."
         />
         <meta
           name="keywords"
           content="conversation starters, conversation cards, deep questions, meaningful conversations, icebreakers, dating questions, small talk"
         />
-        <meta property="og:title" content="Jous - Deep Conversation Starters" />
+        <meta property="og:title" content="Jous: Open-Source Conversation Cards, 1,600+ Random Questions" />
         <meta
           property="og:description"
           content="Are you easily bored with small talk? Explore and share deep, introspective questions to spark meaningful conversations. For friends, family, and dates. No login required."
         />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://www.jous.app/" />
-        <link rel="canonical" href="https://www.jous.app/" />
+        <meta property="og:url" content="https://jous.app/" />
+        <meta property="og:image" content="https://jous.app/jous-awkwart.webp" />
+        <link rel="canonical" href="https://jous.app/" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </Helmet>
       <div className="home-shell">
@@ -103,6 +105,7 @@ function Homev2() {
           </Button>
         </div>
       </div>
+      <HomeSeoSection />
       <Suspense fallback={<div style={{ color: 'white' }}>Loading...</div>}>
         {showAbout && <AboutModal open={showAbout} onClose={() => setShowAbout(false)} />}
       </Suspense>
