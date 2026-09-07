@@ -3,7 +3,6 @@ import { Helmet } from 'react-helmet';
 import { trackEvent } from './analytics';
 import { shouldUseMinimalExperience } from './performanceMode';
 import { Button } from './ui';
-import HomeSeoSection from './HomeSeoSection';
 import './Homev2Critical.css';
 import './Homev2Full.css';
 
@@ -66,7 +65,6 @@ function Homev2() {
         />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://jous.app/" />
-        <meta property="og:image" content="https://jous.app/jous-awkwart.webp" />
         <link rel="canonical" href="https://jous.app/" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </Helmet>
@@ -105,7 +103,6 @@ function Homev2() {
           </Button>
         </div>
       </div>
-      <HomeSeoSection />
       <Suspense fallback={<div style={{ color: 'white' }}>Loading...</div>}>
         {showAbout && <AboutModal open={showAbout} onClose={() => setShowAbout(false)} />}
       </Suspense>

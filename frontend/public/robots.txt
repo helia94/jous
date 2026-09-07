@@ -5,7 +5,6 @@ Disallow: /login
 Disallow: /register
 Disallow: /logout
 Disallow: /bug
-Disallow: /_home
 
 Sitemap: https://jous.app/sitemap.xml
 
