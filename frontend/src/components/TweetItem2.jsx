@@ -79,7 +79,6 @@ export default class TweetItem2 extends React.Component {
     return (
       <>
         <div className="tweet-card"  style={cardStyle}>
-          <div className="bg-ornament" />
           <div className="tweet-header">
             <span className="tweet-time">
               {moment(this.props.time, "ddd, DD MMM YYYY h:mm:ss").format("DD MMM YYYY")}

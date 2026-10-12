@@ -20,21 +20,6 @@
   transform: scale(1.02);
 }
 
-/* Subtle ornamental background shape */
-.bg-ornament {
-  position: absolute;
-  top: -40px;
-  right: -60px;
-  width: 200px;
-  height: 200px;
-  background: url("https://via.placeholder.com/200x200/FFFFFF/000000?text=Ornament")
-    no-repeat center center;
-  background-size: contain;
-  opacity: 0.1;
-  transform: rotate(15deg);
-  pointer-events: none;
-}
-
 /* Header */
 .tweet-header {
   display: flex;
@@ -101,11 +86,5 @@
   .tweet-card {
     margin: 20px;
     padding: 15px;
-  }
-  .bg-ornament {
-    top: -30px;
-    right: -40px;
-    width: 150px;
-    height: 150px;
   }
 }
